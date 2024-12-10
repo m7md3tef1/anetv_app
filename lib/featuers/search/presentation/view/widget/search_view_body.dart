@@ -42,14 +42,7 @@ class _SearchViewBodyState extends State<SearchViewBody> {
                   'Search Result',
                   style: Styels.textStyle18,
                 ),
-                SizedBox(height: 10),
-                // Text(
-                //   widget.catogry,
-                //   style: const TextStyle(
-                //     fontSize: 20,
-                //     fontWeight: FontWeight.w600,
-                //   ),
-                // ),
+                SizedBox(height: 10)
               ],
             ),
           ),
