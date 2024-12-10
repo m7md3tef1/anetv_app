@@ -50,7 +50,8 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
     // #enddocregion platform_features
 
     controller
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)..enableZoom(true)
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..getUserAgent()..enableZoom(true)
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
