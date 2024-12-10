@@ -9,7 +9,7 @@ class AllMoviesCubit extends Cubit<AllMoviesState> {
   final AllMoviesHomeRepo allMoviesHomeRepo;
   Future<void> fetchMovie({required String catogry}) async {
     emit(AllMoviesLoading());
-    var result = await allMoviesHomeRepo.fetchMovie(catogry: catogry);
+    var result = await allMoviesHomeRepo.fetchMovie(category: catogry);
     result.fold((failure) {
       emit(AllMoviesFailure(failure.errorMessage));
     }, (allMovies) {

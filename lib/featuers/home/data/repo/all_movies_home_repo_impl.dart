@@ -10,20 +10,20 @@ class AllMoviesHomeRepoImpl implements AllMoviesHomeRepo {
 
   const AllMoviesHomeRepoImpl(this.apiService);
   final String baseUrlAllMovies = 'https://alaanetstreaming.com/';
-  String feachMovies({required String catogry}) {
+  String fetchMovies({required String category}) {
     print('${"baseUrlAllMovies"} ');
     print(
         'https://alaanetstreaming.com/api/v1/leb/?page=1&per_page=200&type=movie&category=action');
     print(
-        '${baseUrlAllMovies}api/v1/leb/?page=1&per_page=200&category=$catogry&type=movie');
-    return '${baseUrlAllMovies}api/v1/leb/?page=1&per_page=200&category=$catogry&type=movie';
+        '${baseUrlAllMovies}api/v1/leb/?page=1&per_page=200&category=$category&type=movie');
+    return '${baseUrlAllMovies}api/v1/leb/?page=1&category=$category&type=movie';
   }
 
   @override
   Future<Either<Failures, List<MovieModel>>> fetchMovie(
-      {required String catogry}) async {
+      {required String category}) async {
     try {
-      var data = await apiService.get(apis: feachMovies(catogry: catogry));
+      var data = await apiService.get(apis: fetchMovies(category: category));
       print('API Response: $data');
       List<MovieModel> movie = [];
       for (var i in data['data']) {

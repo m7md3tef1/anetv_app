@@ -5,5 +5,5 @@ import 'package:dartz/dartz.dart';
 
 abstract class AllMoviesHomeRepo {
   Future<Either<Failures, List<MovieModel>>> fetchMovie(
-      {required String catogry});
+      {required String category});
 }

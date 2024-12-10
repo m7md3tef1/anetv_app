@@ -37,7 +37,6 @@ class _SearchViewBodyState extends State<SearchViewBody> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 SizedBox(height: 16),
                 Text(
                   'Search Result',
