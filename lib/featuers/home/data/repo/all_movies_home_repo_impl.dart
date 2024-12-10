@@ -11,7 +11,12 @@ class AllMoviesHomeRepoImpl implements AllMoviesHomeRepo {
   const AllMoviesHomeRepoImpl(this.apiService);
   final String baseUrlAllMovies = 'https://alaanetstreaming.com/';
   String feachMovies({required String catogry}) {
-    return '${baseUrlAllMovies}api/v1/leb/?category=$catogry&type=movie';
+    print('${"baseUrlAllMovies"} ');
+    print(
+        'https://alaanetstreaming.com/api/v1/leb/?page=1&per_page=200&type=movie&category=action');
+    print(
+        '${baseUrlAllMovies}api/v1/leb/?page=1&per_page=200&category=$catogry&type=movie');
+    return '${baseUrlAllMovies}api/v1/leb/?page=1&per_page=200&category=$catogry&type=movie';
   }
 
   @override
@@ -19,12 +24,12 @@ class AllMoviesHomeRepoImpl implements AllMoviesHomeRepo {
       {required String catogry}) async {
     try {
       var data = await apiService.get(apis: feachMovies(catogry: catogry));
-     print('API Response: $data');
+      print('API Response: $data');
       List<MovieModel> movie = [];
       for (var i in data['data']) {
         movie.add(MovieModel.fromJson(i));
       }
-      print('Movie List: $movie');
+      // print('Movie List: $movie');
       return right(movie);
     } catch (e) {
       if (e is DioException) {

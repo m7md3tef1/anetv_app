@@ -38,7 +38,7 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
       params = WebKitWebViewControllerCreationParams(
         allowsInlineMediaPlayback: true,
         mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{
-          PlaybackMediaTypes.video
+          // PlaybackMediaTypes.video
         },
       );
     } else {

@@ -67,8 +67,10 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
                     extra: listCatogry[index].catogry);
               },
               child: Padding(
-                padding: const EdgeInsets.only(
+                padding: const EdgeInsetsDirectional.only(
                   bottom: 10,
+                  top: 10,
+                  start: 10
                 ),
                 child: CatogryItmeHome(
                   images: listCatogry[index].image,

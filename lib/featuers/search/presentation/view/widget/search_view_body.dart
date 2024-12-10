@@ -29,33 +29,33 @@ class _SearchViewBodyState extends State<SearchViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
+    return const CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CustomSearchTextField(),
-                const SizedBox(height: 16),
-                const Text(
+
+                SizedBox(height: 16),
+                Text(
                   'Search Result',
                   style: Styels.textStyle18,
                 ),
-                const SizedBox(height: 16),
-                Text(
-                  widget.catogry,
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                SizedBox(height: 10),
+                // Text(
+                //   widget.catogry,
+                //   style: const TextStyle(
+                //     fontSize: 20,
+                //     fontWeight: FontWeight.w600,
+                //   ),
+                // ),
               ],
             ),
           ),
         ),
-        const SliverFillRemaining(
+        SliverFillRemaining(
           child: MovesList(),
         ),
       ],

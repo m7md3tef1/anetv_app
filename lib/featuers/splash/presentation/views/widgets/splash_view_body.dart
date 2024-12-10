@@ -21,7 +21,7 @@ class _SplashViewBodyState extends State<SplashViewBody>
   @override
   void initState() {
     super.initState();
-    initSlidingAnimation();
+    // initSlidingAnimation();
     navigateToHome();
   }
 
@@ -34,17 +34,10 @@ class _SplashViewBodyState extends State<SplashViewBody>
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
-    double width = MediaQuery.of(context).size.width;
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        SizedBox(
-          height: height*.5,
-          child: Image.asset(AssetsData.logo)),
-        const SizedBox(height: 4),
-        SlidingText(slidingAnimation: slidingAnimation)
-      ],
+    return Center(
+      child: SizedBox(
+        height: height*.5,
+        child: Image.asset(AssetsData.logo)),
     );
   }
 
@@ -55,15 +48,15 @@ class _SplashViewBodyState extends State<SplashViewBody>
     });
   }
 
-  void initSlidingAnimation() {
-    animationController =
-        AnimationController(vsync: this, duration: const Duration(seconds: 2));
-    slidingAnimation =
-        Tween<Offset>(begin: const Offset(0, 10), end: Offset.zero)
-            .animate(animationController);
-    // slidingAnimation.addListener(() {
-    //   setState(() {});
-    // });
-    animationController.forward();
-  }
+  // void initSlidingAnimation() {
+  //   animationController =
+  //       AnimationController(vsync: this, duration: const Duration(seconds: 2));
+  //   slidingAnimation =
+  //       Tween<Offset>(begin: const Offset(0, 10), end: Offset.zero)
+  //           .animate(animationController);
+  //   // slidingAnimation.addListener(() {
+  //   //   setState(() {});
+  //   // });
+  //   animationController.forward();
+  // }
 }
