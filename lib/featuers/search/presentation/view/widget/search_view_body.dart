@@ -10,10 +10,10 @@ import 'moves_list.dart';
 class SearchViewBody extends StatefulWidget {
   const SearchViewBody({
     super.key,
-    required this.catogry,
+    required this.category,
   });
 
-  final String catogry;
+  final String category;
 
   @override
   State<SearchViewBody> createState() => _SearchViewBodyState();
@@ -23,7 +23,7 @@ class _SearchViewBodyState extends State<SearchViewBody> {
   @override
   void initState() {
     BlocProvider.of<AllMoviesCubit>(context)
-        .fetchMovie(catogry: widget.catogry);
+        .fetchMovie(catogry: widget.category);
     super.initState();
   }
 
