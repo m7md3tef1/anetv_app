@@ -50,7 +50,7 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
     // #enddocregion platform_features
 
     controller
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)..enableZoom(true)
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
@@ -124,7 +124,31 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
     return Scaffold(
       appBar:
           AppBar(title: Text('Watch Movie - ${widget.url}'), toolbarHeight: 0),
-      body: WebViewWidget(controller: _controller),
+      body: Column(
+        children: [
+          Expanded(child: WebViewWidget(controller: _controller)),
+          IconButton(
+            icon: const Icon(Icons.arrow_forward_ios),
+            onPressed: () async {
+              final messenger = ScaffoldMessenger.of(context);
+              if (await _controller.canGoForward()) {
+                await _controller.goForward();
+              } else {
+                messenger.showSnackBar(
+                  const SnackBar(content: Text('No forward history item')),
+                );
+                return;
+              }
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.replay),
+            onPressed: () {
+              _controller.reload();
+            },
+          ),
+        ],
+      ),
     );
   }
 }
