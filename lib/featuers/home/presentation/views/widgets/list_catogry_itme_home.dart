@@ -39,7 +39,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
     CatogryItmeModel(
         image: AssetsData.kidsFamily,
         title: 'Kids & Family',
-        catogry: 'Kids%20-%20Family',
+        catogry: 'kids-family',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.translatedTurkishSeries,

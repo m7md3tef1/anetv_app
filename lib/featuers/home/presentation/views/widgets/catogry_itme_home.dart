@@ -19,6 +19,7 @@ class CatogryItmeHome extends StatelessWidget {
       decoration: BoxDecoration(
         color: color == Colors.white ? Colors.black : Colors.white,
         borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.white,width: 2),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.5),

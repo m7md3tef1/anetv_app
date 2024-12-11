@@ -50,7 +50,13 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
     final WebViewController controller =
         WebViewController.fromPlatformCreationParams(params);
     // #enddocregion platform_features
-
+    print("object");
+    print(widget.url);
+    print(widget.url
+        .replaceAll("/view?usp=drivesdk",
+            "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+        .replaceAll("/view?usp=drive_link",
+            "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"));
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..getUserAgent()
@@ -64,7 +70,14 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
             // debugPrint('Page started loading: $url');
           },
           onPageFinished: (String url) {
-            // debugPrint('Page finished loading: $url');
+            //         _controller.evaluateJavascript('''
+            //   var videos = document.querySelectorAll('video');
+            //   videos.forEach(function(video) {
+            //     video.autoplay = true;
+            //     video.muted = true;  // If you want muted autoplay
+            //     video.play();
+            //   });
+            // ''');
           },
           onWebResourceError: (WebResourceError error) {
 //             debugPrint('''
@@ -100,13 +113,17 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
           );
         },
       )
-      ..loadRequest(Uri.parse(widget.url.replaceAll("/view?usp=drivesdk",
-              "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+      ..loadRequest(Uri.parse(widget.url
+              .replaceAll("/view?usp=drivesdk",
+                  "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+              .replaceAll("/view?usp=drive_link",
+                  "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
           // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
           ));
-    print("object");
-    print(widget.url.replaceAll("/view?usp=drivesdk",
-        "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"));
+    //   ..loadRequest(Uri.dataFromString('''
+    // <iframe src=\"https:\/\/vk.com\/video_ext.php?oid=-221539815&id=456239454&hash=44be08db4de388d7\" width=\"640\" height=\"360\" frameborder=\"0\" allowfullscreen=\"1\" allow=\"autoplay; encrypted-media; fullscreen; picture-in-picture\"><\/iframe>
+    // '''));
+
     // setBackgroundColor is not currently supported on macOS.
     if (kIsWeb || !Platform.isMacOS) {
       controller.setBackgroundColor(const Color(0x80000000));
@@ -123,21 +140,82 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
     _controller = controller;
   }
 
+  // Inject JavaScript to control video settings
+  void _injectVideoSettings() {
+    _controller.runJavaScript('''
+      var videos = document.querySelectorAll('video');
+      videos.forEach(function(video) {
+        video.autoplay = true;  // Enable autoplay
+        video.muted = true;     // Mute video
+        video.play();           // Play video
+      });
+    ''');
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: ActionHandler().handleArrowAndEnterAction(
-        child: Actions(
-          actions: <Type, Action<Intent>>{
-            CloseButtonIntent: CallbackAction<CloseButtonIntent>(
-              onInvoke: (intent) {
-                return Navigator.pop(context);
-              },
-            )
-          },
-          child: WebViewWidget(controller: _controller),
+    return ActionHandler().handleArrowAndEnterAction(
+      child: Actions(
+        actions: <Type, Action<Intent>>{
+          CloseButtonIntent: CallbackAction<CloseButtonIntent>(
+            onInvoke: (intent) {
+              return Navigator.pop(context);
+            },
+          )
+        },
+        child: Scaffold(
+          body: Actions(
+            actions: {
+              EnterButtonIntent: CallbackAction<EnterButtonIntent>(
+                  onInvoke: (EnterButtonIntent intent) {
+                return true;
+              }),
+            },
+            child: WebViewWidget(controller: _controller),
+          ),
         ),
       ),
     );
   }
 }
+
+//
+// class WatchingMovieView extends StatefulWidget {
+//   @override
+//   _WatchingMovieViewState createState() => _WatchingMovieViewState();
+// }
+//
+// class _WatchingMovieViewState extends State<WatchingMovieView> {
+//   VideoPlayerController? _controller;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//
+//     // Create a VideoPlayerController for the video you want to play.
+//     _controller = VideoPlayerController.network(
+//         'https://media.geeksforgeeks.org/wp-content/uploads/20230924220731/video.mp4');
+//
+//     // Initialize the VideoPlayerController.
+//     _controller!.initialize();
+//
+//     // Play the video.
+//     _controller!.play();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return AspectRatio(
+//       aspectRatio: _controller!.value.aspectRatio,
+//       child: VideoPlayer(_controller!),
+//     );
+//   }
+//
+//   @override
+//   void dispose() {
+//     super.dispose();
+//
+//     // Dispose of the VideoPlayerController.
+//     _controller!.dispose();
+//   }
+// }
