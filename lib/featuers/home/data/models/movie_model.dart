@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class MovieModel {
   final int id;
   final String title;
@@ -7,12 +9,14 @@ class MovieModel {
   final List<String> categories;
   final List<String> tags;
   final String type;
+  Color? color = Colors.transparent;
 
   MovieModel({
     required this.id,
     required this.title,
     required this.content,
     this.thumbnail,
+    this.color,
     required this.embedLink,
     required this.categories,
     required this.tags,

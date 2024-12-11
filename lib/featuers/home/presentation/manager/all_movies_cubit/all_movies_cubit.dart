@@ -7,6 +7,7 @@ part 'all_movies_state.dart';
 class AllMoviesCubit extends Cubit<AllMoviesState> {
   AllMoviesCubit(this.allMoviesHomeRepo) : super(AllMoviesInitial());
   final AllMoviesHomeRepo allMoviesHomeRepo;
+  // List<MovieModel>? allMovie;
   Future<void> fetchMovie({required String catogry}) async {
     emit(AllMoviesLoading());
     var result = await allMoviesHomeRepo.fetchMovie(category: catogry);
@@ -14,6 +15,7 @@ class AllMoviesCubit extends Cubit<AllMoviesState> {
       emit(AllMoviesFailure(failure.errorMessage));
     }, (allMovies) {
       print('Movies received: $allMovies');
+      // allMovie=allMovies;
       emit(AllMoviesSuccess(allMovies));
     });
   }

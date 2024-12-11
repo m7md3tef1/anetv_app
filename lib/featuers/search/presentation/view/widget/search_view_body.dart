@@ -5,6 +5,7 @@ import 'package:anetv/featuers/search/presentation/view/widget/custom_search_tex
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../home/data/models/catogry_itme_model.dart';
 import 'moves_list.dart';
 
 class SearchViewBody extends StatefulWidget {
@@ -13,7 +14,7 @@ class SearchViewBody extends StatefulWidget {
     required this.category,
   });
 
-  final String category;
+  final CatogryItmeModel category;
 
   @override
   State<SearchViewBody> createState() => _SearchViewBodyState();
@@ -23,31 +24,54 @@ class _SearchViewBodyState extends State<SearchViewBody> {
   @override
   void initState() {
     BlocProvider.of<AllMoviesCubit>(context)
-        .fetchMovie(catogry: widget.category);
+        .fetchMovie(catogry: widget.category.catogry);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return const CustomScrollView(
+    return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 16),
-                Text(
+                const SizedBox(height: 16),
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        blurRadius: 5,
+                        offset: const Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: Center(
+                      child: Text(
+                        widget.category.title,
+                        style: Styels.textStyle20,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
                   'Search Result',
                   style: Styels.textStyle18,
                 ),
-                SizedBox(height: 10)
+                const SizedBox(height: 10)
               ],
             ),
           ),
         ),
-        SliverFillRemaining(
+        const SliverFillRemaining(
           child: MovesList(),
         ),
       ],

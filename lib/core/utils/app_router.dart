@@ -5,6 +5,7 @@ import 'package:anetv/featuers/search/presentation/view/search_view.dart';
 import 'package:anetv/featuers/splash/presentation/views/splash_view.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../featuers/home/data/models/catogry_itme_model.dart';
 import '../../featuers/search/presentation/view/watching_movie_view.dart';
 
 abstract class AppRouter {
@@ -21,7 +22,7 @@ abstract class AppRouter {
     GoRoute(
       path: kSearchView,
       builder: (context, state) => SearchView(
-        catogry: state.extra as String,
+        catogry: state.extra as CatogryItmeModel,
       ),
     ),
     GoRoute(

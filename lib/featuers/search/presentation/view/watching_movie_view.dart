@@ -12,6 +12,8 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 // Import for iOS/macOS features.
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
+import '../../../home/presentation/manager/all_movies_cubit/actionHandeler.dart';
+
 class WatchingMovieView extends StatefulWidget {
   final String url;
 
@@ -51,7 +53,8 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..getUserAgent()..enableZoom(true)
+      ..getUserAgent()
+      ..enableZoom(true)
       ..setNavigationDelegate(
         NavigationDelegate(
           onProgress: (int progress) {
@@ -123,32 +126,17 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-          AppBar(title: Text('Watch Movie - ${widget.url}'), toolbarHeight: 0),
-      body: Column(
-        children: [
-          Expanded(child: WebViewWidget(controller: _controller)),
-          IconButton(
-            icon: const Icon(Icons.arrow_forward_ios),
-            onPressed: () async {
-              final messenger = ScaffoldMessenger.of(context);
-              if (await _controller.canGoForward()) {
-                await _controller.goForward();
-              } else {
-                messenger.showSnackBar(
-                  const SnackBar(content: Text('No forward history item')),
-                );
-                return;
-              }
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.replay),
-            onPressed: () {
-              _controller.reload();
-            },
-          ),
-        ],
+      body: ActionHandler().handleArrowAndEnterAction(
+        child: Actions(
+          actions: <Type, Action<Intent>>{
+            CloseButtonIntent: CallbackAction<CloseButtonIntent>(
+              onInvoke: (intent) {
+                return Navigator.pop(context);
+              },
+            )
+          },
+          child: WebViewWidget(controller: _controller),
+        ),
       ),
     );
   }

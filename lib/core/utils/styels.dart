@@ -16,7 +16,8 @@ abstract class Styels {
   );
   static const textStyle20 = TextStyle(
     fontSize: 20.0,
-    fontWeight: FontWeight.normal,
+    fontWeight: FontWeight.bold,
+    color: Colors.black
   );
 
   static const textStyle30 = TextStyle(
