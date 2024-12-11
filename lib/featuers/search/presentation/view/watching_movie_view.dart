@@ -164,7 +164,16 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
           )
         },
         child: Scaffold(
-          body: WebViewWidget(controller: _controller),
+          body: Actions(
+            actions: {
+              CloseButtonIntent: CallbackAction<CloseButtonIntent>(
+                onInvoke: (intent) {
+                  return Navigator.pop(context);
+                },
+              ),
+            },
+            child: WebViewWidget(controller: _controller),
+          ),
         ),
       ),
     );

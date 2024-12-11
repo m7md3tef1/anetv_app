@@ -38,7 +38,7 @@ dependencies:
   go_router: ^14.6.1
   google_fonts: ^6.2.1
   video_player: ^2.9.2
-  webview_flutter: ^4.4.1
+  webview_flutter:
   cached_network_image:
 
 #dependency_overrides:
