@@ -164,15 +164,7 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
           )
         },
         child: Scaffold(
-          body: Actions(
-            actions: {
-              EnterButtonIntent: CallbackAction<EnterButtonIntent>(
-                  onInvoke: (EnterButtonIntent intent) {
-                return true;
-              }),
-            },
-            child: WebViewWidget(controller: _controller),
-          ),
+          body: WebViewWidget(controller: _controller),
         ),
       ),
     );
