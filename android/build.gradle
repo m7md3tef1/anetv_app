@@ -1,3 +1,19 @@
+buildscript {
+    ext.kotlin_version = '1.9.23'
+    repositories {
+        maven { url 'https://plugins.gradle.org/m2/'}
+        google()
+        mavenCentral()
+    }
+
+    dependencies {
+        classpath 'com.google.gms:google-services:4.4.1'
+        classpath 'com.android.tools.build:gradle:7.3.1'
+        classpath 'com.google.firebase:firebase-messaging:23.4.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
 allprojects {
     repositories {
         google()

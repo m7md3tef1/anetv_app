@@ -13,8 +13,106 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import '../../../home/presentation/manager/all_movies_cubit/actionHandeler.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:media_kit_video/media_kit_video.dart';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+
+class WatchingMovieView extends StatefulWidget {
+  final String url;
+
+  WatchingMovieView({required this.url});
+
+  @override
+  _WatchingMovieViewState createState() => _WatchingMovieViewState();
+}
+
+class _WatchingMovieViewState extends State<WatchingMovieView> {
+  late VlcPlayerController _videoPlayerController;
+
+  @override
+  void initState() {
+    print(widget.url);
+    print(widget.url
+        .replaceAll("/view?usp=drivesdk",
+            "/preview?autoplay=1&key=1-wNT6W0_vHfh3wAeS8rrJ6w")
+        .replaceAll("/view?usp=drive_link",
+            "/preview?autoplay=1&key=1-wNT6W0_vHfh3wAeS8rrJ6w"));
+    print(
+        "https://drive.google.com/uc?id=1Uetbi3FWdEJMxcdzY9uLLRbSSqgDpIpI&export=download");
+    super.initState();
+    _videoPlayerController = VlcPlayerController.network(
+      widget.url
+          .replaceAll("/view?usp=drivesdk",
+          "/preview?autoplay=1&key=1-wNT6W0_vHfh3wAeS8rrJ6w")
+          .replaceAll("/view?usp=drive_link",
+          "/preview?autoplay=1&key=1-wNT6W0_vHfh3wAeS8rrJ6w"), // URL of the MKV file or local path
+      autoPlay: true,
+      options: VlcPlayerOptions(),
+    );
+    // _videoPlayerController.seekTo(Duration(seconds: 30));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _videoPlayerController.dispose(); // Don't forget to dispose
+  }
+
+  // Function to go back by a specific duration (e.g., 10 seconds)
+  void _seekBackwards() async {
+    Duration currentPosition = _videoPlayerController.value.position;
+    Duration newPosition = currentPosition - const Duration(seconds: 10);
+
+    if (newPosition < Duration.zero) {
+      newPosition = Duration.zero; // Prevent seeking to negative time
+    }
+
+    _videoPlayerController.seekTo(newPosition);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ActionHandler().handleArrowAndEnterAction(
+      child: Actions(
+        actions: <Type, Action<Intent>>{
+          CloseButtonIntent: CallbackAction<CloseButtonIntent>(
+            onInvoke: (intent) {
+              return Navigator.pop(context);
+            },
+          ),
+          RightButtonIntent: CallbackAction<RightButtonIntent>(
+            onInvoke: (intent) {
+              return _videoPlayerController.seekTo(const Duration(seconds: 10));
+            },
+          ),
+          LeftButtonIntent: CallbackAction<LeftButtonIntent>(
+            onInvoke: (intent) {
+              return _seekBackwards();
+            },
+          ),
+          EnterButtonIntent: CallbackAction<EnterButtonIntent>(
+            onInvoke: (intent) {
+              return _videoPlayerController.play();
+            },
+          ),
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('MKV Video Player'),
+            // toolbarHeight: 0,
+          ),
+          body: Center(
+            child: VlcPlayer(
+              controller: _videoPlayerController,
+              aspectRatio: 16 / 9, // Adjust the aspect ratio if needed
+              placeholder: Center(child: CircularProgressIndicator()),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 // class WatchingMovieView extends StatefulWidget {
 //   final String url;
@@ -219,7 +317,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 //         'const video = document.querySelector("video"); if (video) video.currentTime = $seconds;');
 //   }
 // }
-
+/*
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -296,7 +394,7 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     );
   }
 }
-
+*/
 /*
 class WatchingMovieView extends StatefulWidget {
   final String url;
