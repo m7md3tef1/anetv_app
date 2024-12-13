@@ -40,7 +40,12 @@ dependencies:
   video_player: ^2.9.2
   webview_flutter:
   cached_network_image:
-  flutter_vlc_player:
+  flutter_vlc_player: ^7.1.0
+  firebase_core: ^2.10.0
+  firebase_storage: ^11.0.0
+  firebase_auth: ^4.2.1
+  cloud_firestore:
+  flutter_ffmpeg: ^0.4.0
 
 #dependency_overrides:
 

@@ -4,12 +4,19 @@ import 'package:anetv/core/utils/service_locator.dart';
 import 'package:anetv/featuers/home/data/repo/all_movies_home_repo_impl.dart';
 import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/actionHandeler.dart';
 import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/all_movies_cubit.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'firebase_options.dart';
 // import 'package:media_kit/media_kit.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   setup();
   // MediaKit.ensureInitialized();
   runApp(const MyApp());
