@@ -13,6 +13,7 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import '../../../home/presentation/manager/all_movies_cubit/actionHandeler.dart';
+import 'package:better_player/better_player.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_vlc_player/flutter_vlc_player.dart';
@@ -21,6 +22,7 @@ import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
+/*
 final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
 
 Future<void> transcodeMKV(String inputPath, String outputPath) async {
@@ -316,29 +318,91 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
             },
           ),
         },
-        child: InkWell(
-          onTap: () async {
-            print('objectsssssssssssssss');
-            await convertMKVtoMP4(googleDriveFileId);
-            print(('Download & Convert MKV to MP4'));
-          },
-          child: Scaffold(
-            appBar: AppBar(
-              title: Text('MKV Video Player'),
-              // toolbarHeight: 0,
-            ),
-            body: VlcPlayer(
-              controller: _videoPlayerController,
-              aspectRatio: 16 / 9, // Adjust the aspect ratio if needed
-              placeholder: Center(child: CircularProgressIndicator()),
-            ),
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('MKV Video Player'),
+            // toolbarHeight: 0,
+          ),
+          body: Column(
+            children: [
+              VlcPlayer(
+                controller: _videoPlayerController,
+                aspectRatio: 16 / 9, // Adjust the aspect ratio if needed
+                placeholder: Center(child: CircularProgressIndicator()),
+              ),
+              InkWell(
+                  onTap: () async {
+                    print('objectsssssssssssssss');
+                    await convertMKVtoMP4(googleDriveFileId);
+                    print(('Download & Convert MKV to MP4'));
+                  },
+                  child: Text("data"))
+            ],
           ),
         ),
       ),
     );
   }
 }
+*/
+class WatchingMovieView extends StatefulWidget {
+  final String url;
+//
+  const WatchingMovieView({super.key, required this.url});
 
+  @override
+  State<WatchingMovieView> createState() => _WatchingMovieViewState();
+}
+
+class _WatchingMovieViewState extends State<WatchingMovieView> {
+  late BetterPlayerController _betterPlayerController;
+
+  @override
+  void initState() {
+    super.initState();
+    _betterPlayerController = BetterPlayerController(
+      const BetterPlayerConfiguration(
+        aspectRatio: 16 / 9,
+        autoPlay: true,
+      ),
+    );
+
+    // Replace with your direct download link
+    String videoUrl =
+        "https://drive.google.com/uc?export=download&id=1DVjy2aY7ckmUzVZMgaLdoC9cbMFbIJ9V";
+    _betterPlayerController.setupDataSource(
+      BetterPlayerDataSource(
+        BetterPlayerDataSourceType.network,
+        videoUrl,
+        liveStream: true,
+        videoFormat: BetterPlayerVideoFormat.other,
+        cacheConfiguration: const BetterPlayerCacheConfiguration(
+          useCache: true,
+          maxCacheSize: 100 * 1024 * 1024, // Cache up to 100MB
+          maxCacheFileSize: 50 * 1024 * 1024, // Max single file cache size 50MB
+        ),
+      ),
+    );
+  }
+
+  // final String videoUrl = "https://drive.google.com/file/d/1PnhdO3hSOS_EipQXZbBRoKVVSNRyk8jG/preview"; // Replace with your MKV file URL
+  final String videoUrl =
+      "https://drive.google.com/file/d/1DVjy2aY7ckmUzVZMgaLdoC9cbMFbIJ9V/view?usp=drivesdk";
+  // Replace with your MKV file URL
+  @override
+  Widget build(BuildContext context) {
+    print(widget.url
+        .replaceAll("/view?usp=drivesdk",
+            "/preview?autoplay=1&key=1-wNT6W0_vHfh3wAeS8rrJ6w")
+        .replaceAll("/view?usp=drive_link",
+            "/preview?autoplay=1&key=1-wNT6W0_vHfh3wAeS8rrJ6w"));
+    return Scaffold(
+        appBar: AppBar(title: Text("MKV Video Player")),
+        body: BetterPlayer(
+          controller: _betterPlayerController,
+        ));
+  }
+}
 // class WatchingMovieView extends StatefulWidget {
 //   final String url;
 //

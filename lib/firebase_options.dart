@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '32245459935',
     projectId: 'anetv-f7dd9',
     storageBucket: 'anetv-f7dd9.firebasestorage.app',
-    iosBundleId: 'com.example.anetv',
+    iosBundleId: 'com.example.app',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '32245459935',
     projectId: 'anetv-f7dd9',
     storageBucket: 'anetv-f7dd9.firebasestorage.app',
-    iosBundleId: 'com.example.anetv',
+    iosBundleId: 'com.example.app',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
