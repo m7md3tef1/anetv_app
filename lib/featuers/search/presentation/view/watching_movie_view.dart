@@ -202,8 +202,8 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
         "https://drive.google.com/uc?export=download&id=1Uetbi3FWdEJMxcdzY9uLLRbSSqgDpIpI");
     super.initState();
     _videoPlayerController = VlcPlayerController.network(
-      "https://drive.google.com/file/d/1PnhdO3hSOS_EipQXZbBRoKVVSNRyk8jG/preview",
-      hwAcc: HwAcc.auto,
+      "https://drive.google.com/uc?export=download&id=1_D_aes6p5rLn-gUZXYTkGkrhKJFx3NU4",
+      // hwAcc: HwAcc.auto,
       autoInitialize: true,
       // options: VlcPlayerOptions(
       //   advanced: VlcAdvancedOptions([
@@ -238,8 +238,8 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     print(
         "https://drive.google.com/file/d/1PnhdO3hSOS_EipQXZbBRoKVVSNRyk8jG/preview");
     // _videoPlayerController = VlcPlayerController.network(
-    //   "https://drive.google.com/file/d/1PnhdO3hSOS_EipQXZbBRoKVVSNRyk8jG/preview",
-    //   hwAcc: HwAcc.auto,
+    //   "https://drive.google.com/uc?export=download&id=1_D_aes6p5rLn-gUZXYTkGkrhKJFx3NU4",
+
     //   autoInitialize: true,
     //   options: VlcPlayerOptions(
     //     advanced: VlcAdvancedOptions([
@@ -330,13 +330,13 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
                 aspectRatio: 16 / 9, // Adjust the aspect ratio if needed
                 placeholder: Center(child: CircularProgressIndicator()),
               ),
-              InkWell(
-                  onTap: () async {
-                    print('objectsssssssssssssss');
-                    await convertMKVtoMP4(googleDriveFileId);
-                    print(('Download & Convert MKV to MP4'));
-                  },
-                  child: Text("data"))
+              // InkWell(
+              //     onTap: () async {
+              //       print('objectsssssssssssssss');
+              //       await convertMKVtoMP4(googleDriveFileId);
+              //       print(('Download & Convert MKV to MP4'));
+              //     },
+              //     child: Text("data"))
             ],
           ),
         ),
@@ -345,6 +345,7 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
   }
 }
 */
+/*
 class WatchingMovieView extends StatefulWidget {
   final String url;
 //
@@ -356,30 +357,79 @@ class WatchingMovieView extends StatefulWidget {
 
 class _WatchingMovieViewState extends State<WatchingMovieView> {
   late BetterPlayerController _betterPlayerController;
+  Future<void> storeVideoUrlInFirestore(String downloadUrl) async {
+    try {
+      // Reference to Firestore collection
+      CollectionReference videosCollection = FirebaseFirestore.instance.collection('videos');
+
+      // Add the video URL to Firestore
+      await videosCollection.add({'videoUrl': downloadUrl});
+
+      print("Video URL saved to Firestore.");
+    } catch (e) {
+      print("Error saving video URL to Firestore: $e");
+    }
+  }
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  // Store Google Drive video link
+  Future<void> storeVideoLink(String videoLink) async {
+    try {
+      await _firestore.collection('videos').add({
+        'videoUrl': videoLink, // Storing Google Drive video URL
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      print("Video link stored successfully");
+      _firestore.collection('videos').get().then((querySnapshot) {
+        print('ddddddddddddddddddddddddddddddddddddd');
+        print(querySnapshot);
+        for (var doc in querySnapshot.docs) {
+          String videoUrl = doc['videoUrl'];
+          print('ddddddddddddddddddddddddddddddddddddd');
+          print(videoUrl);
+          // Get stored Google Drive URL
+          VlcPlayerController.network(
+              videoUrl); // Set the Google Drive URL to the player
+          setState(() {
+            // Force rebuild to use the updated URL
+          });
+        }
+      }).catchError((e) {
+        print("Error retrieving video link: $e");
+      });
+    } catch (e) {
+      print("Error storing video link: $e");
+    }
+  }
 
   @override
   void initState() {
     super.initState();
+
+    // Example Google Drive link (replace with your actual link)
+
+
     _betterPlayerController = BetterPlayerController(
       const BetterPlayerConfiguration(
         aspectRatio: 16 / 9,
         autoPlay: true,
+        looping: false,
       ),
     );
 
     // Replace with your direct download link
-    String videoUrl =
-        "https://drive.google.com/uc?export=download&id=1DVjy2aY7ckmUzVZMgaLdoC9cbMFbIJ9V";
+    String videoUrl = widget.url;
     _betterPlayerController.setupDataSource(
       BetterPlayerDataSource(
         BetterPlayerDataSourceType.network,
-        videoUrl,
+        "https://drive.google.com/uc?export=download&id=1_D_aes6p5rLn-gUZXYTkGkrhKJFx3NU4",
         liveStream: true,
-        videoFormat: BetterPlayerVideoFormat.other,
+        // videoFormat: BetterPlayerVideoFormat.other,
         cacheConfiguration: const BetterPlayerCacheConfiguration(
           useCache: true,
-          maxCacheSize: 100 * 1024 * 1024, // Cache up to 100MB
-          maxCacheFileSize: 50 * 1024 * 1024, // Max single file cache size 50MB
+          // maxCacheSize: 100 * 1024 * 1024, // Cache up to 100MB
+          // maxCacheFileSize: 50 * 1024 * 1024, // Max single file cache size 50MB
         ),
       ),
     );
@@ -396,216 +446,206 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
             "/preview?autoplay=1&key=1-wNT6W0_vHfh3wAeS8rrJ6w")
         .replaceAll("/view?usp=drive_link",
             "/preview?autoplay=1&key=1-wNT6W0_vHfh3wAeS8rrJ6w"));
+    print(
+        "https://drive.google.com/uc?id=19Pfpscu_0CSWBkB2B7LNAHB0N2JPLqPE&export=download");
     return Scaffold(
         appBar: AppBar(title: Text("MKV Video Player")),
-        body: BetterPlayer(
-          controller: _betterPlayerController,
+        body: Column(
+          children: [
+            BetterPlayer(
+              controller: _betterPlayerController,
+            ),
+            InkWell(
+                onTap: ()async {
+
+                  String googleDriveLink = 'https://drive.google.com/file/d/19Pfpscu_0CSWBkB2B7LNAHB0N2JPLqPE/preview';
+                  //
+                  // // Store the link in Firestore
+               await   storeVideoLink(googleDriveLink);
+                },
+                child: Text("data"))
+          ],
         ));
   }
 }
-// class WatchingMovieView extends StatefulWidget {
-//   final String url;
-//
-//   const WatchingMovieView({super.key, required this.url});
-//
-//   @override
-//   WatchingMovieViewState createState() => WatchingMovieViewState();
-// }
-//
-// class WatchingMovieViewState extends State<WatchingMovieView> {
-//   // late VideoPlayerController _controller;
-//   // late WebViewController _webViewController;
-//   bool isIframe = false;
-//
-//   late final WebViewController _controller;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//
-//     // #docregion platform_features
-//     late final PlatformWebViewControllerCreationParams params;
-//
-//     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-//       params = WebKitWebViewControllerCreationParams(
-//         // allowsInlineMediaPlayback: true,
-//         // mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{
-//         //   // PlaybackMediaTypes.video
-//         // },
-//       );
-//     } else {
-//       params = const PlatformWebViewControllerCreationParams();
-//     }
-//
-//      _controller =
-//         WebViewController.fromPlatformCreationParams(params);
-//     // #enddocregion platform_features
-//     print("object");
-//     print(widget.url);
-//     print(widget.url
-//         .replaceAll("/view?usp=drivesdk",
-//             "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-//         .replaceAll("/view?usp=drive_link",
-//             "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"));
-//     _controller
-//       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-//       ..getUserAgent()
-//       // ..runJavaScript(
-//       //     'const video = document.querySelector("video"); if (video) video.play();')
-//       ..enableZoom(true)
-//       ..setNavigationDelegate(
-//         NavigationDelegate(
-//           onProgress: (int progress) {
-//             // debugPrint('WebView is loading (progress : $progress%)');
-//           },
-//           onPageStarted: (String url) {
-//             // debugPrint('Page started loading: $url');
-//           },
-//           onPageFinished: (String url) {
-//             //         _controller.evaluateJavascript('''
-//             //   var videos = document.querySelectorAll('video');
-//             //   videos.forEach(function(video) {
-//             //     video.autoplay = true;
-//             //     video.muted = true;  // If you want muted autoplay
-//             //     video.play();
-//             //   });
-//             // ''');
-//           },
-//           onWebResourceError: (WebResourceError error) {
-// //             debugPrint('''
-// // Page resource error:
-// //   code: ${error.errorCode}
-// //   description: ${error.description}
-// //   errorType: ${error.errorType}
-// //   isForMainFrame: ${error.isForMainFrame}
-// //           ''');
-//           },
-//           onNavigationRequest: (NavigationRequest request) {
-//             if (request.url.startsWith('https://drive.google.com/')) {
-//               debugPrint('blocking navigation to ${request.url}');
-//               return NavigationDecision.prevent;
-//             }
-//             debugPrint('allowing navigation to ${request.url}');
-//             return NavigationDecision.navigate;
-//           },
-//           onHttpError: (HttpResponseError error) {
-//             // debugPrint('Error occurred on page: ${error.response?.statusCode}');
-//           },
-//           onUrlChange: (UrlChange change) {
-//             // debugPrint('url change to ${change.url}');
-//           },
-//           onHttpAuthRequest: (HttpAuthRequest request) {},
-//         ),
-//       )
-//       ..addJavaScriptChannel(
-//         'Toaster',
-//         onMessageReceived: (JavaScriptMessage message) {
-//           ScaffoldMessenger.of(context).showSnackBar(
-//             SnackBar(content: Text(message.message)),
-//           );
-//         },
-//       )
-//       ..loadRequest(Uri.parse(widget.url.replaceAll("/view?usp=drivesdk",
-//           "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-//           .replaceAll("/view?usp=drive_link",
-//           "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-//           // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-//           ));
-//     //   ..loadRequest(Uri.dataFromString('''
-//     // <iframe src=\"https:\/\/vk.com\/video_ext.php?oid=-221539815&id=456239454&hash=44be08db4de388d7\" width=\"640\" height=\"360\" frameborder=\"0\" allowfullscreen=\"1\" allow=\"autoplay; encrypted-media; fullscreen; picture-in-picture\"><\/iframe>
-//     // '''));
-//
-//     // setBackgroundColor is not currently supported on macOS.
-//     if (kIsWeb || !Platform.isMacOS) {
-//       _controller.setBackgroundColor(const Color(0x80000000));
-//     }
-//
-//     // #docregion platform_features
-//     if (_controller.platform is AndroidWebViewController) {
-//       AndroidWebViewController.enableDebugging(true);
-//       (_controller.platform as AndroidWebViewController)
-//           .setMediaPlaybackRequiresUserGesture(false);
-//     }
-//     // #enddocregion platform_features
-//
-//     _controller ;
-//   }
-//
-//   // Inject JavaScript to control video settings
-//   void _injectVideoSettings() {
-//     _controller.runJavaScript('''
-//       var videos = document.querySelectorAll('video');
-//       videos.forEach(function(video) {
-//         video.autoplay = true;  // Enable autoplay
-//         video.muted = true;     // Mute video
-//         video.play();           // Play video
-//       });
-//     ''');
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return ActionHandler().handleArrowAndEnterAction(
-//       child: Actions(
-//         actions: <Type, Action<Intent>>{
-//           CloseButtonIntent: CallbackAction<CloseButtonIntent>(
-//             onInvoke: (intent) {
-//               return Navigator.pop(context);
-//             },
-//           )
-//         },
-//         child: Scaffold(
-//           body: Actions(
-//             actions: {
-//               CloseButtonIntent: CallbackAction<CloseButtonIntent>(
-//                 onInvoke: (intent) {
-//                   return Navigator.pop(context);
-//                 },
-//               ),
-//             },
-//             child: Column(
-//               children: [
-//                 Expanded(child: WebViewWidget(controller: _controller)),
-//                 ElevatedButton(
-//                   onPressed: playVideo,
-//                   child: Text("Play"),
-//                 ),
-//                 Row(
-//                   children: [
-//                     ElevatedButton(
-//                       onPressed: pauseVideo,
-//                       child: Text("Pause"),
-//                     ),
-//                   ],
-//                 ),
-//                 ElevatedButton(
-//                   onPressed: () => seekTo(30), // Seek to 30 seconds
-//                   child: Text("Seek to 30s"),
-//                 ),
-//               ],
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-//
-//   // You can call these functions to control the video
-//   void playVideo() async{
-//   await  _controller.runJavaScript(
-//         'const video = document.querySelector("video"); if (video) video.play();');
-//   }
-//
-//   void pauseVideo() async{
-//     await _controller.runJavaScript(
-//         'const video = document.querySelector("video"); if (video) video.pause();');
-//   }
-//
-//   void seekTo(double seconds) async{
-//     await _controller.runJavaScript(
-//         'const video = document.querySelector("video"); if (video) video.currentTime = $seconds;');
-//   }
-// }
+*/
+class WatchingMovieView extends StatefulWidget {
+  final String url;
+
+  const WatchingMovieView({super.key, required this.url});
+
+  @override
+  WatchingMovieViewState createState() => WatchingMovieViewState();
+}
+
+class WatchingMovieViewState extends State<WatchingMovieView> {
+  // late VideoPlayerController _controller;
+  // late WebViewController _webViewController;
+  bool isIframe = false;
+
+  late final WebViewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // #docregion platform_features
+    late final PlatformWebViewControllerCreationParams params;
+
+    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+      params = WebKitWebViewControllerCreationParams(
+        // allowsInlineMediaPlayback: true,
+        // mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{
+        //   // PlaybackMediaTypes.video
+        // },
+      );
+    } else {
+      params = const PlatformWebViewControllerCreationParams();
+    }
+
+     _controller =
+        WebViewController.fromPlatformCreationParams(params);
+    // #enddocregion platform_features
+    print("object");
+    print(widget.url);
+    print(widget.url
+        .replaceAll("/view?usp=drivesdk",
+            "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+        .replaceAll("/view?usp=drive_link",
+            "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"));
+    _controller
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..getUserAgent()
+      // ..runJavaScript(
+      //     'const video = document.querySelector("video"); if (video) video.play();')
+      ..enableZoom(true)
+      ..setNavigationDelegate(
+        NavigationDelegate(
+          onProgress: (int progress) {
+            // debugPrint('WebView is loading (progress : $progress%)');
+          },
+          onPageStarted: (String url) {
+            // debugPrint('Page started loading: $url');
+          },
+          onPageFinished: (String url) {
+            //         _controller.evaluateJavascript('''
+            //   var videos = document.querySelectorAll('video');
+            //   videos.forEach(function(video) {
+            //     video.autoplay = true;
+            //     video.muted = true;  // If you want muted autoplay
+            //     video.play();
+            //   });
+            // ''');
+          },
+          onWebResourceError: (WebResourceError error) {
+//             debugPrint('''
+// Page resource error:
+//   code: ${error.errorCode}
+//   description: ${error.description}
+//   errorType: ${error.errorType}
+//   isForMainFrame: ${error.isForMainFrame}
+//           ''');
+          },
+          onNavigationRequest: (NavigationRequest request) {
+            if (request.url.startsWith('https://drive.google.com/')) {
+              debugPrint('blocking navigation to ${request.url}');
+              return NavigationDecision.prevent;
+            }
+            debugPrint('allowing navigation to ${request.url}');
+            return NavigationDecision.navigate;
+          },
+          onHttpError: (HttpResponseError error) {
+            // debugPrint('Error occurred on page: ${error.response?.statusCode}');
+          },
+          onUrlChange: (UrlChange change) {
+            // debugPrint('url change to ${change.url}');
+          },
+          onHttpAuthRequest: (HttpAuthRequest request) {},
+        ),
+      )
+      ..addJavaScriptChannel(
+        'Toaster',
+        onMessageReceived: (JavaScriptMessage message) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(message.message)),
+          );
+        },
+      )
+      ..loadRequest(Uri.parse(widget.url.replaceAll("/view?usp=drivesdk",
+          "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+          .replaceAll("/view?usp=drive_link",
+          "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+          // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+          ));
+    //   ..loadRequest(Uri.dataFromString('''
+    // <iframe src=\"https:\/\/vk.com\/video_ext.php?oid=-221539815&id=456239454&hash=44be08db4de388d7\" width=\"640\" height=\"360\" frameborder=\"0\" allowfullscreen=\"1\" allow=\"autoplay; encrypted-media; fullscreen; picture-in-picture\"><\/iframe>
+    // '''));
+
+    // setBackgroundColor is not currently supported on macOS.
+    if (kIsWeb || !Platform.isMacOS) {
+      _controller.setBackgroundColor(const Color(0x80000000));
+    }
+
+    // #docregion platform_features
+    if (_controller.platform is AndroidWebViewController) {
+      AndroidWebViewController.enableDebugging(true);
+      (_controller.platform as AndroidWebViewController)
+          .setMediaPlaybackRequiresUserGesture(false);
+    }
+    // #enddocregion platform_features
+
+    _controller ;
+  }
+
+  // Inject JavaScript to control video settings
+  void _injectVideoSettings() {
+    _controller.runJavaScript('''
+      var videos = document.querySelectorAll('video');
+      videos.forEach(function(video) {
+        video.autoplay = true;  // Enable autoplay
+        video.muted = true;     // Mute video
+        video.play();           // Play video
+      });
+    ''');
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ActionHandler().handleArrowAndEnterAction(
+      child: Actions(
+        actions: <Type, Action<Intent>>{
+          CloseButtonIntent: CallbackAction<CloseButtonIntent>(
+            onInvoke: (intent) {
+              return Navigator.pop(context);
+            },
+          )
+        },
+        child: MouseRegion(
+          cursor: SystemMouseCursors.click,
+          child: Scaffold(
+            body: Expanded(child: WebViewWidget(controller: _controller)),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // You can call these functions to control the video
+  void playVideo() async{
+  await  _controller.runJavaScript(
+        'const video = document.querySelector("video"); if (video) video.play();');
+  }
+
+  void pauseVideo() async{
+    await _controller.runJavaScript(
+        'const video = document.querySelector("video"); if (video) video.pause();');
+  }
+
+  void seekTo(double seconds) async{
+    await _controller.runJavaScript(
+        'const video = document.querySelector("video"); if (video) video.currentTime = $seconds;');
+  }
+}
 /*
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -626,8 +666,6 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     super.initState();
     print("object");
     print(
-        "https://mega.nz/embed/kZAAXJIR#rvaqBncAmSXvXrZJ8ArNSAqK8LPgfDJxMGlz42MfziI!1a");
-    print(
         "https://drive.google.com/uc?export=download&id=1Uetbi3FWdEJMxcdzY9uLLRbSSqgDpIpI");
     print(
         "https://drive.google.com/uc?export=download&id=1zpIBzji4T-lmOp_Y4iAlXGkK6QNI8Sw4");
@@ -638,13 +676,16 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     // print(
     //     "https://drive.google.com/uc?export=download&id=16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1");
     // Replace the link below with your modified Google Drive link
+    //https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w
     _controller = VideoPlayerController.network(
-        "https://drive.google.com/file/d/1r-wpwMeCRl51Ik0pIP_yT68vwf5wuFS0")
+    "https://drive.google.com/uc?export=download&id=1_D_aes6p5rLn-gUZXYTkGkrhKJFx3NU4")
       ..initialize().then((_) {
-        _controller.play();
+
         // _controller.seekTo(Duration(seconds: 10));
         // Ensure the first frame is shown
-        setState(() {});
+        setState(() {
+          _controller.play();
+        });
       });
   }
 
