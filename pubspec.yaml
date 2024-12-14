@@ -45,7 +45,7 @@ dependencies:
   firebase_storage: ^11.0.0
   firebase_auth: ^4.2.1
   cloud_firestore:
-  flutter_ffmpeg: ^0.4.0
+#  flutter_ffmpeg: ^0.4.0
   better_player:
   visibility_detector:
 #dependency_overrides:
