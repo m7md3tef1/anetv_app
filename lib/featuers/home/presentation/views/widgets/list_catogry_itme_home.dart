@@ -35,7 +35,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
         image: AssetsData.movTvSeriesies,
         title: 'Tv-series',
         color: Colors.black,
-        catogry: 'tv-series'),
+        catogry: 'TV%20Shows'),
     CatogryItmeModel(
         image: AssetsData.kidsFamily,
         title: 'Kids & Family',
@@ -44,22 +44,22 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
     CatogryItmeModel(
         image: AssetsData.translatedTurkishSeries,
         title: 'مسلسلات تركية مترجمة',
-        catogry: 'تركي-مترجم',
+        catogry: '%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA%20%D8%AA%D8%B1%D9%83%D9%8A%D8%A9%20%D9%85%D8%AA%D8%B1%D8%AC%D9%85%D8%A9',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.dubbedTurkishSeries,
         title: 'مسلسلات تركية مدبلجة',
-        catogry: 'تركي-مدبلج',
+        catogry: '%D8%AA%D8%B1%D9%83%D9%8A-%D9%85%D8%AF%D8%A8%D9%84%D8%AC',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.arabicSeries,
         title: 'مسلسلات عربية',
-        catogry: 'مسلسلات-عربية',
+        catogry: '%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA%20%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.cartoonDubbed,
         title: 'كرتون مدبلج',
-        catogry: 'رسوم-اطفال-مدبلجة',
+        catogry: '%D8%B1%D8%B3%D9%88%D9%85-%D9%85%D8%AF%D8%A8%D9%84%D8%AC%D8%A9',
         color: Colors.black),
   ];
   var i = 0;
