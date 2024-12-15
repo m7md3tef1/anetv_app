@@ -13,12 +13,12 @@ class AllMoviesHomeRepoImpl implements AllMoviesHomeRepo {
   String fetchMovies({required String category}) {
     print('$category ');
     print('${"baseUrlAllMovies"} ');
- print(category == "TV%20Shows"
-     ? "https://alaanetstreaming.com/api/series/"
-     : '${baseUrlAllMovies}api/v1/leb/?page=1&category=$category');
-    return category == "TV%20Shows"
-        ? "https://alaanetstreaming.com/api/series/"
-        : '${baseUrlAllMovies}api/v1/leb/?page=1&category=$category';
+ print(category.toString().contains("https://alaanetstreaming.com/")
+     ? category
+     : '${baseUrlAllMovies}api/v1/leb/?page=1&category=$category&type=movie');
+    return category.toString().contains("https://alaanetstreaming.com/")
+        ? category
+        : '${baseUrlAllMovies}api/v1/leb/?page=1&category=$category&type=movie';
   }
 
   @override
