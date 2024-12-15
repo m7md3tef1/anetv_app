@@ -1,6 +1,8 @@
 import 'package:anetv/featuers/home/data/models/movie_model.dart';
-import 'package:anetv/featuers/home/data/repo/all_movies_home_repo.dart';
+// import 'package:anetv/featuers/home/data/repo/all_movies_home_repo.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../data/repo/all_movies_home_repo.dart';
 
 part 'all_movies_state.dart';
 
@@ -14,7 +16,7 @@ class AllMoviesCubit extends Cubit<AllMoviesState> {
     result.fold((failure) {
       emit(AllMoviesFailure(failure.errorMessage));
     }, (allMovies) {
-      print('Movies received: $allMovies');
+      // print('Movies received: $allMovies');
       // allMovie=allMovies;
       emit(AllMoviesSuccess(allMovies));
     });

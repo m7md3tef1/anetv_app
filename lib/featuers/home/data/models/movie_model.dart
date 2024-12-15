@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 class MovieModel {
   final int id;
-  final String title;
-  final String content;
+  final String? title;
+  final String? content;
   final String? thumbnail;
   final String embedLink;
   final List<String> categories;
-  final List<String> tags;
-  final String type;
+   final List<String>? tags;
+  final String? type;
   Color? color = Colors.transparent;
 
   MovieModel({
@@ -19,7 +19,7 @@ class MovieModel {
     this.color,
     required this.embedLink,
     required this.categories,
-    required this.tags,
+      required this.tags,
     required this.type,
   });
 
@@ -27,14 +27,14 @@ class MovieModel {
   factory MovieModel.fromJson(Map<String, dynamic> json) {
     return MovieModel(
       id: json['id'],
-      title: json['title'],
+      title: json['title']?? '',
       content: json['content'] ?? '',
       thumbnail: json['thumbnail'] != null && json['thumbnail'] != false
           ? json['thumbnail']
           : null,
-      embedLink: json['embed_link'],
+      embedLink: json['embed_link']?? '',
       categories: List<String>.from(json['categories']),
-      tags: List<String>.from(json['tags']),
+        tags: List<String>.from(json['tags']??[""]),
       type: json['type'],
     );
   }
@@ -48,7 +48,7 @@ class MovieModel {
       'thumbnail': thumbnail,
       'embed_link': embedLink,
       'categories': categories,
-      'tags': tags,
+       'tags': tags,
       'type': type,
     };
   }

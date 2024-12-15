@@ -173,7 +173,7 @@ class _MovesListState extends State<MovesList>  with SingleTickerProviderStateMi
                                       child: Padding(
                                         padding: const EdgeInsets.all(5.0),
                                         child: Text(
-                                          allMoves[index].title,
+                                          allMoves[index].title!,
                                           textAlign: TextAlign.start,
                                           maxLines: 5,
                                           style: TextStyle(
@@ -224,7 +224,7 @@ class _MovesListState extends State<MovesList>  with SingleTickerProviderStateMi
               ),
             );
           } else if (state is AllMoviesFailure) {
-            // print(state.errorMassage);
+            print(state.errorMassage);
             return Center(child: Text("No Videos Yet"));
           } else {
             return const Center(child: CircularProgressIndicator());
