@@ -11,11 +11,11 @@ class AllMoviesHomeRepoImpl implements AllMoviesHomeRepo {
   const AllMoviesHomeRepoImpl(this.apiService);
   final String baseUrlAllMovies = 'https://alaanetstreaming.com/';
   String fetchMovies({required String category}) {
-    print('$category ');
-    print('${"baseUrlAllMovies"} ');
- print(category.toString().contains("https://alaanetstreaming.com/")
-     ? category
-     : '${baseUrlAllMovies}api/v1/leb/?page=1&category=$category&type=movie');
+    // print('$category ');
+    // print('${"baseUrlAllMovies"} ');
+    // print(category.toString().contains("https://alaanetstreaming.com/")
+    //     ? category
+    //     : '${baseUrlAllMovies}api/v1/leb/?page=1&category=$category&type=movie');
     return category.toString().contains("https://alaanetstreaming.com/")
         ? category
         : '${baseUrlAllMovies}api/v1/leb/?page=1&category=$category&type=movie';
