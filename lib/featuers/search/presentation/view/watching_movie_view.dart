@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:video_player/video_player.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,11 +14,11 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import '../../../home/presentation/manager/all_movies_cubit/actionHandeler.dart';
-import 'package:better_player/better_player.dart';
+// import 'package:better_player/better_player.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
@@ -494,17 +495,16 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
 
     if (WebViewPlatform.instance is WebKitWebViewPlatform) {
       params = WebKitWebViewControllerCreationParams(
-        // allowsInlineMediaPlayback: true,
-        // mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{
-        //   // PlaybackMediaTypes.video
-        // },
-      );
+          // allowsInlineMediaPlayback: true,
+          // mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{
+          //   // PlaybackMediaTypes.video
+          // },
+          );
     } else {
       params = const PlatformWebViewControllerCreationParams();
     }
 
-     _controller =
-        WebViewController.fromPlatformCreationParams(params);
+    _controller = WebViewController.fromPlatformCreationParams(params);
     // #enddocregion platform_features
     print("object");
     print(widget.url);
@@ -571,10 +571,11 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
           );
         },
       )
-      ..loadRequest(Uri.parse(widget.url.replaceAll("/view?usp=drivesdk",
-          "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-          .replaceAll("/view?usp=drive_link",
-          "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+      ..loadRequest(Uri.parse(widget.url
+              .replaceAll("/view?usp=drivesdk",
+                  "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+              .replaceAll("/view?usp=drive_link",
+                  "/preview?width=10&height=10&autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
           // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
           ));
     //   ..loadRequest(Uri.dataFromString('''
@@ -593,8 +594,6 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
           .setMediaPlaybackRequiresUserGesture(false);
     }
     // #enddocregion platform_features
-
-    _controller ;
   }
 
   // Inject JavaScript to control video settings
@@ -609,21 +608,84 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
     ''');
   }
 
+  Offset _mousePosition = Offset.zero;
+  // bool _isShortcutActivated = false;
+
+  void _moveMouse(Offset delta) {
+    setState(() {
+      _mousePosition += delta;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return ActionHandler().handleArrowAndEnterAction(
-      child: Actions(
-        actions: <Type, Action<Intent>>{
-          CloseButtonIntent: CallbackAction<CloseButtonIntent>(
-            onInvoke: (intent) {
-              return Navigator.pop(context);
-            },
-          )
+    return Scaffold(
+      body: Shortcuts(
+        shortcuts: <LogicalKeySet, Intent>{
+          LogicalKeySet(LogicalKeyboardKey.arrowUp): UpButtonIntent(),
+          LogicalKeySet(LogicalKeyboardKey.arrowDown): DownButtonIntent(),
+          LogicalKeySet(LogicalKeyboardKey.arrowLeft): LeftButtonIntent(),
+          LogicalKeySet(LogicalKeyboardKey.arrowRight): RightButtonIntent(),
+          LogicalKeySet(LogicalKeyboardKey.enter): EnterButtonIntent(),
+          LogicalKeySet(LogicalKeyboardKey.select): EnterButtonIntent(),
         },
-        child: MouseRegion(
-          cursor: SystemMouseCursors.click,
-          child: Scaffold(
-            body: Expanded(child: WebViewWidget(controller: _controller)),
+        child: Actions(
+          actions: <Type, Action<Intent>>{
+            UpButtonIntent: CallbackAction(
+              onInvoke: (intent) => _moveMouse(Offset(0, -10)),
+            ),
+            DownButtonIntent: CallbackAction(
+              onInvoke: (intent) => _moveMouse(Offset(0, 10)),
+            ),
+            LeftButtonIntent: CallbackAction(
+              onInvoke: (intent) => _moveMouse(Offset(-10, 0)),
+            ),
+            RightButtonIntent: CallbackAction(
+              onInvoke: (intent) => _moveMouse(Offset(10, 0)),
+            ),
+            EnterButtonIntent: CallbackAction(
+              onInvoke: (intent) {
+                // setState(() {
+                //   print("sssssssssssssssssssssss");
+                // });
+                return print("sssssssssssssssssssssss");
+                // setState(() {
+                //   _isShortcutActivated = !_isShortcutActivated;
+                // });
+              },
+            ),
+          },
+          child: Focus(
+            autofocus: true,
+            child: Stack(
+              alignment: AlignmentDirectional.center,
+              children: [
+                // Display shortcut state
+                // Positioned(
+                //   top: 10,
+                //   left: 10,
+                //   child: Text(
+                //     _isShortcutActivated
+                //         ? 'Shortcut Activated'
+                //         : 'Shortcut Deactivated',
+                //     style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                //   ),
+                // )
+                MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    onHover: (event) {
+                      setState(() {
+                        _mousePosition = event.position;
+                      });
+                    },
+                    child: WebViewWidget(controller: _controller)),
+                Positioned(
+                  left: _mousePosition.dx,
+                  top: _mousePosition.dy,
+                  child: const Icon(Icons.mouse, size: 24, color: Colors.blue),
+                )
+              ],
+            ),
           ),
         ),
       ),
@@ -631,17 +693,17 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   }
 
   // You can call these functions to control the video
-  void playVideo() async{
-  await  _controller.runJavaScript(
+  void playVideo() async {
+    await _controller.runJavaScript(
         'const video = document.querySelector("video"); if (video) video.play();');
   }
 
-  void pauseVideo() async{
+  void pauseVideo() async {
     await _controller.runJavaScript(
         'const video = document.querySelector("video"); if (video) video.pause();');
   }
 
-  void seekTo(double seconds) async{
+  void seekTo(double seconds) async {
     await _controller.runJavaScript(
         'const video = document.querySelector("video"); if (video) video.currentTime = $seconds;');
   }

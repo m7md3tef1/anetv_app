@@ -47,7 +47,7 @@ dependencies:
   cloud_firestore:
 #  flutter_ffmpeg: ^0.4.0
   better_player:
-  visibility_detector:
+#  visibility_detector:
 #dependency_overrides:
 
 #  media_kit: ^1.1.11 # Primary package.
