@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.5.1 <4.0.0"
+  sdk: '>=3.3.0 <4.0.0'
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -40,7 +40,14 @@ dependencies:
   video_player: ^2.9.2
   webview_flutter:
   cached_network_image:
-
+  flutter_vlc_player: ^7.1.0
+  firebase_core: ^2.10.0
+  firebase_storage: ^11.0.0
+  firebase_auth: ^4.2.1
+  cloud_firestore:
+#  flutter_ffmpeg: ^0.4.0
+  better_player:
+  visibility_detector:
 #dependency_overrides:
 
 #  media_kit: ^1.1.11 # Primary package.
