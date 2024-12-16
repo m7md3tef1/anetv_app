@@ -17,3 +17,4 @@ final class AllMoviesSuccess extends AllMoviesState {
 
   AllMoviesSuccess(this.allMovies);
 }
+

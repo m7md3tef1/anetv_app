@@ -490,56 +490,63 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   void initState() {
     super.initState();
 
-    // #docregion platform_features
-    late final PlatformWebViewControllerCreationParams params;
+    // print("widget.url");print(widget.url.contains("iframe") || widget.url.contains("</iframe>"));
+    if (widget.url.contains("iframe") || widget.url.contains("</iframe>")) {
+      print("widget.url2222");
+      // _controller = WebViewController()
+      //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      //   ..loadRequest(Uri.dataFromString(widget.url));
+    } else {
+      // #docregion platform_features
+      late final PlatformWebViewControllerCreationParams params;
 
-    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-      params = WebKitWebViewControllerCreationParams(
+      if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+        params = WebKitWebViewControllerCreationParams(
           // allowsInlineMediaPlayback: true,
           mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{
-              PlaybackMediaTypes.video
+            PlaybackMediaTypes.video
           },
-          );
-    } else {
-      params = const PlatformWebViewControllerCreationParams();
-    }
+        );
+      } else {
+        params = const PlatformWebViewControllerCreationParams();
+      }
 
-    _controller = WebViewController.fromPlatformCreationParams(params);
-    // #enddocregion platform_features
-    print("object");
-    print(widget.url);
-    print(widget.url
-        .replaceAll("/view?usp=drivesdk",
-            "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-        .replaceAll("/view?usp=drive_link",
-            "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-        .replaceAll("/view?usp=sharing",
-            "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"));
-    _controller
-      ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..getUserAgent()
-      // ..runJavaScript(
-      //     'const video = document.querySelector("video"); if (video) video.play();')
-      ..enableZoom(true)
-      ..setNavigationDelegate(
-        NavigationDelegate(
-          onProgress: (int progress) {
-            // debugPrint('WebView is loading (progress : $progress%)');
-          },
-          onPageStarted: (String url) {
-            // debugPrint('Page started loading: $url');
-          },
-          onPageFinished: (String url) {
-            //         _controller.evaluateJavascript('''
-            //   var videos = document.querySelectorAll('video');
-            //   videos.forEach(function(video) {
-            //     video.autoplay = true;
-            //     video.muted = true;  // If you want muted autoplay
-            //     video.play();
-            //   });
-            // ''');
-          },
-          onWebResourceError: (WebResourceError error) {
+      _controller = WebViewController.fromPlatformCreationParams(params);
+      // #enddocregion platform_features
+      // print("object");
+      // print(widget.url);
+      // print(widget.url
+      //     .replaceAll("/view?usp=drivesdk",
+      //         "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+      //     .replaceAll("/view?usp=drive_link",
+      //         "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+      //     .replaceAll("/view?usp=sharing",
+      //         "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"));
+      _controller
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..getUserAgent()
+        // ..runJavaScript(
+        //     'const video = document.querySelector("video"); if (video) video.play();')
+        ..enableZoom(true)
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onProgress: (int progress) {
+              // debugPrint('WebView is loading (progress : $progress%)');
+            },
+            onPageStarted: (String url) {
+              // debugPrint('Page started loading: $url');
+            },
+            onPageFinished: (String url) {
+              //         _controller.evaluateJavascript('''
+              //   var videos = document.querySelectorAll('video');
+              //   videos.forEach(function(video) {
+              //     video.autoplay = true;
+              //     video.muted = true;  // If you want muted autoplay
+              //     video.play();
+              //   });
+              // ''');
+            },
+            onWebResourceError: (WebResourceError error) {
 //             debugPrint('''
 // Page resource error:
 //   code: ${error.errorCode}
@@ -547,55 +554,56 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
 //   errorType: ${error.errorType}
 //   isForMainFrame: ${error.isForMainFrame}
 //           ''');
+            },
+            onNavigationRequest: (NavigationRequest request) {
+              if (request.url.startsWith('https://drive.google.com/')) {
+                debugPrint('blocking navigation to ${request.url}');
+                return NavigationDecision.prevent;
+              }
+              debugPrint('allowing navigation to ${request.url}');
+              return NavigationDecision.navigate;
+            },
+            onHttpError: (HttpResponseError error) {
+              // debugPrint('Error occurred on page: ${error.response?.statusCode}');
+            },
+            onUrlChange: (UrlChange change) {
+              // debugPrint('url change to ${change.url}');
+            },
+            onHttpAuthRequest: (HttpAuthRequest request) {},
+          ),
+        )
+        ..addJavaScriptChannel(
+          'Toaster',
+          onMessageReceived: (JavaScriptMessage message) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(message.message)),
+            );
           },
-          onNavigationRequest: (NavigationRequest request) {
-            if (request.url.startsWith('https://drive.google.com/')) {
-              debugPrint('blocking navigation to ${request.url}');
-              return NavigationDecision.prevent;
-            }
-            debugPrint('allowing navigation to ${request.url}');
-            return NavigationDecision.navigate;
-          },
-          onHttpError: (HttpResponseError error) {
-            // debugPrint('Error occurred on page: ${error.response?.statusCode}');
-          },
-          onUrlChange: (UrlChange change) {
-            // debugPrint('url change to ${change.url}');
-          },
-          onHttpAuthRequest: (HttpAuthRequest request) {},
-        ),
-      )
-      ..addJavaScriptChannel(
-        'Toaster',
-        onMessageReceived: (JavaScriptMessage message) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(message.message)),
-          );
-        },
-      )
-      ..loadRequest(Uri.parse(widget.url
-              .replaceAll("/view?usp=drivesdk",
-                  "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-              .replaceAll("/view?usp=drive_link",
-                  "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-          .replaceAll("/view?usp=sharing",
-                  "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-          // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-          ));
-    //   ..loadRequest(Uri.dataFromString('''
-    // <iframe src=\"https:\/\/vk.com\/video_ext.php?oid=-221539815&id=456239454&hash=44be08db4de388d7\" width=\"640\" height=\"360\" frameborder=\"0\" allowfullscreen=\"1\" allow=\"autoplay; encrypted-media; fullscreen; picture-in-picture\"><\/iframe>
-    // '''));
+        )
+        ..loadRequest(Uri.parse(widget.url
+                .replaceAll("/view?usp=drivesdk",
+                    "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+                .replaceAll("/view?usp=drive_link",
+                    "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+                .replaceAll("/view?usp=sharing",
+                    "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+            // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+            ));
+      //   ..loadRequest(Uri.dataFromString('''
+      // <iframe src=\"https:\/\/vk.com\/video_ext.php?oid=-221539815&id=456239454&hash=44be08db4de388d7\" width=\"640\" height=\"360\" frameborder=\"0\" allowfullscreen=\"1\" allow=\"autoplay; encrypted-media; fullscreen; picture-in-picture\"><\/iframe>
+      // '''));
 
-    // setBackgroundColor is not currently supported on macOS.
-    if (kIsWeb || !Platform.isMacOS) {
-      _controller.setBackgroundColor(const Color(0x80000000));
-    }
+      // setBackgroundColor is not currently supported on macOS.
+      if (kIsWeb || !Platform.isMacOS) {
+        _controller.setBackgroundColor(const Color(0x80000000));
+      }
 
-    // #docregion platform_features
-    if (_controller.platform is AndroidWebViewController) {
-      AndroidWebViewController.enableDebugging(true);
-      (_controller.platform as AndroidWebViewController)
-          .setMediaPlaybackRequiresUserGesture(false);
+      // #docregion platform_features
+      if (_controller.platform is AndroidWebViewController) {
+        AndroidWebViewController.enableDebugging(true);
+        (_controller.platform as AndroidWebViewController)
+            .setMediaPlaybackRequiresUserGesture(false);
+      }
     }
     // #enddocregion platform_features
   }
@@ -677,22 +685,27 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
 // """);
 
     return Scaffold(
-        body: RawKeyboardListener(
-            focusNode: FocusNode(),
-            autofocus: true,
-            onKey: handleKeyPress,
-            child: WebViewWidget(
-                controller:_controller
-                // WebViewController()
-                //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-                //   ..loadRequest(Uri.parse(widget.url
-                //       .replaceAll("/view?usp=drivesdk",
-                //           "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-                //       .replaceAll("/view?usp=drive_link",
-                //           "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-                //       .replaceAll("/view?usp=sharing",
-                //           "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")))
-            )));
+        body: (widget.url.contains("iframe") ||
+                widget.url.contains("</iframe>"))
+            ? Center(
+                child: Text("Url Is InValid \n ${widget.url}",
+                    textAlign: TextAlign.center),
+              )
+            : RawKeyboardListener(
+                focusNode: FocusNode(),
+                autofocus: true,
+                onKey: handleKeyPress,
+                child: WebViewWidget(controller: _controller
+                    // WebViewController()
+                    //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+                    //   ..loadRequest(Uri.parse(widget.url
+                    //       .replaceAll("/view?usp=drivesdk",
+                    //           "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+                    //       .replaceAll("/view?usp=drive_link",
+                    //           "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+                    //       .replaceAll("/view?usp=sharing",
+                    //           "/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")))
+                    )));
     // Shortcuts(
     // shortcuts: <LogicalKeySet, Intent>{
     //   LogicalKeySet(LogicalKeyboardKey.arrowUp): UpButtonIntent(),

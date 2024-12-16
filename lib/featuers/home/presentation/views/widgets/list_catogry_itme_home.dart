@@ -37,7 +37,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
         image: AssetsData.arabicMovies,
         title: 'افلام عربي',
         color: Colors.black,
-        catogry: 'D8%A7%D9%81%D9%84%D8%A7%D9%85%20%D8%B9%D8%B1%D8%A8%D9%8A'),
+        catogry: 'افلام%20عربي'),
     CatogryItmeModel(
         image: AssetsData.movTvSeriesies,
         title: 'Tv-series',

@@ -13,7 +13,6 @@ class HomeViewBody extends StatelessWidget {
         SliverToBoxAdapter(
           child: Column(
             children: [
-
               ListCatogryItmeHome(),
             ],
           ),

@@ -1,23 +1,26 @@
 import 'dart:convert';
 
 import 'package:anetv/core/utils/app_router.dart';
+import 'package:anetv/featuers/search/presentation/view/widget/moves_list2.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../home/data/models/moves.dart';
+import '../../../../home/data/repo/all_movies_home_repo_impl.dart';
 import '../../../../home/presentation/manager/all_movies_cubit/actionHandeler.dart';
 import '../../../../home/presentation/manager/all_movies_cubit/all_movies_cubit.dart';
 
-class MovesList extends StatefulWidget {
-  const MovesList({super.key});
+class EpisodesList extends StatefulWidget {
+  const EpisodesList({super.key});
 
   @override
-  State<MovesList> createState() => _MovesListState();
+  State<EpisodesList> createState() => _EpisodesListState();
 }
 
-class _MovesListState extends State<MovesList>
+class _EpisodesListState extends State<EpisodesList>
     with SingleTickerProviderStateMixin {
   Color color = Colors.transparent;
   var i = 0;
@@ -30,6 +33,7 @@ class _MovesListState extends State<MovesList>
     }
     super.initState();
   }
+
   final double _itemHeight = 100.0; // Assuming each item has a fixed height
   void scrollToIndex(int index) {
     double offset = _itemHeight * index;
@@ -39,6 +43,7 @@ class _MovesListState extends State<MovesList>
       curve: Curves.easeInOut,
     );
   }
+
   _setFirstFocus(BuildContext context) {
     if (_focusNode[0] == null) {
       for (int i = 1; i < _focusNode.length; i++) {
@@ -50,12 +55,24 @@ class _MovesListState extends State<MovesList>
 
   ScrollController listScrollController = ScrollController();
 
-  changFocus(BuildContext context, FocusNode node, allMoves, index) {
+  changFocus(BuildContext context, FocusNode node,List<Data> allMoves, index) {
     FocusScope.of(context).requestFocus(node);
 
     setState(() {
-      allMoves[i].color = Colors.transparent;
-      allMoves[index].color = Colors.white;
+      allMoves[i] = Data(
+          color: Colors.transparent,
+          categories: allMoves[i].categories,
+          id: allMoves[i].id,
+          name: allMoves[i].name,
+          thumbnail: allMoves[i].thumbnail,
+          episodes: allMoves[i].episodes);
+      allMoves[index] = Data(
+          color: Colors.white,
+          categories: allMoves[index].categories,
+          id: allMoves[index].id,
+          name: allMoves[index].name,
+          thumbnail: allMoves[index].thumbnail,
+          episodes: allMoves[index].episodes);
       scrollToIndex(index);
       i = index;
     });
@@ -81,9 +98,10 @@ class _MovesListState extends State<MovesList>
     double height = MediaQuery.of(context).size.height;
     return BlocBuilder<AllMoviesCubit, AllMoviesState>(
         builder: (context, state) {
+      print("jsonEncode(movies)");
+      // print(jsonEncode(movies));
       if (state is AllMoviesSuccess) {
-        final allMoves = state.allMovies;
-        print(jsonEncode(allMoves));
+        final allMoves = movies;
         if (_focusNode.length == 1) {
           _focusNode.clear();
           for (int i = 0; i < allMoves.length; i++) {
@@ -108,8 +126,11 @@ class _MovesListState extends State<MovesList>
               child: InkWell(
                 onTap: () {
                   print(jsonEncode(allMoves[index]));
-                  GoRouter.of(context).push(AppRouter.kWatchingMovieView,
-                      extra: allMoves[index].embedLink);
+                  Navigator.push(context, MaterialPageRoute(
+                    builder: (context) {
+                      return MovesList2(allMoves[index].episodes!,allMoves[index].thumbnail);
+                    },
+                  ));
                 },
                 child: Actions(
                   actions: <Type, Action<Intent>>{
@@ -117,10 +138,9 @@ class _MovesListState extends State<MovesList>
                       onInvoke: (intent) {
                         return changFocus(
                             context,
-                            _focusNode[
-                                allMoves.last.id == allMoves[index].id
-                                    ? 0
-                                    : index + 1]!,
+                            _focusNode[allMoves.last.id == allMoves[index].id
+                                ? 0
+                                : index + 1]!,
                             allMoves,
                             allMoves.last.id == allMoves[index].id
                                 ? 0
@@ -132,10 +152,9 @@ class _MovesListState extends State<MovesList>
                       onInvoke: (intent) {
                         return changFocus(
                             context,
-                            _focusNode[
-                                allMoves.first.id == allMoves[index].id
-                                    ? 0
-                                    : index - 1]!,
+                            _focusNode[allMoves.first.id == allMoves[index].id
+                                ? 0
+                                : index - 1]!,
                             allMoves,
                             allMoves.first.id == allMoves[index].id
                                 ? 0
@@ -145,9 +164,11 @@ class _MovesListState extends State<MovesList>
                     EnterButtonIntent: CallbackAction<EnterButtonIntent>(
                       onInvoke: (intent) {
                         print(jsonEncode(allMoves[index]));
-                        return GoRouter.of(context).push(
-                            AppRouter.kWatchingMovieView,
-                            extra: allMoves[index].embedLink);
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) {
+                            return MovesList2(allMoves[index].episodes!,allMoves[index].thumbnail);
+                          },
+                        ));
                       },
                     ),
                   },
@@ -163,14 +184,12 @@ class _MovesListState extends State<MovesList>
                         // color: allMoves[index].color,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            border:
-                                Border.all(color: Colors.white, width: 2),
+                            border: Border.all(color: Colors.white, width: 2),
                             color: allMoves[index].color),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
                                 child: SizedBox(
@@ -178,7 +197,7 @@ class _MovesListState extends State<MovesList>
                                   child: Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: Text(
-                                      allMoves[index].title!,
+                                      allMoves[index].name!,
                                       textAlign: TextAlign.start,
                                       maxLines: 5,
                                       style: TextStyle(
@@ -195,7 +214,7 @@ class _MovesListState extends State<MovesList>
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 10),
+                              const SizedBox(width: 10),
                               CachedNetworkImage(
                                 imageUrl: '${allMoves[index].thumbnail}',
                                 width: 250,
@@ -208,8 +227,7 @@ class _MovesListState extends State<MovesList>
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.fill),
+                                        image: imageProvider, fit: BoxFit.fill),
                                   ),
                                 ),
                                 placeholder: (context, url) => const Center(
@@ -229,7 +247,7 @@ class _MovesListState extends State<MovesList>
           ),
         );
       } else if (state is AllMoviesFailure) {
-        print(state.errorMassage);
+        // print(state.errorMassage);
         return Center(child: Text("No Videos Yet"));
       } else {
         return const Center(child: CircularProgressIndicator());

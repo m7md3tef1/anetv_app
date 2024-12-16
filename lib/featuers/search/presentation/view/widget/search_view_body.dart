@@ -2,6 +2,7 @@ import 'package:anetv/core/utils/styels.dart';
 import 'package:anetv/featuers/home/data/models/movie_model.dart';
 import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/all_movies_cubit.dart';
 import 'package:anetv/featuers/search/presentation/view/widget/custom_search_text_field.dart';
+import 'package:anetv/featuers/search/presentation/view/widget/episodes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -30,6 +31,11 @@ class _SearchViewBodyState extends State<SearchViewBody> {
 
   @override
   Widget build(BuildContext context) {
+    print("widget.category.catogry");
+    print(widget.category.catogry);
+    print(widget.category.catogry
+        .toString()
+        .contains("https://alaanetstreaming.com"));
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(
@@ -71,8 +77,12 @@ class _SearchViewBodyState extends State<SearchViewBody> {
             ),
           ),
         ),
-        const SliverFillRemaining(
-          child: MovesList(),
+        SliverFillRemaining(
+          child: widget.category.catogry
+                  .toString()
+                  .contains("https://alaanetstreaming.com")
+              ? const EpisodesList()
+              : const MovesList(),
         ),
       ],
     );
