@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../search/presentation/view/widget/custom_search_text_field.dart';
+
 class ListCatogryItmeHome extends StatefulWidget {
   const ListCatogryItmeHome({super.key});
 
@@ -16,6 +18,11 @@ class ListCatogryItmeHome extends StatefulWidget {
 
 class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
   List<CatogryItmeModel> listCatogry = [
+    CatogryItmeModel(
+        image: AssetsData.movies,
+        title: 'search',
+        catogry: 'search',
+        color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.movies,
         title: 'All Movies',
@@ -77,6 +84,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
   FocusNode? _focusNode7;
   FocusNode? _focusNode8;
   FocusNode? _focusNode9;
+  FocusNode? _focusNode10;
   _setFirstFocus(BuildContext context) {
     if (_focusNode1 == null) {
       _focusNode1 = FocusNode();
@@ -88,12 +96,14 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
       _focusNode7 = FocusNode();
       _focusNode8 = FocusNode();
       _focusNode9 = FocusNode();
+      _focusNode10 = FocusNode();
       FocusScope.of(context).requestFocus(_focusNode1);
     }
   }
 
   _changFocus(BuildContext context, FocusNode node, index) {
     FocusScope.of(context).requestFocus(node);
+    print(index);
     setState(() {
       listCatogry[i].color = Colors.transparent;
       listCatogry[index].color = Colors.white;
@@ -112,6 +122,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
     _focusNode7?.dispose();
     _focusNode8?.dispose();
     _focusNode9?.dispose();
+    _focusNode10?.dispose();
   }
 
   @override
@@ -133,7 +144,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  GoRouter.of(context)
+                  index==0?"":  GoRouter.of(context)
                       .push(AppRouter.kSearchView, extra: listCatogry[index]);
                 },
                 child: Padding(
@@ -161,8 +172,10 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
                                                         ? _focusNode8!
                                                         : index == 7
                                                             ? _focusNode9!
+                                                            : index == 8
+                                                            ? _focusNode10!
                                                             : _focusNode1!,
-                            index == 8 ? 0 : index + 1);
+                            index == 9 ? 0 : index + 1);
                       }),
                       UpButtonIntent:
                           CallbackAction<UpButtonIntent>(onInvoke: (intent) {
@@ -186,11 +199,14 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
                                                             ? _focusNode7!
                                                             : index == 8
                                                                 ? _focusNode8!
-                                                                : _focusNode9!,
-                            index == 0 ? 8 : index - 1);
+                                                                : index == 9
+                                                                    ? _focusNode9!
+                                                                    : _focusNode10!,
+                            index == 0 ? 9 : index - 1);
                       }),
                       EnterButtonIntent: CallbackAction<EnterButtonIntent>(
                         onInvoke: (intent) {
+                          index==0?"":
                           GoRouter.of(context).push(AppRouter.kSearchView,
                               extra: listCatogry[index]);
                           return listCatogry[index].color;
@@ -214,7 +230,9 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
                                                   ? _focusNode7
                                                   : index == 7
                                                       ? _focusNode8
-                                                      : _focusNode9,
+                                                      : index == 8
+                                                          ? _focusNode9
+                                                          : _focusNode10,
                       child: CatogryItmeHome(
                         images: listCatogry[index].image,
                         title: listCatogry[index].title,

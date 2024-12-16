@@ -7,9 +7,11 @@ class CustomSearchTextField extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(10),
       child: TextField(
+        autofocus: true,
         decoration: InputDecoration(
             // fillColor: Colors.white,
             // filled: true,
+          focusColor: Colors.red,
             enabledBorder: buildOutlineInputBorder(),
             focusedBorder: buildOutlineInputBorder(),
             hintText: 'Search',
