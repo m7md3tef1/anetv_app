@@ -39,27 +39,32 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
     CatogryItmeModel(
         image: AssetsData.kidsFamily,
         title: 'Kids & Family',
-        catogry: 'https://alaanetstreaming.com/api/series/?category=Kids-family',
+        catogry:
+            'https://alaanetstreaming.com/api/series/?category=Kids-family',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.translatedTurkishSeries,
         title: 'مسلسلات تركية مترجمة',
-        catogry: 'https://alaanetstreaming.com/api/series/?category=%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA%20%D8%AA%D8%B1%D9%83%D9%8A%D8%A9%20%D9%85%D8%AA%D8%B1%D8%AC%D9%85%D8%A9',
+        catogry:
+            'https://alaanetstreaming.com/api/series/?category=%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA%20%D8%AA%D8%B1%D9%83%D9%8A%D8%A9%20%D9%85%D8%AA%D8%B1%D8%AC%D9%85%D8%A9',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.dubbedTurkishSeries,
         title: 'مسلسلات تركية مدبلجة',
-        catogry: 'https://alaanetstreaming.com/api/series/?category=%D8%AA%D8%B1%D9%83%D9%8A-%D9%85%D8%AF%D8%A8%D9%84%D8%AC',
+        catogry:
+            'https://alaanetstreaming.com/api/series/?category=%D8%AA%D8%B1%D9%83%D9%8A-%D9%85%D8%AF%D8%A8%D9%84%D8%AC',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.arabicSeries,
         title: 'مسلسلات عربية',
-        catogry: 'https://alaanetstreaming.com/api/series/?category=%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA%20%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9',
+        catogry:
+            'https://alaanetstreaming.com/api/series/?category=%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA%20%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.cartoonDubbed,
         title: 'كرتون مدبلج',
-        catogry: 'https://alaanetstreaming.com/api/series/?category=%D8%B1%D8%B3%D9%88%D9%85-%D9%85%D8%AF%D8%A8%D9%84%D8%AC%D8%A9',
+        catogry:
+            'https://alaanetstreaming.com/api/series/?category=%D8%B1%D8%B3%D9%88%D9%85-%D9%85%D8%AF%D8%A8%D9%84%D8%AC%D8%A9',
         color: Colors.black),
   ];
   var i = 0;
@@ -112,6 +117,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
   @override
   Widget build(BuildContext context) {
     if (_focusNode1 == null) {
+      print("object");
       listCatogry[0].color = Colors.white;
       _setFirstFocus(context);
     }
@@ -163,23 +169,25 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
                         return _changFocus(
                             context,
                             index == 0
-                                ? _focusNode2!
+                                ? _focusNode9!
                                 : index == 1
-                                    ? _focusNode3!
+                                    ? _focusNode1!
                                     : index == 2
-                                        ? _focusNode4!
+                                        ? _focusNode2!
                                         : index == 3
-                                            ? _focusNode5!
+                                            ? _focusNode3!
                                             : index == 4
-                                                ? _focusNode6!
+                                                ? _focusNode4!
                                                 : index == 5
-                                                    ? _focusNode7!
+                                                    ? _focusNode5!
                                                     : index == 6
-                                                        ? _focusNode8!
+                                                        ? _focusNode6!
                                                         : index == 7
-                                                            ? _focusNode9!
-                                                            : _focusNode1!,
-                            index == 8 ? 0 : index + 1);
+                                                            ? _focusNode7!
+                                                            : index == 8
+                                                                ? _focusNode8!
+                                                                : _focusNode9!,
+                            index == 0 ? 8 : index - 1);
                       }),
                       EnterButtonIntent: CallbackAction<EnterButtonIntent>(
                         onInvoke: (intent) {
