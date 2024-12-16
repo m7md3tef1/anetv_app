@@ -46,6 +46,11 @@ class _MovesListState extends State<MovesList>
     FocusScope.of(context).requestFocus(node);
 
     setState(() {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );;
       // if (listScrollController.hasClients) {
       // final position = 500;
       print("object");
@@ -79,7 +84,16 @@ class _MovesListState extends State<MovesList>
     }
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return   Actions(
+    return Shortcuts(
+      shortcuts: <LogicalKeySet, Intent>{
+        // Define a shortcut for scrolling down (Ctrl + Arrow Down in this example)
+        LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.arrowDown):
+            ScrollIntent(Direction.down),
+        // Define a shortcut for scrolling up (Ctrl + Arrow Up)
+        LogicalKeySet(LogicalKeyboardKey.control, LogicalKeyboardKey.arrowUp):
+            ScrollIntent(Direction.up),
+      },
+      child: Actions(
         actions: <Type, Action<Intent>>{
           ScrollIntent: ScrollAction(_scrollController),
         },
@@ -108,7 +122,8 @@ class _MovesListState extends State<MovesList>
                   physics: const AlwaysScrollableScrollPhysics(),
                   itemCount: allMoves.length,
                   itemBuilder: (context, index) => Padding(
-                    padding: const EdgeInsets.only(bottom: 10, left: 5, right: 5),
+                    padding:
+                        const EdgeInsets.only(bottom: 10, left: 5, right: 5),
                     child: InkWell(
                       onTap: () {
                         print(jsonEncode(allMoves[index]));
@@ -185,10 +200,11 @@ class _MovesListState extends State<MovesList>
                                             textAlign: TextAlign.start,
                                             maxLines: 5,
                                             style: TextStyle(
-                                                fontSize: allMoves[index].color ==
-                                                        Colors.white
-                                                    ? 20
-                                                    : 15,
+                                                fontSize:
+                                                    allMoves[index].color ==
+                                                            Colors.white
+                                                        ? 20
+                                                        : 15,
                                                 color: allMoves[index].color ==
                                                         Colors.white
                                                     ? Colors.black
@@ -209,16 +225,20 @@ class _MovesListState extends State<MovesList>
                                         width: 250,
                                         height: 250,
                                         decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
                                           image: DecorationImage(
                                               image: imageProvider,
                                               fit: BoxFit.fill),
                                         ),
                                       ),
-                                      placeholder: (context, url) => const Center(
-                                          child: CircularProgressIndicator()),
+                                      placeholder: (context, url) =>
+                                          const Center(
+                                              child:
+                                                  CircularProgressIndicator()),
                                       errorWidget: (context, url, error) =>
-                                          const Center(child: Icon(Icons.error)),
+                                          const Center(
+                                              child: Icon(Icons.error)),
                                     ),
                                   ],
                                 ),
@@ -239,8 +259,8 @@ class _MovesListState extends State<MovesList>
             return const Center(child: CircularProgressIndicator());
           }
         }),
-      );
-
+      ),
+    );
   }
 }
 
