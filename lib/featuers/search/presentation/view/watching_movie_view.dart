@@ -376,17 +376,118 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     );
   }
 
+  void _seekBackward(seekDuration) async {
+    // print('aaaaaaaaaa');
+    // print(seekDuration);
+
+    final currentPosition =
+        await _betterPlayerController.videoPlayerController!.value.position;
+    if (currentPosition != null) {
+      final newPosition = currentPosition - seekDuration;
+      setState(() {
+        _betterPlayerController
+            .seekTo(newPosition > Duration.zero ? newPosition : Duration.zero);
+      });
+    }
+  }
+
+  void _seekForward(_seekAmount) async {
+    // print('bbbbbbbbbbbbbbbbb');
+    // print(_seekAmount);
+
+    final currentPosition =
+        await _betterPlayerController.videoPlayerController!.value.position;
+    setState(() {
+      _betterPlayerController
+          .seekTo(currentPosition! + Duration(minutes: _seekAmount.toInt()));
+    });
+  }
+
+  void togglePlayPause() {
+    if (_betterPlayerController.videoPlayerController!.value.isPlaying) {
+      // print('cccccccccccc');
+      setState(() {
+        _betterPlayerController.pause();
+      });
+    } else {
+      // print('dddddddddd');
+      setState(() {
+        _betterPlayerController.play();
+      });
+    }
+  }
+
   // final String videoUrl = "https://drive.google.com/file/d/1PnhdO3hSOS_EipQXZbBRoKVVSNRyk8jG/preview"; // Replace with your MKV file URL
   final String videoUrl =
       "https://drive.google.com/file/d/1DVjy2aY7ckmUzVZMgaLdoC9cbMFbIJ9V/view?usp=drivesdk";
   // Replace with your MKV file URL
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(title: Text("MKV Video Player")),
-        body: BetterPlayer(
-          controller: _betterPlayerController,
-        ));
+    return ActionHandler().handleArrowAndEnterAction3(
+      child: Scaffold(
+        body: SizedBox(
+            height: double.infinity,
+            width: double.infinity,
+            child: RawKeyboardListener(
+              focusNode: FocusNode(),
+              child: Actions(
+                actions: <Type, Action<Intent>>{
+                  CloseButtonIntent: CallbackAction<CloseButtonIntent>(
+                    onInvoke: (intent) {
+                      Navigator.pop(context);
+                      return Navigator.pop(context);
+                    },
+                  ),
+                  UpButtonIntent: CallbackAction<UpButtonIntent>(
+                    onInvoke: (intent) {
+                      _seekForward(10);
+                      return _seekForward;
+                    },
+                  ),
+                  DownButtonIntent: CallbackAction<DownButtonIntent>(
+                    onInvoke: (intent) {
+                      // print("sssssssssssssssssssssssssssssssssssssssss");
+                      _seekBackward(const Duration(minutes: 10));
+                      return _seekBackward;
+                    },
+                  ),
+                  EnterButtonIntent: CallbackAction<EnterButtonIntent>(
+                    onInvoke: (intent) {
+                      togglePlayPause();
+                      return togglePlayPause;
+                    },
+                  ),
+                  RightButtonIntent: CallbackAction<RightButtonIntent>(
+                    onInvoke: (intent) {
+                      _seekForward(1);
+                      return _seekForward;
+                    },
+                  ),
+                  LeftButtonIntent: CallbackAction<LeftButtonIntent>(
+                    onInvoke: (intent) {
+                      _seekBackward(const Duration(minutes: 1));
+                      return _seekBackward;
+                    },
+                  ),
+                },
+                child: Focus(
+                  autofocus: true,
+                  child: AspectRatio(
+                      aspectRatio: _betterPlayerController
+                          .videoPlayerController!.value.aspectRatio,
+                      child: BetterPlayer(
+                        controller: _betterPlayerController,
+                      )),
+                ),
+              ),
+            )),
+        // floatingActionButton: FloatingActionButton(
+        //   onPressed: togglePlayPause,
+        //   child:
+        //       Icon(controller!.value.isPlaying ? Icons.pause : Icons.play_arrow),
+        // ),
+      ),
+    );
   }
 }
 
@@ -815,15 +916,6 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
       }
     }
   }
-
-  @override
-  void dispose() {
-    Platform.isWindows
-        ? controller!.dispose()
-        : videoPlayerController.dispose();
-    super.dispose();
-  }
-
   void _seekForward(_seekAmount) async {
     // print('bbbbbbbbbbbbbbbbb');
     // print(_seekAmount);
@@ -869,6 +961,15 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
       }
     }
   }
+  @override
+  void dispose() {
+    Platform.isWindows
+        ? controller!.dispose()
+        : videoPlayerController.dispose();
+    super.dispose();
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
