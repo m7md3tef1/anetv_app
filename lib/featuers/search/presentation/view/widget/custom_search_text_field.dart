@@ -14,7 +14,7 @@ class CustomSearchTextField extends StatelessWidget {
           focusColor: Colors.red,
             enabledBorder: buildOutlineInputBorder(),
             focusedBorder: buildOutlineInputBorder(),
-            hintText: 'Search',
+            hintText: 'Search Screen',
             suffixIcon: IconButton(
                 onPressed: () {},
                 icon: const Icon(

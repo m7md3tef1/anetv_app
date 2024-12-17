@@ -30,6 +30,7 @@ class _MovesListState extends State<MovesList>
     }
     super.initState();
   }
+
   final double _itemHeight = 100.0; // Assuming each item has a fixed height
   void scrollToIndex(int index) {
     double offset = _itemHeight * index;
@@ -39,6 +40,7 @@ class _MovesListState extends State<MovesList>
       curve: Curves.easeInOut,
     );
   }
+
   _setFirstFocus(BuildContext context) {
     if (_focusNode[0] == null) {
       for (int i = 1; i < _focusNode.length; i++) {
@@ -83,7 +85,7 @@ class _MovesListState extends State<MovesList>
         builder: (context, state) {
       if (state is AllMoviesSuccess) {
         final allMoves = state.allMovies;
-        print(jsonEncode(allMoves));
+        // print(jsonEncode(allMoves));
         if (_focusNode.length == 1) {
           _focusNode.clear();
           for (int i = 0; i < allMoves.length; i++) {
@@ -109,7 +111,7 @@ class _MovesListState extends State<MovesList>
                 onTap: () {
                   print(jsonEncode(allMoves[index]));
                   GoRouter.of(context).push(AppRouter.kWatchingMovieView,
-                      extra: allMoves[index].embedLink);
+                      extra: allMoves[index].video_id);
                 },
                 child: Actions(
                   actions: <Type, Action<Intent>>{
@@ -117,10 +119,9 @@ class _MovesListState extends State<MovesList>
                       onInvoke: (intent) {
                         return changFocus(
                             context,
-                            _focusNode[
-                                allMoves.last.id == allMoves[index].id
-                                    ? 0
-                                    : index + 1]!,
+                            _focusNode[allMoves.last.id == allMoves[index].id
+                                ? 0
+                                : index + 1]!,
                             allMoves,
                             allMoves.last.id == allMoves[index].id
                                 ? 0
@@ -132,10 +133,9 @@ class _MovesListState extends State<MovesList>
                       onInvoke: (intent) {
                         return changFocus(
                             context,
-                            _focusNode[
-                                allMoves.first.id == allMoves[index].id
-                                    ? 0
-                                    : index - 1]!,
+                            _focusNode[allMoves.first.id == allMoves[index].id
+                                ? 0
+                                : index - 1]!,
                             allMoves,
                             allMoves.first.id == allMoves[index].id
                                 ? 0
@@ -147,7 +147,7 @@ class _MovesListState extends State<MovesList>
                         print(jsonEncode(allMoves[index]));
                         return GoRouter.of(context).push(
                             AppRouter.kWatchingMovieView,
-                            extra: allMoves[index].embedLink);
+                            extra: allMoves[index].video_id);
                       },
                     ),
                   },
@@ -163,14 +163,12 @@ class _MovesListState extends State<MovesList>
                         // color: allMoves[index].color,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            border:
-                                Border.all(color: Colors.white, width: 2),
+                            border: Border.all(color: Colors.white, width: 2),
                             color: allMoves[index].color),
                         child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
-                            mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(
                                 child: SizedBox(
@@ -208,8 +206,7 @@ class _MovesListState extends State<MovesList>
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(10),
                                     image: DecorationImage(
-                                        image: imageProvider,
-                                        fit: BoxFit.fill),
+                                        image: imageProvider, fit: BoxFit.fill),
                                   ),
                                 ),
                                 placeholder: (context, url) => const Center(

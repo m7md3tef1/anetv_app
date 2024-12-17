@@ -53,6 +53,7 @@ class Data {
   Data({
     num? id,
     String? name,
+    String? video_id,
     var thumbnail,
     Color? color,
     List<String>? categories,
@@ -61,6 +62,7 @@ class Data {
     _id = id;
     _name = name;
     _color = color;
+    _video_id = video_id;
     _thumbnail = thumbnail;
     _categories = categories;
     _episodes = episodes;
@@ -70,6 +72,7 @@ class Data {
     _id = json['id'];
     _name = json['name'];
     _thumbnail = json['thumbnail'];
+    _video_id = json['video_id'];
     _categories =
         json['categories'] != null ? json['categories'].cast<String>() : [];
     if (json['episodes'] != null) {
@@ -81,6 +84,7 @@ class Data {
   }
   num? _id;
   String? _name;
+  String? _video_id;
   var _thumbnail;
   Color? _color;
   List<String>? _categories;
@@ -88,6 +92,7 @@ class Data {
   Data copyWith({
     num? id,
     String? name,
+    String? video_id,
     Color? color,
     var thumbnail,
     List<String>? categories,
@@ -97,12 +102,14 @@ class Data {
         id: id ?? _id,
         name: name ?? _name,
         color: color ?? _color,
+        video_id: video_id ?? _video_id,
         thumbnail: thumbnail ?? _thumbnail,
         categories: categories ?? _categories,
         episodes: episodes ?? _episodes,
       );
   num? get id => _id;
   String? get name => _name;
+  String? get video_id => _video_id;
   Color? get color => _color;
   get thumbnail => _thumbnail;
   List<String>? get categories => _categories;
@@ -112,6 +119,7 @@ class Data {
     final map = <String, dynamic>{};
     map['id'] = _id;
     map['name'] = _name;
+    map['video_id'] = _video_id;
     map['thumbnail'] = _thumbnail;
     map['categories'] = _categories;
     if (_episodes != null) {
@@ -130,6 +138,7 @@ class Episodes {
     String? content,
     bool? thumbnail,
     String? embedLink,
+    String? video_id,
     Color? color ,
     List<String>? categories,
     List<dynamic>? tags,
@@ -138,6 +147,7 @@ class Episodes {
     _id = id;
     _title = title;
     _color = color;
+    _video_id = video_id;
     _content = content;
     _thumbnail = thumbnail;
     _embedLink = embedLink;
@@ -150,6 +160,7 @@ class Episodes {
     _id = json['id'];
     _title = json['title'];
     _content = json['content'];
+    _video_id = json['video_id'];
     _thumbnail = json['thumbnail'];
     _embedLink = json['embed_link'];
     _categories =
@@ -165,6 +176,7 @@ class Episodes {
   num? _id;
   String? _title;
   String? _content;
+  String? _video_id;
   var _thumbnail;
   Color? _color;
   String? _embedLink;
@@ -174,6 +186,7 @@ class Episodes {
   Episodes copyWith({
     num? id,
     String? title,
+    String? video_id,
     String? content,
     var thumbnail,
     Color? color,
@@ -185,6 +198,7 @@ class Episodes {
       Episodes(
         id: id ?? _id,
         title: title ?? _title,
+        video_id: video_id ?? _video_id,
         content: content ?? _content,
         thumbnail: thumbnail ?? _thumbnail,
         embedLink: embedLink ?? _embedLink,
@@ -195,6 +209,7 @@ class Episodes {
       );
   num? get id => _id;
   String? get title => _title;
+  String? get video_id => _video_id;
   String? get content => _content;
   get thumbnail => _thumbnail;
   String? get embedLink => _embedLink;
@@ -207,6 +222,7 @@ class Episodes {
     final map = <String, dynamic>{};
     map['id'] = _id;
     map['title'] = _title;
+    map['video_id'] = _video_id;
     map['content'] = _content;
     map['thumbnail'] = _thumbnail;
     map['embed_link'] = _embedLink;

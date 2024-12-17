@@ -13,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   // await Firebase.initializeApp(
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );
@@ -28,16 +29,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AllMoviesCubit(getIt.get<AllMoviesHomeRepoImpl>()),
-      child: ActionHandler().handleArrowAndEnterAction(
-        child: MaterialApp.router(
-          routerConfig: AppRouter.router,
-          theme: ThemeData.dark().copyWith(
-            scaffoldBackgroundColor: kPrimaryColor,
-            textTheme:
-                GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
-          ),
-          debugShowCheckedModeBanner: false,
+      child: MaterialApp.router(
+        routerConfig: AppRouter.router,
+        theme: ThemeData.dark().copyWith(
+          scaffoldBackgroundColor: kPrimaryColor,
+          textTheme:
+              GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
         ),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }

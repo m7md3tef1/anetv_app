@@ -138,8 +138,8 @@ class _MovesList2State extends State<MovesList2>
                             ),
                           ],
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        child: const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 5.0),
                           child: Center(
                             child: Text(
                               "الحلقات",
@@ -190,7 +190,7 @@ class _MovesList2State extends State<MovesList2>
                             print(jsonEncode(allMoves[index]));
                             GoRouter.of(context).push(
                                 AppRouter.kWatchingMovieView,
-                                extra: allMoves[index].embedLink);
+                                extra: allMoves[index].video_id);
                           },
                           child: Actions(
                             actions: <Type, Action<Intent>>{
@@ -230,7 +230,7 @@ class _MovesList2State extends State<MovesList2>
                                   print(jsonEncode(allMoves[index]));
                                   return GoRouter.of(context).push(
                                       AppRouter.kWatchingMovieView,
-                                      extra: allMoves[index].embedLink);
+                                      extra: allMoves[index].video_id);
                                 },
                               ),
                             },

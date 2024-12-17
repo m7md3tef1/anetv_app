@@ -31,11 +31,6 @@ class _SearchViewBodyState extends State<SearchViewBody> {
 
   @override
   Widget build(BuildContext context) {
-    print("widget.category.catogry");
-    print(widget.category.catogry);
-    print(widget.category.catogry
-        .toString()
-        .contains("https://alaanetstreaming.com"));
     return CustomScrollView(
       slivers: [
         SliverToBoxAdapter(

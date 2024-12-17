@@ -29,6 +29,18 @@ class ActionHandler {
 
     }, child: child);
   }
+  Widget handleArrowAndEnterAction3({required Widget child}) {
+    return Shortcuts(shortcuts: <LogicalKeySet, Intent>{
+      LogicalKeySet(LogicalKeyboardKey.enter): EnterButtonIntent(),
+      LogicalKeySet(LogicalKeyboardKey.select): EnterButtonIntent(),
+      LogicalKeySet(LogicalKeyboardKey.arrowRight): RightButtonIntent(),
+      LogicalKeySet(LogicalKeyboardKey.arrowLeft): LeftButtonIntent(),
+      LogicalKeySet(LogicalKeyboardKey.arrowDown): DownButtonIntent(),
+      LogicalKeySet(LogicalKeyboardKey.arrowUp): UpButtonIntent(),
+      LogicalKeySet(LogicalKeyboardKey.exit): CloseButtonIntent(),
+
+    }, child: child);
+  }
   Widget handleArrowAndEnterAction2({required Widget child}) {
     return Shortcuts(shortcuts: <LogicalKeySet, Intent>{
       LogicalKeySet(LogicalKeyboardKey.select): EnterButtonIntent(),

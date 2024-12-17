@@ -4,6 +4,7 @@ class MovieModel {
   final int id;
   final String? title;
   final String? content;
+  final String? video_id;
   final String? thumbnail;
   final String embedLink;
   final List<String> categories;
@@ -14,6 +15,7 @@ class MovieModel {
   MovieModel({
     required this.id,
     required this.title,
+    required this.video_id,
     required this.content,
     this.thumbnail,
     this.color,
@@ -28,6 +30,7 @@ class MovieModel {
     return MovieModel(
       id: json['id'],
       title: json['title']?? '',
+      video_id: json['video_id']?? '',
       content: json['content'] ?? '',
       thumbnail: json['thumbnail'] != null && json['thumbnail'] != false
           ? json['thumbnail']
@@ -46,6 +49,7 @@ class MovieModel {
       'title': title,
       'content': content,
       'thumbnail': thumbnail,
+      'video_id': video_id,
       'embed_link': embedLink,
       'categories': categories,
        'tags': tags,
