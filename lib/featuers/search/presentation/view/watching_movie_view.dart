@@ -364,7 +364,7 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     _betterPlayerController.setupDataSource(
       BetterPlayerDataSource(
         BetterPlayerDataSourceType.network,
-        "https://drive.usercontent.google.com/download?id=1_D_aes6p5rLn-gUZXYTkGkrhKJFx3NU4&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
+        "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
         liveStream: true,
         // videoFormat: BetterPlayerVideoFormat.other,
         cacheConfiguration: const BetterPlayerCacheConfiguration(
@@ -381,9 +381,9 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     // print(seekDuration);
 
     final currentPosition =
-        await _betterPlayerController.videoPlayerController!.value.position;
+        await _betterPlayerController.videoPlayerController!.position;
     if (currentPosition != null) {
-      final newPosition = currentPosition - seekDuration;
+      final newPosition = currentPosition! - seekDuration;
       setState(() {
         _betterPlayerController
             .seekTo(newPosition > Duration.zero ? newPosition : Duration.zero);
@@ -396,7 +396,7 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     // print(_seekAmount);
 
     final currentPosition =
-        await _betterPlayerController.videoPlayerController!.value.position;
+        await _betterPlayerController.videoPlayerController!.position;
     setState(() {
       _betterPlayerController
           .seekTo(currentPosition! + Duration(minutes: _seekAmount.toInt()));
@@ -418,8 +418,8 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
   }
 
   // final String videoUrl = "https://drive.google.com/file/d/1PnhdO3hSOS_EipQXZbBRoKVVSNRyk8jG/preview"; // Replace with your MKV file URL
-  final String videoUrl =
-      "https://drive.google.com/file/d/1DVjy2aY7ckmUzVZMgaLdoC9cbMFbIJ9V/view?usp=drivesdk";
+  // final String videoUrl =
+  //     "https://drive.google.com/file/d/1DVjy2aY7ckmUzVZMgaLdoC9cbMFbIJ9V/view?usp=drivesdk";
   // Replace with your MKV file URL
   @override
   Widget build(BuildContext context) {
