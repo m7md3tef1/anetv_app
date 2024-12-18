@@ -6,17 +6,20 @@ import '../../../home/data/models/catogry_itme_model.dart';
 import '../../../home/presentation/manager/all_movies_cubit/actionHandeler.dart';
 
 class SearchView extends StatelessWidget {
-    SearchView({
+  SearchView({
     super.key,
     required this.catogry,
     this.cat,
   });
 
   final CatogryItmeModel catogry;
-var cat;
+  var cat;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // appBar: AppBar(
+      //   title: const Text("ssssssssssss"),
+      // ),
       body: ActionHandler().handleArrowAndEnterAction(
         child: Actions(
           actions: <Type, Action<Intent>>{
@@ -26,11 +29,7 @@ var cat;
               },
             )
           },
-          child: SafeArea(
-              child: SearchViewBody(
-            category: catogry,
-                cat: cat
-          )),
+          child: SafeArea(child: SearchViewBody(category: catogry, cat: cat)),
         ),
       ),
     );

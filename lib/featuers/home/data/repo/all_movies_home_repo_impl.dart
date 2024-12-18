@@ -76,4 +76,31 @@ class AllMoviesHomeRepoImpl implements AllMoviesHomeRepo {
   }
 }
 
-// https://alaanetstreaming.com/v_v/
+//class NotificationData {
+//   // late final int page ,totalPages,totalResults,currentPage;
+//   late final List<MovieModel> list;
+//
+//   NotificationData.fromJson(dynamic json) {
+//     // totalResults = json['total_count'];
+//     // totalPages = json['total_pages'];
+//     list = List.from(json)
+//         .map((e) => MovieModel.fromJson(e))
+//         .toList();
+//     // currentPage = json['current_page'];
+//     // page = json['per_page'];
+//   }
+// }
+// class NotificationData2 {
+//   // late final int page ,totalPages,totalResults,currentPage;
+//   late final List<Data> list;
+//
+//   NotificationData2.fromJson(dynamic json) {
+//     // totalResults = json['total_count'];
+//     // totalPages = json['total_pages'];
+//     list = List.from(json)
+//         .map((e) => Data.fromJson(e))
+//         .toList();
+//     // currentPage = json['current_page'];
+//     // page = json['per_page'];
+//   }
+// }

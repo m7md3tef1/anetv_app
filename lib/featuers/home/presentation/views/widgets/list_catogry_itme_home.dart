@@ -147,6 +147,9 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
               return InkWell(
                 onTap: () {
                   page = 1;
+                  page == 1;
+                  // print("page");
+                  // print(page);
                   index == 0
                       ? ""
                       : GoRouter.of(context).push(AppRouter.kSearchView,
@@ -211,8 +214,9 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
                       }),
                       EnterButtonIntent: CallbackAction<EnterButtonIntent>(
                         onInvoke: (intent) {
-                          print("index");
-                          print(index);
+                          page = 1;
+                          page == 1;
+
                           index == 0
                               ? GoRouter.of(context).push(AppRouter.kSearch)
                               : GoRouter.of(context).push(AppRouter.kSearchView,
