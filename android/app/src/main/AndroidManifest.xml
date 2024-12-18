@@ -11,9 +11,8 @@
             <data android:scheme="https" />
         </intent>
     </queries>
-
+    <!--        android:requestLegacyExternalStorage="true"-->
     <application
-        android:requestLegacyExternalStorage="true"
         android:label="ANETV"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"

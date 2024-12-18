@@ -10,7 +10,6 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 // import 'package:video_player/video_player.dart';
 // import 'package:video_player_win/video_player_win.dart';
 
-
 // class WatchingMovieView extends StatefulWidget {
 //   final String url;
 //
@@ -130,7 +129,6 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 //   }
 // }
 
-
 class WatchingMovieView extends StatefulWidget {
   final String url;
 //
@@ -179,18 +177,19 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
   @override
   void initState() {
     print(widget.url);
-    print("https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
+    print(
+        "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
     super.initState();
     _videoPlayerController = VlcPlayerController.network(
       "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
       // hwAcc: HwAcc.auto,
-      hwAcc: HwAcc.full,
+      hwAcc: HwAcc.disabled,
       autoInitialize: true,
       autoPlay: true,
       options: VlcPlayerOptions(
         advanced: VlcAdvancedOptions([
           VlcAdvancedOptions.networkCaching(_networkCachingMs),
-          VlcAdvancedOptions.liveCaching(2500),
+          // VlcAdvancedOptions.liveCaching(2500),
         ]),
         subtitle: VlcSubtitleOptions([
           VlcSubtitleOptions.boldStyle(true),
@@ -208,22 +207,22 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
         // ]),
       ),
     )..addListener(() {
-      if (_videoPlayerController.value.isBuffering) {
-        // Display loading or buffering indicator
-        print("Buffering...");
-      }
-      if (_videoPlayerController.value.isInitialized) {
-        // Hide buffering indicator
-        print("Video Initialized");
-      }
-    });
+        if (_videoPlayerController.value.isBuffering) {
+          // Display loading or buffering indicator
+          print("Buffering...");
+        }
+        if (_videoPlayerController.value.isInitialized) {
+          // Hide buffering indicator
+          print("Video Initialized");
+        }
+      });
   }
+
   void _seekBackward(seekDuration) async {
     // print('aaaaaaaaaa');
     // print(seekDuration);
 
-    final currentPosition =
-        await _videoPlayerController.getPosition();
+    final currentPosition = await _videoPlayerController.getPosition();
     if (currentPosition != null) {
       final newPosition = currentPosition - seekDuration;
       setState(() {
@@ -237,8 +236,7 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     // print('bbbbbbbbbbbbbbbbb');
     // print(_seekAmount);
 
-    final currentPosition =
-        await _videoPlayerController.value.position;
+    final currentPosition = await _videoPlayerController.value.position;
     setState(() {
       _videoPlayerController
           .seekTo(currentPosition + Duration(minutes: _seekAmount.toInt()));
@@ -258,6 +256,7 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return ActionHandler().handleArrowAndEnterAction3(
@@ -310,13 +309,13 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
                 child: Focus(
                   autofocus: true,
                   child: AspectRatio(
-                      aspectRatio: _videoPlayerController
-                          .value.aspectRatio,
-                      child:  VlcPlayer(
-                        controller: _videoPlayerController,
-                        aspectRatio: 16 / 9, // Adjust the aspect ratio if needed
-                        placeholder: Center(child: CircularProgressIndicator()),
-                      ),),
+                    aspectRatio: _videoPlayerController.value.aspectRatio,
+                    child: VlcPlayer(
+                      controller: _videoPlayerController,
+                      aspectRatio: 16 / 9, // Adjust the aspect ratio if needed
+                      placeholder: Center(child: CircularProgressIndicator()),
+                    ),
+                  ),
                 ),
               ),
             )),
