@@ -1,6 +1,7 @@
 import 'package:anetv/core/utils/app_router.dart';
 import 'package:anetv/core/utils/assets.dart';
 import 'package:anetv/featuers/home/data/models/catogry_itme_model.dart';
+import 'package:anetv/featuers/home/data/repo/all_movies_home_repo_impl.dart';
 import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/actionHandeler.dart';
 import 'package:anetv/featuers/home/presentation/views/widgets/catogry_itme_home.dart';
 import 'package:flutter/material.dart';
@@ -145,6 +146,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
+                  page = 1;
                   index == 0
                       ? ""
                       : GoRouter.of(context).push(AppRouter.kSearchView,
