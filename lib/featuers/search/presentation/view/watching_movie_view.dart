@@ -1,337 +1,135 @@
 import 'dart:io';
 
 import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/actionHandeler.dart';
-import 'package:better_player/better_player.dart';
+// import 'package:better_player/better_player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 // import 'package:flutter/services.dart';
-import 'package:video_player/video_player.dart';
-import 'package:video_player_win/video_player_win.dart';
-// import '../../../home/presentation/manager/all_movies_cubit/actionHandeler.dart';
-/*
-final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
+// import 'package:video_player/video_player.dart';
+// import 'package:video_player_win/video_player_win.dart';
 
-Future<void> transcodeMKV(String inputPath, String outputPath) async {
-  await _flutterFFmpeg
-      .execute('-i $inputPath -c:v libx264 -c:a aac $outputPath');
-}
 
-class WatchingMovieView extends StatefulWidget {
-  final String url;
+// class WatchingMovieView extends StatefulWidget {
+//   final String url;
+//
+//   WatchingMovieView({required this.url});
+//
+//   @override
+//   _WatchingMovieViewState createState() => _WatchingMovieViewState();
+// }
+//
+// class _WatchingMovieViewState extends State<WatchingMovieView> {
+//   late VlcPlayerController _videoPlayerController;
+//   static const _networkCachingMs = 2000;
+//   static const _subtitlesFontSize = 30;
+//   @override
+//   void initState() {
+//     print(widget.url);
+//     print("https://drive.usercontent.google.com/download?id=1YpYfukgujCuaaH1ClI2hXmOMEqMveGcM&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
+//     super.initState();
+//     _videoPlayerController = VlcPlayerController.network(
+//       "https://drive.usercontent.google.com/download?id=1YpYfukgujCuaaH1ClI2hXmOMEqMveGcM&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
+//       // hwAcc: HwAcc.auto,
+//       autoInitialize: true,
+//       autoPlay: true,
+//       options: VlcPlayerOptions(
+//         advanced: VlcAdvancedOptions([
+//           VlcAdvancedOptions.networkCaching(_networkCachingMs),
+//           VlcAdvancedOptions.liveCaching(2500),
+//         ]),
+//         subtitle: VlcSubtitleOptions([
+//           VlcSubtitleOptions.boldStyle(true),
+//           VlcSubtitleOptions.fontSize(_subtitlesFontSize),
+//           VlcSubtitleOptions.outlineColor(VlcSubtitleColor.yellow),
+//           VlcSubtitleOptions.outlineThickness(VlcSubtitleThickness.normal),
+//           // works only on externally added subtitles
+//           VlcSubtitleOptions.color(VlcSubtitleColor.navy),
+//         ]),
+//         // http: VlcHttpOptions([
+//         //   VlcHttpOptions.httpReconnect(true),
+//         // ]),
+//         // rtp: VlcRtpOptions([
+//         //   VlcRtpOptions.rtpOverRtsp(true),
+//         // ]),
+//       ),
+//     )..addListener(() {
+//         if (_videoPlayerController.value.isBuffering) {
+//           // Display loading or buffering indicator
+//           print("Buffering...");
+//         }
+//         if (_videoPlayerController.value.isInitialized) {
+//           // Hide buffering indicator
+//           print("Video Initialized");
+//         }
+//       });
+//   }
+//
+//
+//   @override
+//   void dispose() {
+//     super.dispose();
+//     _videoPlayerController.dispose(); // Don't forget to dispose
+//   }
+//
+//   void _seekBackwards() async {
+//     Duration currentPosition = _videoPlayerController.value.position;
+//     Duration newPosition = currentPosition - const Duration(seconds: 10);
+//
+//     if (newPosition < Duration.zero) {
+//       newPosition = Duration.zero; // Prevent seeking to negative time
+//     }
+//
+//     _videoPlayerController.seekTo(newPosition);
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return ActionHandler().handleArrowAndEnterAction(
+//       child: Actions(
+//         actions: <Type, Action<Intent>>{
+//           CloseButtonIntent: CallbackAction<CloseButtonIntent>(
+//             onInvoke: (intent) {
+//               return Navigator.pop(context);
+//             },
+//           ),
+//           RightButtonIntent: CallbackAction<RightButtonIntent>(
+//             onInvoke: (intent) {
+//               return _videoPlayerController.seekTo(const Duration(seconds: 10));
+//             },
+//           ),
+//           LeftButtonIntent: CallbackAction<LeftButtonIntent>(
+//             onInvoke: (intent) {
+//               return _seekBackwards();
+//             },
+//           ),
+//           EnterButtonIntent: CallbackAction<EnterButtonIntent>(
+//             onInvoke: (intent) {
+//               return _videoPlayerController.play();
+//             },
+//           ),
+//         },
+//         child: Scaffold(
+//           appBar: AppBar(
+//             title: Text('MKV Video Player'),
+//             // toolbarHeight: 0,
+//           ),
+//           body: Column(
+//             children: [
+//               VlcPlayer(
+//                 controller: _videoPlayerController,
+//                 aspectRatio: 16 / 9, // Adjust the aspect ratio if needed
+//                 placeholder: Center(child: CircularProgressIndicator()),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }
 
-  WatchingMovieView({required this.url});
-
-  @override
-  _WatchingMovieViewState createState() => _WatchingMovieViewState();
-}
-
-class _WatchingMovieViewState extends State<WatchingMovieView> {
-  late VlcPlayerController _videoPlayerController;
-  static const _networkCachingMs = 2000;
-  static const _subtitlesFontSize = 30;
-  static const _height = 400.0;
-  // Future<void> storeVideoUrlInFirestore(String downloadUrl) async {
-  //   try {
-  //     // Reference to Firestore collection
-  //     CollectionReference videosCollection = FirebaseFirestore.instance.collection('videos');
-  //
-  //     // Add the video URL to Firestore
-  //     await videosCollection.add({'videoUrl': downloadUrl});
-  //
-  //     print("Video URL saved to Firestore.");
-  //   } catch (e) {
-  //     print("Error saving video URL to Firestore: $e");
-  //   }
-  // }
-  final FlutterFFmpeg _flutterFFmpeg = FlutterFFmpeg();
-  bool isConverting = false;
-
-  // Replace with your Google Drive file ID
-  final String googleDriveFileId = '1PnhdO3hSOS_EipQXZbBRoKVVSNRyk8jG';
-  // Construct the direct download URL
-  String getDirectDownloadUrl(String fileId) {
-    return 'https://drive.google.com/uc?export=download&id=$fileId';
-  }
-
-  // Function to convert MKV video to MP4 on the fly
-  Future<void> convertMKVtoMP4(String fileId) async {
-    setState(() {
-      isConverting = true;
-    });
-
-    // Construct the URL for Google Drive video
-    final String inputUrl = getDirectDownloadUrl(fileId);
-
-    // Set up the path to save the MP4 file
-    final Directory appDocDir = await Directory.systemTemp.createTemp();
-    final String outputPath = '${appDocDir.path}/converted_video.mp4';
-
-    // FFmpeg command to transcode the stream directly
-    final String command =
-        '-i $inputUrl -c:v libx264 -c:a aac -strict experimental $outputPath';
-
-    // Execute the FFmpeg command to convert and stream the video
-    await _flutterFFmpeg.execute(command).then((rc) {
-      if (rc == 0) {
-        setState(() {
-          isConverting = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Video converted to MP4 successfully!')));
-      } else {
-        setState(() {
-          isConverting = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Conversion failed!')));
-      }
-    });
-  }
-
-  // Function to download the MKV video from Google Drive
-  // Future<String> downloadGoogleDriveVideo(String fileId) async {
-  //   final String downloadUrl =
-  //       'https://drive.google.com/uc?export=download&id=$fileId';
-  //   final response = await http.get(Uri.parse(downloadUrl));
-  //
-  //   if (response.statusCode == 200) {
-  //     // Save the video to a temporary file
-  //     final tempDir = await getTemporaryDirectory();
-  //     final tempFilePath = '${tempDir.path}/video.mkv';
-  //     File tempFile = File(tempFilePath);
-  //
-  //     // Write the downloaded video to a file
-  //     await tempFile.writeAsBytes(response.bodyBytes);
-  //     return tempFilePath;
-  //   } else {
-  //     throw Exception('Failed to download video from Google Drive');
-  //   }
-  // }
-
-  // Function to convert MKV to MP4
-  // Future<void> convertMKVtoMP4(String inputPath) async {
-  //   setState(() {
-  //     isConverting = true;
-  //   });
-  //
-  //   // Get the path to save the MP4 file
-  //   final tempDir = await getTemporaryDirectory();
-  //   final outputFilePath = '${tempDir.path}/converted_video.mp4';
-  //
-  //   // Execute the conversion command
-  //   final command =
-  //       '-i $inputPath -c:v libx264 -c:a aac -strict experimental $outputFilePath';
-  //   await _flutterFFmpeg.execute(command).then((rc) {
-  //     if (rc == 0) {
-  //       setState(() {
-  //         isConverting = false;
-  //       });
-  //       ScaffoldMessenger.of(context).showSnackBar(
-  //           SnackBar(content: Text('Video converted to MP4 successfully!')));
-  //     } else {
-  //       setState(() {
-  //         isConverting = false;
-  //       });
-  //       ScaffoldMessenger.of(context)
-  //           .showSnackBar(SnackBar(content: Text('Conversion failed!')));
-  //     }
-  //   });
-  // }
-
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  // Store Google Drive video link
-  Future<void> storeVideoLink(String videoLink) async {
-    try {
-      await _firestore.collection('videos').add({
-        'videoUrl': videoLink, // Storing Google Drive video URL
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-      print("Video link stored successfully");
-      _firestore.collection('videos').get().then((querySnapshot) {
-        for (var doc in querySnapshot.docs) {
-          String videoUrl = doc['videoUrl']; // Get stored Google Drive URL
-          VlcPlayerController.network(
-              videoUrl); // Set the Google Drive URL to the player
-          setState(() {
-            // Force rebuild to use the updated URL
-          });
-        }
-      }).catchError((e) {
-        print("Error retrieving video link: $e");
-      });
-    } catch (e) {
-      print("Error storing video link: $e");
-    }
-  }
-
-  @override
-  void initState() {
-    // Step 1: Download the video from Google Drive
-
-    // Example Google Drive link (replace with your actual link)
-    // String googleDriveLink = 'https://drive.google.com/file/d/1Uetbi3FWdEJMxcdzY9uLLRbSSqgDpIpI/preview';
-    //
-    // // Store the link in Firestore
-    // storeVideoLink(googleDriveLink);
-
-    print(widget.url);
-    print(widget.url
-        .replaceAll("/view?usp=drivesdk",
-            "/preview?autoplay=1&key=1-wNT6W0_vHfh3wAeS8rrJ6w")
-        .replaceAll("/view?usp=drive_link",
-            "/preview?autoplay=1&key=1-wNT6W0_vHfh3wAeS8rrJ6w"));
-    print(
-        "https://drive.google.com/uc?id=1Uetbi3FWdEJMxcdzY9uLLRbSSqgDpIpI&export=download");
-    print("object");
-    print(
-        "https://drive.google.com/uc?export=download&id=1Uetbi3FWdEJMxcdzY9uLLRbSSqgDpIpI");
-    super.initState();
-    _videoPlayerController = VlcPlayerController.network(
-      "https://drive.google.com/uc?export=download&id=1_D_aes6p5rLn-gUZXYTkGkrhKJFx3NU4",
-      // hwAcc: HwAcc.auto,
-      autoInitialize: true,
-      // options: VlcPlayerOptions(
-      //   advanced: VlcAdvancedOptions([
-      //     VlcAdvancedOptions.networkCaching(_networkCachingMs),
-      //     VlcAdvancedOptions.liveCaching(2500),
-      //   ]),
-      //   subtitle: VlcSubtitleOptions([
-      //     VlcSubtitleOptions.boldStyle(true),
-      //     VlcSubtitleOptions.fontSize(_subtitlesFontSize),
-      //     VlcSubtitleOptions.outlineColor(VlcSubtitleColor.yellow),
-      //     VlcSubtitleOptions.outlineThickness(VlcSubtitleThickness.normal),
-      //     // works only on externally added subtitles
-      //     VlcSubtitleOptions.color(VlcSubtitleColor.navy),
-      //   ]),
-      //   http: VlcHttpOptions([
-      //     VlcHttpOptions.httpReconnect(true),
-      //   ]),
-      //   rtp: VlcRtpOptions([
-      //     VlcRtpOptions.rtpOverRtsp(true),
-      //   ]),
-      // ),
-    )..addListener(() {
-        if (_videoPlayerController.value.isBuffering) {
-          // Display loading or buffering indicator
-          print("Buffering...");
-        }
-        if (_videoPlayerController.value.isInitialized) {
-          // Hide buffering indicator
-          print("Video Initialized");
-        }
-      });
-    print(
-        "https://drive.google.com/file/d/1PnhdO3hSOS_EipQXZbBRoKVVSNRyk8jG/preview");
-    // _videoPlayerController = VlcPlayerController.network(
-    //   "https://drive.google.com/uc?export=download&id=1_D_aes6p5rLn-gUZXYTkGkrhKJFx3NU4",
-
-    //   autoInitialize: true,
-    //   options: VlcPlayerOptions(
-    //     advanced: VlcAdvancedOptions([
-    //       VlcAdvancedOptions.networkCaching(_networkCachingMs),
-    //       VlcAdvancedOptions.liveCaching(2500),
-    //     ]),
-    //     subtitle: VlcSubtitleOptions([
-    //       VlcSubtitleOptions.boldStyle(true),
-    //       VlcSubtitleOptions.fontSize(_subtitlesFontSize),
-    //       VlcSubtitleOptions.outlineColor(VlcSubtitleColor.yellow),
-    //       VlcSubtitleOptions.outlineThickness(VlcSubtitleThickness.normal),
-    //       // works only on externally added subtitles
-    //       VlcSubtitleOptions.color(VlcSubtitleColor.navy),
-    //     ]),
-    //     http: VlcHttpOptions([
-    //       VlcHttpOptions.httpReconnect(true),
-    //     ]),
-    //     rtp: VlcRtpOptions([
-    //       VlcRtpOptions.rtpOverRtsp(true),
-    //     ]),
-    //   ),
-    // );
-    //
-    // _videoPlayerController.addOnInitListener(() async {
-    //   await _videoPlayerController.startRendererScanning();
-    // });
-    // _videoPlayerController.addOnRendererEventListener((type, id, name) {
-    //   debugPrint('OnRendererEventListener $type $id $name');
-    // });
-  }
-
-  // _videoPlayerController.play();
-  // _videoPlayerController.seekTo(Duration(seconds: 30));
-
-  @override
-  void dispose() {
-    super.dispose();
-    _videoPlayerController.dispose(); // Don't forget to dispose
-  }
-
-  // Function to go back by a specific duration (e.g., 10 seconds)
-  void _seekBackwards() async {
-    Duration currentPosition = _videoPlayerController.value.position;
-    Duration newPosition = currentPosition - const Duration(seconds: 10);
-
-    if (newPosition < Duration.zero) {
-      newPosition = Duration.zero; // Prevent seeking to negative time
-    }
-
-    _videoPlayerController.seekTo(newPosition);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return ActionHandler().handleArrowAndEnterAction(
-      child: Actions(
-        actions: <Type, Action<Intent>>{
-          CloseButtonIntent: CallbackAction<CloseButtonIntent>(
-            onInvoke: (intent) {
-              return Navigator.pop(context);
-            },
-          ),
-          RightButtonIntent: CallbackAction<RightButtonIntent>(
-            onInvoke: (intent) {
-              return _videoPlayerController.seekTo(const Duration(seconds: 10));
-            },
-          ),
-          LeftButtonIntent: CallbackAction<LeftButtonIntent>(
-            onInvoke: (intent) {
-              return _seekBackwards();
-            },
-          ),
-          EnterButtonIntent: CallbackAction<EnterButtonIntent>(
-            onInvoke: (intent) {
-              return _videoPlayerController.play();
-            },
-          ),
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text('MKV Video Player'),
-            // toolbarHeight: 0,
-          ),
-          body: Column(
-            children: [
-              VlcPlayer(
-                controller: _videoPlayerController,
-                aspectRatio: 16 / 9, // Adjust the aspect ratio if needed
-                placeholder: Center(child: CircularProgressIndicator()),
-              ),
-              // InkWell(
-              //     onTap: () async {
-              //       print('objectsssssssssssssss');
-              //       await convertMKVtoMP4(googleDriveFileId);
-              //       print(('Download & Convert MKV to MP4'));
-              //     },
-              //     child: Text("data"))
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-*/
 
 class WatchingMovieView extends StatefulWidget {
   final String url;
@@ -343,49 +141,93 @@ class WatchingMovieView extends StatefulWidget {
 }
 
 class _WatchingMovieViewState extends State<WatchingMovieView> {
-  late BetterPlayerController _betterPlayerController;
+  // late BetterPlayerController _betterPlayerController;
 
   @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   // Example Google Drive link (replace with your actual link)
+  //
+  //   _betterPlayerController = BetterPlayerController(
+  //     const BetterPlayerConfiguration(
+  //       aspectRatio: 16 / 9,
+  //       autoPlay: true,
+  //       looping: true,
+  //     ),
+  //   );
+  //
+  //   // Replace with your direct download link
+  //   // String videoUrl = widget.url;
+  //   _betterPlayerController.setupDataSource(
+  //     BetterPlayerDataSource(
+  //       BetterPlayerDataSourceType.network,
+  //       "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
+  //       liveStream: true,
+  //       // videoFormat: BetterPlayerVideoFormat.other,
+  //       cacheConfiguration: const BetterPlayerCacheConfiguration(
+  //         useCache: true,
+  //         // maxCacheSize: 100 * 1024 * 1024, // Cache up to 100MB
+  //         // maxCacheFileSize: 50 * 1024 * 1024, // Max single file cache size 50MB
+  //       ),
+  //     ),
+  //   );
+  // }
+  late VlcPlayerController _videoPlayerController;
+  static const _networkCachingMs = 2000;
+  static const _subtitlesFontSize = 30;
+  @override
   void initState() {
+    print(widget.url);
+    print("https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
     super.initState();
-
-    // Example Google Drive link (replace with your actual link)
-
-    _betterPlayerController = BetterPlayerController(
-      const BetterPlayerConfiguration(
-        aspectRatio: 16 / 9,
-        autoPlay: true,
-        looping: true,
+    _videoPlayerController = VlcPlayerController.network(
+      "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
+      // hwAcc: HwAcc.auto,
+      hwAcc: HwAcc.full,
+      autoInitialize: true,
+      autoPlay: true,
+      options: VlcPlayerOptions(
+        advanced: VlcAdvancedOptions([
+          VlcAdvancedOptions.networkCaching(_networkCachingMs),
+          VlcAdvancedOptions.liveCaching(2500),
+        ]),
+        subtitle: VlcSubtitleOptions([
+          VlcSubtitleOptions.boldStyle(true),
+          VlcSubtitleOptions.fontSize(_subtitlesFontSize),
+          VlcSubtitleOptions.outlineColor(VlcSubtitleColor.yellow),
+          VlcSubtitleOptions.outlineThickness(VlcSubtitleThickness.normal),
+          // works only on externally added subtitles
+          VlcSubtitleOptions.color(VlcSubtitleColor.navy),
+        ]),
+        // http: VlcHttpOptions([
+        //   VlcHttpOptions.httpReconnect(true),
+        // ]),
+        // rtp: VlcRtpOptions([
+        //   VlcRtpOptions.rtpOverRtsp(true),
+        // ]),
       ),
-    );
-
-    // Replace with your direct download link
-    // String videoUrl = widget.url;
-    _betterPlayerController.setupDataSource(
-      BetterPlayerDataSource(
-        BetterPlayerDataSourceType.network,
-        "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
-        liveStream: true,
-        // videoFormat: BetterPlayerVideoFormat.other,
-        cacheConfiguration: const BetterPlayerCacheConfiguration(
-          useCache: true,
-          // maxCacheSize: 100 * 1024 * 1024, // Cache up to 100MB
-          // maxCacheFileSize: 50 * 1024 * 1024, // Max single file cache size 50MB
-        ),
-      ),
-    );
+    )..addListener(() {
+      if (_videoPlayerController.value.isBuffering) {
+        // Display loading or buffering indicator
+        print("Buffering...");
+      }
+      if (_videoPlayerController.value.isInitialized) {
+        // Hide buffering indicator
+        print("Video Initialized");
+      }
+    });
   }
-
   void _seekBackward(seekDuration) async {
     // print('aaaaaaaaaa');
     // print(seekDuration);
 
     final currentPosition =
-        await _betterPlayerController.videoPlayerController!.position;
+        await _videoPlayerController.getPosition();
     if (currentPosition != null) {
-      final newPosition = currentPosition! - seekDuration;
+      final newPosition = currentPosition - seekDuration;
       setState(() {
-        _betterPlayerController
+        _videoPlayerController
             .seekTo(newPosition > Duration.zero ? newPosition : Duration.zero);
       });
     }
@@ -396,31 +238,26 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     // print(_seekAmount);
 
     final currentPosition =
-        await _betterPlayerController.videoPlayerController!.position;
+        await _videoPlayerController.value.position;
     setState(() {
-      _betterPlayerController
-          .seekTo(currentPosition! + Duration(minutes: _seekAmount.toInt()));
+      _videoPlayerController
+          .seekTo(currentPosition + Duration(minutes: _seekAmount.toInt()));
     });
   }
 
   void togglePlayPause() {
-    if (_betterPlayerController.videoPlayerController!.value.isPlaying) {
+    if (_videoPlayerController.value.isPlaying) {
       // print('cccccccccccc');
       setState(() {
-        _betterPlayerController.pause();
+        _videoPlayerController.pause();
       });
     } else {
       // print('dddddddddd');
       setState(() {
-        _betterPlayerController.play();
+        _videoPlayerController.play();
       });
     }
   }
-
-  // final String videoUrl = "https://drive.google.com/file/d/1PnhdO3hSOS_EipQXZbBRoKVVSNRyk8jG/preview"; // Replace with your MKV file URL
-  // final String videoUrl =
-  //     "https://drive.google.com/file/d/1DVjy2aY7ckmUzVZMgaLdoC9cbMFbIJ9V/view?usp=drivesdk";
-  // Replace with your MKV file URL
   @override
   Widget build(BuildContext context) {
     return ActionHandler().handleArrowAndEnterAction3(
@@ -473,11 +310,13 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
                 child: Focus(
                   autofocus: true,
                   child: AspectRatio(
-                      aspectRatio: _betterPlayerController
-                          .videoPlayerController!.value.aspectRatio,
-                      child: BetterPlayer(
-                        controller: _betterPlayerController,
-                      )),
+                      aspectRatio: _videoPlayerController
+                          .value.aspectRatio,
+                      child:  VlcPlayer(
+                        controller: _videoPlayerController,
+                        aspectRatio: 16 / 9, // Adjust the aspect ratio if needed
+                        placeholder: Center(child: CircularProgressIndicator()),
+                      ),),
                 ),
               ),
             )),
