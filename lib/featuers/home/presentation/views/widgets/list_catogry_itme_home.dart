@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../search/presentation/view/widget/custom_search_text_field.dart';
+import '../../../../search/presentation/view/widget/search.dart';
 
 class ListCatogryItmeHome extends StatefulWidget {
   const ListCatogryItmeHome({super.key});
@@ -42,36 +43,36 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
         image: AssetsData.movTvSeriesies,
         title: 'Tv-series',
         color: Colors.black,
-        catogry: 'https://alaanetstreaming.com/api/series/'),
+        catogry: 'https://alaanetstreaming.com/api/series/?page=Page'),
     CatogryItmeModel(
         image: AssetsData.kidsFamily,
         title: 'Kids & Family',
         catogry:
-            'https://alaanetstreaming.com/api/series/?category=Kids-family',
+            'https://alaanetstreaming.com/api/series/?category=Kids-family&page=Page',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.translatedTurkishSeries,
         title: 'مسلسلات تركية مترجمة',
         catogry:
-            'https://alaanetstreaming.com/api/series/?category=%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA%20%D8%AA%D8%B1%D9%83%D9%8A%D8%A9%20%D9%85%D8%AA%D8%B1%D8%AC%D9%85%D8%A9',
+            'https://alaanetstreaming.com/api/series/?category=%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA%20%D8%AA%D8%B1%D9%83%D9%8A%D8%A9%20%D9%85%D8%AA%D8%B1%D8%AC%D9%85%D8%A9&page=Page',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.dubbedTurkishSeries,
         title: 'مسلسلات تركية مدبلجة',
         catogry:
-            'https://alaanetstreaming.com/api/series/?category=%D8%AA%D8%B1%D9%83%D9%8A-%D9%85%D8%AF%D8%A8%D9%84%D8%AC',
+            'https://alaanetstreaming.com/api/series/?category=%D8%AA%D8%B1%D9%83%D9%8A-%D9%85%D8%AF%D8%A8%D9%84%D8%AC&page=Page',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.arabicSeries,
         title: 'مسلسلات عربية',
         catogry:
-            'https://alaanetstreaming.com/api/series/?category=%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA%20%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9',
+            'https://alaanetstreaming.com/api/series/?category=%D9%85%D8%B3%D9%84%D8%B3%D9%84%D8%A7%D8%AA%20%D8%B9%D8%B1%D8%A8%D9%8A%D8%A9&page=Page',
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.cartoonDubbed,
         title: 'كرتون مدبلج',
         catogry:
-            'https://alaanetstreaming.com/api/series/?category=%D8%B1%D8%B3%D9%88%D9%85-%D9%85%D8%AF%D8%A8%D9%84%D8%AC%D8%A9',
+            'https://alaanetstreaming.com/api/series/?category=%D8%B1%D8%B3%D9%88%D9%85-%D9%85%D8%AF%D8%A8%D9%84%D8%AC%D8%A9&page=Page',
         color: Colors.black),
   ];
   var i = 0;
@@ -144,8 +145,10 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
             itemBuilder: (context, index) {
               return InkWell(
                 onTap: () {
-                  index==0?"":  GoRouter.of(context)
-                      .push(AppRouter.kSearchView, extra: listCatogry[index]);
+                  index == 0
+                      ? ""
+                      : GoRouter.of(context).push(AppRouter.kSearchView,
+                          extra: listCatogry[index]);
                 },
                 child: Padding(
                   padding: const EdgeInsetsDirectional.only(
@@ -173,8 +176,8 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
                                                         : index == 7
                                                             ? _focusNode9!
                                                             : index == 8
-                                                            ? _focusNode10!
-                                                            : _focusNode1!,
+                                                                ? _focusNode10!
+                                                                : _focusNode1!,
                             index == 9 ? 0 : index + 1);
                       }),
                       UpButtonIntent:
@@ -206,9 +209,12 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
                       }),
                       EnterButtonIntent: CallbackAction<EnterButtonIntent>(
                         onInvoke: (intent) {
-                          index==0?"":
-                          GoRouter.of(context).push(AppRouter.kSearchView,
-                              extra: listCatogry[index]);
+                          print("index");
+                          print(index);
+                          index == 0
+                              ? GoRouter.of(context).push(AppRouter.kSearch)
+                              : GoRouter.of(context).push(AppRouter.kSearchView,
+                                  extra: listCatogry[index]);
                           return listCatogry[index].color;
                         },
                       )

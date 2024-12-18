@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class MovieModel {
   final int id;
   final String? title;
-  final String? content;
+  // final String? content;
   final String? video_id;
   final String? thumbnail;
   final String embedLink;
-  final List<String> categories;
-   final List<String>? tags;
+  // final List<String> categories;
+   // final List<String>? tags;
   final String? type;
   Color? color = Colors.transparent;
 
@@ -16,12 +16,12 @@ class MovieModel {
     required this.id,
     required this.title,
     required this.video_id,
-    required this.content,
+    // required this.content,
     this.thumbnail,
     this.color,
     required this.embedLink,
-    required this.categories,
-      required this.tags,
+    // required this.categories,
+      // required this.tags,
     required this.type,
   });
 
@@ -31,13 +31,13 @@ class MovieModel {
       id: json['id'],
       title: json['title']?? '',
       video_id: json['video_id']?? '',
-      content: json['content'] ?? '',
+      // content: json['content'] ?? '',
       thumbnail: json['thumbnail'] != null && json['thumbnail'] != false
           ? json['thumbnail']
           : null,
       embedLink: json['embed_link']?? '',
-      categories: List<String>.from(json['categories']),
-        tags: List<String>.from(json['tags']??[""]),
+      // categories: List<String>.from(json['categories']),
+        // tags: List<String>.from(json['tags']??[""]),
       type: json['type'],
     );
   }
@@ -47,12 +47,12 @@ class MovieModel {
     return {
       'id': id,
       'title': title,
-      'content': content,
+      // 'content': content,
       'thumbnail': thumbnail,
       'video_id': video_id,
       'embed_link': embedLink,
-      'categories': categories,
-       'tags': tags,
+      // 'categories': categories,
+       // 'tags': tags,
       'type': type,
     };
   }

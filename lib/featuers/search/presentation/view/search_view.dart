@@ -6,13 +6,14 @@ import '../../../home/data/models/catogry_itme_model.dart';
 import '../../../home/presentation/manager/all_movies_cubit/actionHandeler.dart';
 
 class SearchView extends StatelessWidget {
-  const SearchView({
+    SearchView({
     super.key,
     required this.catogry,
+    this.cat,
   });
 
   final CatogryItmeModel catogry;
-
+var cat;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,6 +29,7 @@ class SearchView extends StatelessWidget {
           child: SafeArea(
               child: SearchViewBody(
             category: catogry,
+                cat: cat
           )),
         ),
       ),

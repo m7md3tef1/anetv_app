@@ -7,12 +7,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../../core/utils/styels.dart';
+import '../../../../home/data/repo/all_movies_home_repo_impl.dart';
 import '../../../../home/presentation/manager/all_movies_cubit/actionHandeler.dart';
 import '../../../../home/presentation/manager/all_movies_cubit/all_movies_cubit.dart';
 
 class MovesList extends StatefulWidget {
-  const MovesList({super.key});
-
+  MovesList(this.category, {super.key});
+  var category;
   @override
   State<MovesList> createState() => _MovesListState();
 }
@@ -96,133 +98,252 @@ class _MovesListState extends State<MovesList>
         return SizedBox(
           width: width,
           height: height,
-          child: GridView.builder(
-            // shrinkWrap: true,
-            controller: _scrollController,
-            padding: EdgeInsetsDirectional.zero,
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, mainAxisExtent: 200),
-            scrollDirection: Axis.vertical,
-            physics: const AlwaysScrollableScrollPhysics(),
-            itemCount: allMoves.length,
-            itemBuilder: (context, index) => Padding(
-              padding: const EdgeInsets.only(bottom: 10, left: 5, right: 5),
-              child: InkWell(
-                onTap: () {
-                  print(jsonEncode(allMoves[index]));
-                  GoRouter.of(context).push(AppRouter.kWatchingMovieView,
-                      extra: allMoves[index].video_id);
-                },
-                child: Actions(
-                  actions: <Type, Action<Intent>>{
-                    DownButtonIntent: CallbackAction<DownButtonIntent>(
-                      onInvoke: (intent) {
-                        return changFocus(
-                            context,
-                            _focusNode[allMoves.last.id == allMoves[index].id
-                                ? 0
-                                : index + 1]!,
-                            allMoves,
-                            allMoves.last.id == allMoves[index].id
-                                ? 0
-                                : index + 1);
-                      },
+          child: Column(
+            children: [
+              // const SizedBox(height: 10),
+              widget.category == "search"
+                  ? const SizedBox()
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Page Number = ${page.toString()}",
+                          style: Styels.textStyle18,
+                        ),
+                      ],
                     ),
-                    // ScrollIntent: ScrollAction(_scrollController),
-                    UpButtonIntent: CallbackAction<UpButtonIntent>(
-                      onInvoke: (intent) {
-                        return changFocus(
-                            context,
-                            _focusNode[allMoves.first.id == allMoves[index].id
-                                ? 0
-                                : index - 1]!,
-                            allMoves,
-                            allMoves.first.id == allMoves[index].id
-                                ? 0
-                                : index - 1);
-                      },
-                    ),
-                    EnterButtonIntent: CallbackAction<EnterButtonIntent>(
-                      onInvoke: (intent) {
-                        print(jsonEncode(allMoves[index]));
-                        return GoRouter.of(context).push(
-                            AppRouter.kWatchingMovieView,
-                            extra: allMoves[index].video_id);
-                      },
-                    ),
-                  },
-                  child: Focus(
-                    focusNode: _focusNode[index],
-                    autofocus: true,
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                          start: 5.0, end: 5, bottom: 10),
-                      child: Container(
-                        width: 300,
-                        height: 300,
-                        // color: allMoves[index].color,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(color: Colors.white, width: 2),
-                            color: allMoves[index].color),
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Expanded(
-                                child: SizedBox(
-                                  // width: 100,
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Text(
-                                      allMoves[index].title!,
-                                      textAlign: TextAlign.start,
-                                      maxLines: 5,
-                                      style: TextStyle(
-                                          fontSize: allMoves[index].color ==
-                                                  Colors.white
-                                              ? 20
-                                              : 15,
-                                          color: allMoves[index].color ==
-                                                  Colors.white
-                                              ? Colors.black
-                                              : Colors.white,
-                                          fontWeight: FontWeight.bold),
+              const SizedBox(height: 10),
+              Expanded(
+                child: allMoves.isEmpty
+                    ? Actions(
+                        actions: <Type, Action<Intent>>{
+                          LeftButtonIntent: CallbackAction<LeftButtonIntent>(
+                            onInvoke: (intent) {
+                              return page > 1
+                                  ? {
+                                      --page,
+                                      BlocProvider.of<AllMoviesCubit>(context)
+                                          .fetchMovie(catogry: widget.category),
+                                    }
+                                  : "";
+                            },
+                          ),
+                        },
+                        child: Focus(
+                          focusNode: _focusNode[1],
+                          autofocus: true,
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.only(
+                                start: 5.0, end: 5, bottom: 10),
+                            child: Container(
+                              width: 300,
+                              height: 300,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  // border: Border.all(
+                                  //     color: Colors.white, width: 2),
+                                  color: Colors.transparent),
+                              child: const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Not Found Videos",
+                                    textAlign: TextAlign.start,
+                                    maxLines: 5,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : GridView.builder(
+                        shrinkWrap: true,
+                        controller: _scrollController,
+                        padding: EdgeInsetsDirectional.zero,
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2, mainAxisExtent: 200),
+                        scrollDirection: Axis.vertical,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        itemCount: allMoves.length,
+                        itemBuilder: (context, index) => Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 10, left: 5, right: 5),
+                          child: InkWell(
+                            onTap: () {
+                              // print(jsonEncode(allMoves[index]));
+                              GoRouter.of(context).push(
+                                  AppRouter.kWatchingMovieView,
+                                  extra: allMoves[index].video_id);
+                            },
+                            child: Actions(
+                              actions: <Type, Action<Intent>>{
+                                DownButtonIntent:
+                                    CallbackAction<DownButtonIntent>(
+                                  onInvoke: (intent) {
+                                    return changFocus(
+                                        context,
+                                        _focusNode[allMoves.last.id ==
+                                                allMoves[index].id
+                                            ? 0
+                                            : index + 1]!,
+                                        allMoves,
+                                        allMoves.last.id == allMoves[index].id
+                                            ? 0
+                                            : index + 1);
+                                  },
+                                ),
+                                UpButtonIntent: CallbackAction<UpButtonIntent>(
+                                  onInvoke: (intent) {
+                                    return changFocus(
+                                        context,
+                                        _focusNode[allMoves.first.id ==
+                                                allMoves[index].id
+                                            ? 0
+                                            : index - 1]!,
+                                        allMoves,
+                                        allMoves.first.id == allMoves[index].id
+                                            ? 0
+                                            : index - 1);
+                                  },
+                                ),
+                                RightButtonIntent:
+                                    CallbackAction<RightButtonIntent>(
+                                  onInvoke: (intent) {
+                                    return widget.category == "search"
+                                        ? ""
+                                        : {
+                                            ++page,
+                                            BlocProvider.of<AllMoviesCubit>(
+                                                    context)
+                                                .fetchMovie(
+                                                    catogry: widget.category),
+                                          };
+                                  },
+                                ),
+                                LeftButtonIntent:
+                                    CallbackAction<LeftButtonIntent>(
+                                  onInvoke: (intent) {
+                                    return widget.category == "search"
+                                        ? ""
+                                        : page > 1
+                                            ? {
+                                                --page,
+                                                BlocProvider.of<AllMoviesCubit>(
+                                                        context)
+                                                    .fetchMovie(
+                                                        catogry:
+                                                            widget.category),
+                                              }
+                                            : "";
+                                  },
+                                ),
+                                // ScrollIntent: ScrollAction(_scrollController),
+
+                                EnterButtonIntent:
+                                    CallbackAction<EnterButtonIntent>(
+                                  onInvoke: (intent) {
+                                    print(jsonEncode(allMoves[index]));
+                                    return GoRouter.of(context).push(
+                                        AppRouter.kWatchingMovieView,
+                                        extra: allMoves[index].video_id);
+                                  },
+                                ),
+                              },
+                              child: Focus(
+                                focusNode: _focusNode[index],
+                                autofocus: true,
+                                child: Padding(
+                                  padding: const EdgeInsetsDirectional.only(
+                                      start: 5.0, end: 5, bottom: 10),
+                                  child: Container(
+                                    width: 300,
+                                    height: 300,
+                                    // color: allMoves[index].color,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(
+                                            color: Colors.white, width: 2),
+                                        color: allMoves[index].color),
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: SizedBox(
+                                              // width: 100,
+                                              child: Padding(
+                                                padding:
+                                                    const EdgeInsets.all(5.0),
+                                                child: Text(
+                                                  allMoves[index].title!,
+                                                  textAlign: TextAlign.start,
+                                                  maxLines: 5,
+                                                  style: TextStyle(
+                                                      fontSize: allMoves[index]
+                                                                  .color ==
+                                                              Colors.white
+                                                          ? 20
+                                                          : 15,
+                                                      color: allMoves[index]
+                                                                  .color ==
+                                                              Colors.white
+                                                          ? Colors.black
+                                                          : Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 10),
+                                          CachedNetworkImage(
+                                            imageUrl:
+                                                '${allMoves[index].thumbnail}',
+                                            width: 250,
+                                            height: 250,
+                                            fit: BoxFit.fill,
+                                            imageBuilder:
+                                                (context, imageProvider) =>
+                                                    Container(
+                                              width: 250,
+                                              height: 250,
+                                              decoration: BoxDecoration(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                                image: DecorationImage(
+                                                    image: imageProvider,
+                                                    fit: BoxFit.fill),
+                                              ),
+                                            ),
+                                            placeholder: (context, url) =>
+                                                const Center(
+                                                    child:
+                                                        CircularProgressIndicator()),
+                                            errorWidget: (context, url,
+                                                    error) =>
+                                                const Center(
+                                                    child: Icon(Icons.error)),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
-                              SizedBox(width: 10),
-                              CachedNetworkImage(
-                                imageUrl: '${allMoves[index].thumbnail}',
-                                width: 250,
-                                height: 250,
-                                fit: BoxFit.fill,
-                                imageBuilder: (context, imageProvider) =>
-                                    Container(
-                                  width: 250,
-                                  height: 250,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    image: DecorationImage(
-                                        image: imageProvider, fit: BoxFit.fill),
-                                  ),
-                                ),
-                                placeholder: (context, url) => const Center(
-                                    child: CircularProgressIndicator()),
-                                errorWidget: (context, url, error) =>
-                                    const Center(child: Icon(Icons.error)),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
-                ),
               ),
-            ),
+            ],
           ),
         );
       } else if (state is AllMoviesFailure) {

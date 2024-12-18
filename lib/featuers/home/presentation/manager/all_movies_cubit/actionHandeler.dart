@@ -17,6 +17,7 @@ class ActionHandler {
   Widget handleArrowAndEnterAction({required Widget child}) {
     return Shortcuts(shortcuts: <LogicalKeySet, Intent>{
       LogicalKeySet(LogicalKeyboardKey.select): EnterButtonIntent(),
+      LogicalKeySet(LogicalKeyboardKey.enter): EnterButtonIntent(),
       LogicalKeySet(LogicalKeyboardKey.arrowRight): RightButtonIntent(),
       LogicalKeySet(LogicalKeyboardKey.arrowLeft): LeftButtonIntent(),
       LogicalKeySet(LogicalKeyboardKey.arrowDown): DownButtonIntent(),

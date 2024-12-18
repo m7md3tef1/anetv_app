@@ -18,3 +18,17 @@ final class AllMoviesSuccess extends AllMoviesState {
   AllMoviesSuccess(this.allMovies);
 }
 
+final class AllSearchLoading extends AllMoviesState {}
+
+final class AllSearchFailure extends AllMoviesState {
+  final String errorMassage;
+
+  AllSearchFailure(this.errorMassage);
+}
+
+final class AllSearchSuccess extends AllMoviesState {
+  final List<MovieModel> allSearch;
+
+  AllSearchSuccess(this.allSearch);
+}
+
