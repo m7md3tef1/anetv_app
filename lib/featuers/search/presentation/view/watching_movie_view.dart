@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/actionHandeler.dart';
+// import 'package:cloudinary_public/cloudinary_public.dart';
 // import 'package:better_player/better_player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -128,6 +129,60 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 //     );
 //   }
 // }
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:path/path.dart'; // For file extension
+import 'dart:convert';
+
+// Future<void> uploadVideoToCloudinary(String filePath) async {
+//   const cloudName = 'daskfjvou';
+//   const apiKey = '773122628716277';
+//   const apiSecret = 'MZzM4Nw34FFBNoTdM8K2XCF6i7M';
+//   final url = 'https://api.cloudinary.com/v1_1/$cloudName/video/upload';
+//
+//   try {
+//     // Create multipart request
+//     var request = http.MultipartRequest('POST', Uri.parse(url));
+//     request.fields['upload_preset'] = 'your-upload-preset'; // Optional preset
+//     request.fields['api_key'] = apiKey;
+//
+//     // Add file
+//     var file = await http.MultipartFile.fromPath('file', filePath);
+//     request.files.add(file);
+//
+//     // Send request
+//     var response = await request.send();
+//     print("sssssssssssssssssssssss");
+//     print(response.statusCode);
+//     if (response.statusCode == 200) {
+//       print("sssssssssssssssssssssss");
+//       var responseData = await http.Response.fromStream(response);
+//       var jsonData = json.decode(responseData.body);
+//       print("Uploaded Video URL: ${jsonData['url']}");
+//     } else {
+//       print("Failed to upload video. Status: ${response.statusCode}");
+//     }
+//   } catch (e) {
+//     print("Error uploading video: $e");
+//   }
+// }
+
+// Future<CloudinaryResponse> uploadFileOnCloudinary(
+//     {String? filePath, CloudinaryResourceType? resourceType}) async {
+//   String result;
+//   CloudinaryResponse response;
+//   try {
+//     var cloudinary =
+//         CloudinaryPublic('CLOUD_NAME', 'UPLOAD_PRESET', cache: false);
+//     response = await cloudinary.uploadFile(
+//       CloudinaryFile.fromFile(filePath!, resourceType: resourceType!),
+//     );
+//   } on CloudinaryException catch (e, s) {
+//     print(e.message);
+//     print(e.request);
+//   }
+//   return response;
+// }
 
 class WatchingMovieView extends StatefulWidget {
   final String url;
@@ -180,6 +235,8 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     print(
         "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
     super.initState();
+    // uploadVideoToCloudinary(
+        // "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
     _videoPlayerController = VlcPlayerController.network(
       "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
       // hwAcc: HwAcc.auto,

@@ -8,9 +8,11 @@ import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/all_mo
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-
+import 'package:cloudinary_url_gen/cloudinary.dart';
+import 'package:cloudinary_flutter/image/cld_image.dart';
+import 'package:cloudinary_flutter/cloudinary_context.dart';
 // import 'package:media_kit/media_kit.dart';
-
+// var cloudinary=Cloudinary.fromStringUrl('cloudinary://API_KEY:API_SECRET@CLOUD_NAME');
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -18,6 +20,7 @@ void main() async {
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );
   setup();
+  // cloudinary.config.urlConfig.secure = true;
   // MediaKit.ensureInitialized();
   runApp(const MyApp());
 }
