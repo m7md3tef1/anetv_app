@@ -134,6 +134,8 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart'; // For file extension
 import 'dart:convert';
 
+import 'package:webview_flutter/webview_flutter.dart';
+
 // Future<void> uploadVideoToCloudinary(String filePath) async {
 //   const cloudName = 'daskfjvou';
 //   const apiKey = '773122628716277';
@@ -227,7 +229,10 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
   //   );
   // }
   late VlcPlayerController _videoPlayerController;
-  static const _networkCachingMs = 2000;
+  double _currentPosition = 0.0;
+  double _videoDuration = 0.0;
+  bool _isDragging = false;
+  static const _networkCachingMs = 3000;
   static const _subtitlesFontSize = 30;
   @override
   void initState() {
@@ -236,34 +241,41 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
         "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
     super.initState();
     // uploadVideoToCloudinary(
-        // "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
+    // "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
     _videoPlayerController = VlcPlayerController.network(
       "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
       // hwAcc: HwAcc.auto,
-      hwAcc: HwAcc.disabled,
+      hwAcc: HwAcc.full,
       autoInitialize: true,
+      allowBackgroundPlayback: false,
       autoPlay: true,
-      // options: VlcPlayerOptions(
-      //   advanced: VlcAdvancedOptions([
-      //     VlcAdvancedOptions.networkCaching(_networkCachingMs),
-      //     // VlcAdvancedOptions.liveCaching(2500),
-      //   ]),
-      // subtitle: VlcSubtitleOptions([
-      //   VlcSubtitleOptions.boldStyle(true),
-      //   VlcSubtitleOptions.fontSize(_subtitlesFontSize),
-      //   VlcSubtitleOptions.outlineColor(VlcSubtitleColor.yellow),
-      //   VlcSubtitleOptions.outlineThickness(VlcSubtitleThickness.normal),
-      //   // works only on externally added subtitles
-      //   VlcSubtitleOptions.color(VlcSubtitleColor.navy),
-      // ]),
-      //
-      // http: VlcHttpOptions([
-      //   VlcHttpOptions.httpReconnect(true),
-      // ]),
-      // rtp: VlcRtpOptions([
-      //   VlcRtpOptions.rtpOverRtsp(true),
-      // ]),
-      // ),
+      options: VlcPlayerOptions(
+        advanced: VlcAdvancedOptions([
+          // VlcAdvancedOptions.networkCaching(_networkCachingMs),
+          VlcAdvancedOptions.liveCaching(3000),
+          VlcAdvancedOptions.clockSynchronization(0),
+          VlcAdvancedOptions.clockJitter(0),
+          VlcAdvancedOptions.fileCaching(3000),
+        ]),
+        // video: VlcVideoOptions([
+        //   VlcVideoOptions.skipFrames(true),
+        //   VlcVideoOptions.dropLateFrames(true),
+        // ]),
+        subtitle: VlcSubtitleOptions([
+          VlcSubtitleOptions.boldStyle(true),
+          VlcSubtitleOptions.fontSize(_subtitlesFontSize),
+          VlcSubtitleOptions.outlineColor(VlcSubtitleColor.yellow),
+          VlcSubtitleOptions.outlineThickness(VlcSubtitleThickness.normal),
+          // works only on externally added subtitles
+          VlcSubtitleOptions.color(VlcSubtitleColor.navy),
+        ]),
+        http: VlcHttpOptions([
+          VlcHttpOptions.httpReconnect(true),
+        ]),
+        rtp: VlcRtpOptions([
+          VlcRtpOptions.rtpOverRtsp(true),
+        ]),
+      ),
     )..addListener(() {
         if (_videoPlayerController.value.isBuffering) {
           // Display loading or buffering indicator
@@ -276,6 +288,14 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
         if (_videoPlayerController.value.isPlaying) {
           // Hide buffering indicator
           print("Video isPlaying");
+        }
+        if (!_isDragging) {
+          setState(() {
+            _currentPosition =
+                _videoPlayerController.value.position.inSeconds.toDouble();
+            _videoDuration =
+                _videoPlayerController.value.duration.inSeconds.toDouble();
+          });
         }
       });
   }
@@ -320,73 +340,146 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
   }
 
   @override
+  Future<void> dispose() async {
+    super.dispose();
+    await _videoPlayerController.stopRecording();
+    await _videoPlayerController.stopRendererScanning();
+    await _videoPlayerController.dispose();
+  }
+
+  void _onSliderChanged(double value) {
+    setState(() {
+      _currentPosition = value;
+    });
+  }
+
+  void _onSliderReleased(double value) {
+    _videoPlayerController.seekTo(Duration(seconds: value.toInt()));
+    setState(() {
+      _isDragging = false;
+    });
+  }
+
+  void _onSliderDragStart(double value) {
+    setState(() {
+      _isDragging = true;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return ActionHandler().handleArrowAndEnterAction3(
-      child: Scaffold(
-        body: SizedBox(
-            height: double.infinity,
-            width: double.infinity,
-            child: RawKeyboardListener(
-              focusNode: FocusNode(),
-              child: Actions(
-                actions: <Type, Action<Intent>>{
-                  CloseButtonIntent: CallbackAction<CloseButtonIntent>(
-                    onInvoke: (intent) {
-                      Navigator.pop(context);
-                      return Navigator.pop(context);
-                    },
-                  ),
-                  UpButtonIntent: CallbackAction<UpButtonIntent>(
-                    onInvoke: (intent) {
-                      _seekForward(10);
-                      return _seekForward;
-                    },
-                  ),
-                  DownButtonIntent: CallbackAction<DownButtonIntent>(
-                    onInvoke: (intent) {
-                      // print("sssssssssssssssssssssssssssssssssssssssss");
-                      _seekBackward(const Duration(minutes: 10));
-                      return _seekBackward;
-                    },
-                  ),
-                  EnterButtonIntent: CallbackAction<EnterButtonIntent>(
-                    onInvoke: (intent) {
-                      togglePlayPause();
-                      return togglePlayPause;
-                    },
-                  ),
-                  RightButtonIntent: CallbackAction<RightButtonIntent>(
-                    onInvoke: (intent) {
-                      _seekForward(1);
-                      return _seekForward;
-                    },
-                  ),
-                  LeftButtonIntent: CallbackAction<LeftButtonIntent>(
-                    onInvoke: (intent) {
-                      _seekBackward(const Duration(minutes: 1));
-                      return _seekBackward;
-                    },
-                  ),
-                },
-                child: Focus(
-                  autofocus: true,
-                  child: AspectRatio(
-                    aspectRatio: _videoPlayerController.value.aspectRatio,
-                    child: VlcPlayer(
-                      controller: _videoPlayerController,
-                      aspectRatio: 16 / 9, // Adjust the aspect ratio if needed
-                      placeholder: Center(child: CircularProgressIndicator()),
+        child: Scaffold(
+      body: SizedBox(
+        height: double.infinity,
+        width: double.infinity,
+        child: RawKeyboardListener(
+          focusNode: FocusNode(),
+          child: Actions(
+              actions: <Type, Action<Intent>>{
+                CloseButtonIntent: CallbackAction<CloseButtonIntent>(
+                  onInvoke: (intent) {
+                    Navigator.pop(context);
+                    return true;
+                  },
+                ),
+                UpButtonIntent: CallbackAction<UpButtonIntent>(
+                  onInvoke: (intent) {
+                    _seekForward(10);
+                    return _seekForward;
+                  },
+                ),
+                DownButtonIntent: CallbackAction<DownButtonIntent>(
+                  onInvoke: (intent) {
+                    // print("sssssssssssssssssssssssssssssssssssssssss");
+                    _seekBackward(const Duration(minutes: 10));
+                    return _seekBackward;
+                  },
+                ),
+                EnterButtonIntent: CallbackAction<EnterButtonIntent>(
+                  onInvoke: (intent) {
+                    togglePlayPause();
+                    return togglePlayPause;
+                  },
+                ),
+                RightButtonIntent: CallbackAction<RightButtonIntent>(
+                  onInvoke: (intent) {
+                    _seekForward(1);
+                    return _seekForward;
+                  },
+                ),
+                LeftButtonIntent: CallbackAction<LeftButtonIntent>(
+                  onInvoke: (intent) {
+                    _seekBackward(const Duration(minutes: 1));
+                    return _seekBackward;
+                  },
+                ),
+              },
+              child: Focus(
+                autofocus: true,
+                child: Column(children: [
+                  Expanded(
+                    child: AspectRatio(
+                      aspectRatio: _videoPlayerController.value.aspectRatio,
+                      child: VlcPlayer(
+                        controller: _videoPlayerController,
+                        aspectRatio:
+                            16 / 9, // Adjust the aspect ratio if needed
+                        placeholder:
+                            const Center(child: CircularProgressIndicator()),
+                      ),
+                    ),
+                  ), // Video Time Slider
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                    ),
+                    child: Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              _formatDuration(
+                                  Duration(seconds: _currentPosition.toInt())),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                            Text(
+                              _formatDuration(
+                                  Duration(seconds: _videoDuration.toInt())),
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          ],
+                        ),
+                        Slider(
+                          value: _currentPosition,
+                          min: 0,
+                          max: _videoDuration,
+                          onChanged: _onSliderChanged,
+                          onChangeStart: _onSliderDragStart,
+                          onChangeEnd: _onSliderReleased,
+                          activeColor: Colors.blue,
+                          inactiveColor: Colors.grey,
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ),
-            )),
-        // floatingActionButton: FloatingActionButton(
-        //   onPressed: togglePlayPause,
-        //   child:
-        //       Icon(controller!.value.isPlaying ? Icons.pause : Icons.play_arrow),
-        // ),
+                ]),
+              )),
+          // floatingActionButton: FloatingActionButton(
+          //   onPressed: togglePlayPause,
+          //   child:
+          //       Icon(controller!.value.isPlaying ? Icons.pause : Icons.play_arrow),
+          // ),
+        ),
       ),
-    );
+    ));
+  }
+
+  String _formatDuration(Duration duration) {
+    String twoDigits(int n) => n.toString().padLeft(2, '0');
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return '${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds';
   }
 }

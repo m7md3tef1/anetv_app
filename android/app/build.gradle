@@ -53,7 +53,7 @@ android {
         versionCode 3
         versionName "1.0.3"
         multiDexEnabled true
-//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+       testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 //    packagingOptions {
 //        // Fixes duplicate libraries build issue,
