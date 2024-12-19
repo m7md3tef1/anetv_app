@@ -141,6 +141,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome> {
         width: width,
         height: height,
         child: ListView.builder(
+            shrinkWrap: true,
             padding: EdgeInsets.zero,
             itemCount: listCatogry.length,
             itemBuilder: (context, index) {
