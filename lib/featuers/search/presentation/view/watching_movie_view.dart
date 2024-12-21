@@ -6,7 +6,9 @@ import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/action
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_vlc_player/flutter_vlc_player.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:url_launcher/url_launcher.dart';
+// import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 // import 'package:flutter/services.dart';
 // import 'package:video_player/video_player.dart';
 // import 'package:video_player_win/video_player_win.dart';
@@ -130,12 +132,18 @@ import 'package:flutter_vlc_player/flutter_vlc_player.dart';
 //   }
 // }
 import 'dart:io';
+// Import for Android features.
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+// Import for iOS/macOS features.
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart'; // For file extension
 import 'dart:convert';
 
 import 'package:webview_flutter/webview_flutter.dart';
 
+import '../../../../main.dart';
+/*
 // Future<void> uploadVideoToCloudinary(String filePath) async {
 //   const cloudName = 'daskfjvou';
 //   const apiKey = '773122628716277';
@@ -466,13 +474,15 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
                   ),
                 ]),
               )),
+
+        ),
+
+      ),
           // floatingActionButton: FloatingActionButton(
           //   onPressed: togglePlayPause,
           //   child:
-          //       Icon(controller!.value.isPlaying ? Icons.pause : Icons.play_arrow),
+          //   Icon(controller!.value.isPlaying ? Icons.pause : Icons.play_arrow),
           // ),
-        ),
-      ),
     ));
   }
 
@@ -482,4 +492,432 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
     String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
     return '${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds';
   }
+
 }
+/// Evaluates JavaScript to seek in the media player
+
+*/
+
+class SeekBackwardIntent extends Intent {
+  const SeekBackwardIntent();
+}
+
+class SeekForwardIntent extends Intent {
+  const SeekForwardIntent();
+}
+
+class WatchingMovieView extends StatefulWidget {
+  final String url;
+
+  const WatchingMovieView({super.key, required this.url});
+
+  @override
+  WatchingMovieViewState createState() => WatchingMovieViewState();
+}
+
+class WatchingMovieViewState extends State<WatchingMovieView> {
+  // late VideoPlayerController _controller;
+  // late WebViewController _webViewController;
+  bool isIframe = false;
+  bool _isPlaying = false;
+  late WebViewController _controller;
+  final GlobalKey webViewKey = GlobalKey();
+
+  InAppWebViewController? webViewController;
+  InAppWebViewSettings settings = InAppWebViewSettings(
+      isInspectable: kDebugMode,
+      mediaPlaybackRequiresUserGesture: false,
+      allowsInlineMediaPlayback: true,
+      iframeAllow: "camera; microphone",
+      iframeAllowFullscreen: true);
+
+  PullToRefreshController? pullToRefreshController;
+  String url = "";
+  double progress = 0;
+  final urlController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    pullToRefreshController = kIsWeb ||
+            ![TargetPlatform.iOS, TargetPlatform.android]
+                .contains(defaultTargetPlatform)
+        ? null
+        : PullToRefreshController(
+            settings: PullToRefreshSettings(
+              color: Colors.blue,
+            ),
+            onRefresh: () async {
+              if (defaultTargetPlatform == TargetPlatform.android) {
+                webViewController?.reload();
+              } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+                webViewController?.loadUrl(
+                    urlRequest:
+                        URLRequest(url: await webViewController?.getUrl()));
+              }
+            },
+          );
+  }
+
+//   @override
+//   void initState() {
+//     super.initState();
+//
+//     // print("widget.url");print(widget.url.contains("iframe") || widget.url.contains("</iframe>"));
+//     if (widget.url.contains("iframe") || widget.url.contains("</iframe>")) {
+//       print("widget.url2222");
+//       // _controller = WebViewController()
+//       //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+//       //   ..loadRequest(Uri.dataFromString(widget.url));
+//     } else {
+//       // #docregion platform_features
+//       late final PlatformWebViewControllerCreationParams params;
+//
+//       if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+//         params = WebKitWebViewControllerCreationParams(
+//           // allowsInlineMediaPlayback: true,
+//           mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{
+//             PlaybackMediaTypes.video
+//           },
+//         );
+//       } else {
+//         params = const PlatformWebViewControllerCreationParams();
+//       }
+//
+//       _controller = WebViewController.fromPlatformCreationParams(params);
+//
+//       _controller
+//         ..setJavaScriptMode(JavaScriptMode.unrestricted)
+//         ..getUserAgent()
+//         ..enableZoom(true)
+//         ..setNavigationDelegate(
+//           NavigationDelegate(
+//             onProgress: (int progress) {
+//               // debugPrint('WebView is loading (progress : $progress%)');
+//             },
+//             onPageStarted: (String url) {
+//               // debugPrint('Page started loading: $url');
+//             },
+//             onPageFinished: (String url) {
+//               //         _controller.evaluateJavascript('''
+//               //   var videos = document.querySelectorAll('video');
+//               //   videos.forEach(function(video) {
+//               //     video.autoplay = true;
+//               //     video.muted = true;  // If you want muted autoplay
+//               //     video.play();
+//               //   });
+//               // ''');
+//             },
+//             onWebResourceError: (WebResourceError error) {
+// //             debugPrint('''
+// // Page resource error:
+// //   code: ${error.errorCode}
+// //   description: ${error.description}
+// //   errorType: ${error.errorType}
+// //   isForMainFrame: ${error.isForMainFrame}
+// //           ''');
+//             },
+//             onNavigationRequest: (NavigationRequest request) {
+//               if (request.url.startsWith('https://drive.google.com/')) {
+//                 debugPrint('blocking navigation to ${request.url}');
+//                 return NavigationDecision.prevent;
+//               }
+//               debugPrint('allowing navigation to ${request.url}');
+//               return NavigationDecision.navigate;
+//             },
+//             onHttpError: (HttpResponseError error) {
+//               // debugPrint('Error occurred on page: ${error.response?.statusCode}');
+//             },
+//             onUrlChange: (UrlChange change) {
+//               // debugPrint('url change to ${change.url}');
+//             },
+//             onHttpAuthRequest: (HttpAuthRequest request) {},
+//           ),
+//         )
+//         ..addJavaScriptChannel(
+//           'flutter_invoke',
+//           onMessageReceived: (JavaScriptMessage message) {
+//             setState(() {
+//               _isPlaying = message.message == 'playing';
+//             });
+//           },
+//         )
+//         ..loadRequest(Uri.parse(
+//             "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"
+//             // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+//             ));
+//
+//       if (kIsWeb || !Platform.isMacOS) {
+//         _controller.setBackgroundColor(const Color(0x80000000));
+//       }
+//
+//       // #docregion platform_features
+//       if (_controller.platform is AndroidWebViewController) {
+//         AndroidWebViewController.enableDebugging(true);
+//         (_controller.platform as AndroidWebViewController)
+//             .setMediaPlaybackRequiresUserGesture(false);
+//       }
+//     }
+//     // #enddocregion platform_features
+//   }
+  void _injectVideoSettings() {
+    _controller.runJavaScript('''
+     (function() {
+          const video = document.querySelector('video');
+          if (video) {
+            video.currentTime += 10;
+          }
+        })();
+      ''');
+  }
+
+  Offset _mousePosition = Offset.zero;
+  // bool _isShortcutActivated = false;
+
+  void _moveMouse(Offset delta) {
+    setState(() {
+      _mousePosition += delta;
+    });
+  }
+
+  void handleKeyPress(RawKeyEvent event) {
+    if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+      // Seek forward
+      _controller.runJavaScript("""
+        const video = document.querySelector('video');
+        if (video) video.currentTime += 10;
+      """);
+    } else if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+      // Seek backward
+      _controller.runJavaScript("""
+        const video = document.querySelector('video');
+        if (video) video.currentTime -= 10;
+      """);
+    } else if (event.isKeyPressed(LogicalKeyboardKey.space)) {
+      // Play/Pause toggle
+      _controller.runJavaScript("""
+        const video = document.querySelector('video');
+        if (video) {
+          if (video.paused) video.play();
+          else video.pause();
+        }
+      """);
+    }
+  }
+
+  double _currentTime = 20.0;
+  String jsPlay = """
+    var video = document.querySelector('video');
+    if (video) {
+      video.play();
+    }
+  """;
+
+  String jsPause = """
+    var video = document.querySelector('video');
+    if (video) {
+      video.pause();
+    }
+  """;
+
+  String jsSeekTo(double time) {
+    return """
+      var video = document.querySelector('video');
+      if (video) {
+        video.currentTime = $time;
+      }
+    """;
+  }
+
+  void _play() {
+    _controller.runJavaScript('document.querySelector("video").play();');
+  }
+
+  void _pause() {
+    _controller.runJavaScript('document.querySelector("video").pause();');
+  }
+
+  void _seekTo(int seconds) {
+    _controller.runJavaScript(
+        'document.querySelector("video").currentTime = $seconds;');
+  }
+
+  bool? isPlaying = true;
+  @override
+  Widget build(BuildContext context) {
+    return ActionHandler().handleArrowAndEnterAction3(
+      child: Scaffold(
+          body: SizedBox(
+        height: double.infinity,
+        width: double.infinity,
+        child: RawKeyboardListener(
+          focusNode: FocusNode(),
+          child: Actions(
+            actions: <Type, Action<Intent>>{
+              CloseButtonIntent: CallbackAction<CloseButtonIntent>(
+                onInvoke: (intent) {
+                  Navigator.pop(context);
+                  return true;
+                },
+              ),
+              UpButtonIntent: CallbackAction<UpButtonIntent>(
+                onInvoke: (intent) {
+                  // _seekForward(10);
+                  // return _seekForward;
+                },
+              ),
+              DownButtonIntent: CallbackAction<DownButtonIntent>(
+                onInvoke: (intent) {
+                  // print("sssssssssssssssssssssssssssssssssssssssss");
+                  // _seekBackward(const Duration(minutes: 10));
+                  // return _seekBackward;
+                },
+              ),
+              EnterButtonIntent: CallbackAction<EnterButtonIntent>(
+                onInvoke: (intent) {
+                  if (isPlaying == true || isPlaying! == null) {
+                    webViewController?.pause();
+                    setState(() {
+                      isPlaying = false;
+                      isPlaying == false;
+                      print("object11112222 $isPlaying");
+                    });
+                  } else {
+                    webViewController?.resume();
+                    setState(() {
+                      isPlaying = true;
+                      isPlaying == true;
+                      print("object11113333 $isPlaying");
+                    });
+                  }
+                  return {
+                    if (isPlaying == true || isPlaying! == null)
+                      {
+                        webViewController?.pause(),
+                        setState(() {
+                          isPlaying = false;
+                          isPlaying == false;
+                          print("object11112222 $isPlaying");
+                        }),
+                      }
+                    else
+                      {
+                        webViewController?.resume(),
+                        setState(() {
+                          isPlaying = true;
+                          isPlaying == true;
+                          print("object11113333 $isPlaying");
+                        }),
+                      }
+                  };
+                },
+              ),
+              RightButtonIntent: CallbackAction<RightButtonIntent>(
+                onInvoke: (intent) {
+                  // _controller.runJavaScript(jsSeekTo(30));
+                  // return _controller.runJavaScript(jsSeekTo(30));
+                },
+              ),
+              LeftButtonIntent: CallbackAction<LeftButtonIntent>(
+                onInvoke: (intent) {
+                  // _controller.runJavaScript(jsSeekTo(30));
+                  // return _controller.runJavaScript(jsSeekTo(30));
+                },
+              ),
+            },
+            child: Stack(
+              children: [
+                Focus(
+                  autofocus: true,
+                  child: InAppWebView(
+                    key: webViewKey,
+                    webViewEnvironment: webViewEnvironment,
+                    initialUrlRequest: URLRequest(
+                        url: WebUri(
+                            "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")),
+                    initialSettings: settings,
+                    pullToRefreshController: pullToRefreshController,
+                    onWebViewCreated: (controller) {
+                      webViewController = controller;
+                    },
+                    onLoadStart: (controller, url) {
+                      setState(() {
+                        this.url = url.toString();
+                        urlController.text = this.url;
+                      });
+                    },
+                    onPermissionRequest: (controller, request) async {
+                      return PermissionResponse(
+                          resources: request.resources,
+                          action: PermissionResponseAction.GRANT);
+                    },
+                    shouldOverrideUrlLoading:
+                        (controller, navigationAction) async {
+                      var uri = navigationAction.request.url!;
+
+                      if (![
+                        "http",
+                        "https",
+                        "file",
+                        "chrome",
+                        "data",
+                        "javascript",
+                        "about"
+                      ].contains(uri.scheme)) {
+                        if (await canLaunchUrl(uri)) {
+                          // Launch the App
+                          await launchUrl(
+                            uri,
+                          );
+                          // and cancel the request
+                          return NavigationActionPolicy.CANCEL;
+                        }
+                      }
+
+                      return NavigationActionPolicy.ALLOW;
+                    },
+                    onLoadStop: (controller, url) async {
+                      pullToRefreshController?.endRefreshing();
+                      setState(() {
+                        this.url = url.toString();
+                        urlController.text = this.url;
+                      });
+                    },
+                    onReceivedError: (controller, request, error) {
+                      pullToRefreshController?.endRefreshing();
+                    },
+                    onProgressChanged: (controller, progress) {
+                      if (progress == 100) {
+                        pullToRefreshController?.endRefreshing();
+                      }
+                      setState(() {
+                        this.progress = progress / 100;
+                        urlController.text = url;
+                      });
+                    },
+                    onUpdateVisitedHistory: (controller, url, androidIsReload) {
+                      setState(() {
+                        this.url = url.toString();
+                        urlController.text = this.url;
+                      });
+                    },
+                    onConsoleMessage: (controller, consoleMessage) {
+                      if (kDebugMode) {
+                        print(consoleMessage);
+                      }
+                    },
+                  ),
+                ),
+                progress < 1.0
+                    ? LinearProgressIndicator(value: progress)
+                    : Container(),
+              ],
+            ),
+          ),
+        ),
+      )),
+    );
+  }
+}
+//PlatformInAppWebViewController.pauseTimers.
