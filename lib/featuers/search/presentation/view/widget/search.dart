@@ -6,8 +6,6 @@ import '../../../../home/presentation/manager/all_movies_cubit/actionHandeler.da
 import '../../../../home/presentation/manager/all_movies_cubit/all_movies_cubit.dart';
 import '../search_view.dart';
 
-
-
 class Search extends StatefulWidget {
   const Search({super.key});
 
@@ -67,7 +65,8 @@ class _SearchState extends State<Search> {
       I = index;
     });
   }
-  bool change=true;
+
+  bool change = true;
   List colors = [];
   @override
   void initState() {
@@ -85,7 +84,8 @@ class _SearchState extends State<Search> {
     _controller.dispose();
     super.dispose();
   }
-  changeLang(){
+
+  changeLang() {
     setState(() {
       change = !change;
     });
@@ -199,6 +199,20 @@ class _SearchState extends State<Search> {
                 TextFormField(
                   controller: _controller,
                   autofocus: false,
+                  onFieldSubmitted: (value) {
+                    Navigator.push(context, MaterialPageRoute(
+                      builder: (context) {
+                        return SearchView(
+                            catogry: CatogryItmeModel(
+                                catogry: "catogry",
+                                image: "image",
+                                title: "title",
+                                color: color),
+                            cat:
+                                "https://alaanetstreaming.com/api/search/?search=$value");
+                      },
+                    ));
+                  },
                   // focusNode: _focusNode,
                   onChanged: (value) {
                     // print("value");
@@ -237,7 +251,7 @@ class _SearchState extends State<Search> {
                                 EnterButtonIntent:
                                     CallbackAction<EnterButtonIntent>(
                                   onInvoke: (intent) {
-                                    // _addText(key.value);
+                                    print(key.value);
                                     return key.value == "Change language" ||
                                             key.value == "تغبير اللغه"
                                         ? changeLang()
@@ -282,7 +296,27 @@ class _SearchState extends State<Search> {
                                 ),
                               },
                               child: GestureDetector(
-                                onTap: () => _addText(key.value),
+                                onTap: () => key.value == "Change language" ||
+                                        key.value == "تغبير اللغه"
+                                    ? changeLang()
+                                    : key.value == "Clear" || key.value == "مسح"
+                                        ? _clearLetter(_controller.text)
+                                        : key.value == "Search" ||
+                                                key.value == "بحث"
+                                            ? Navigator.push(context,
+                                                MaterialPageRoute(
+                                                builder: (context) {
+                                                  return SearchView(
+                                                      catogry: CatogryItmeModel(
+                                                          catogry: "catogry",
+                                                          image: "image",
+                                                          title: "title",
+                                                          color: color),
+                                                      cat:
+                                                          "https://alaanetstreaming.com/api/search/?search=${_controller.text}");
+                                                },
+                                              ))
+                                            : _addText(key.value),
                                 child: Focus(
                                   focusNode: focusNode[key.key - 1],
                                   child: Container(

@@ -1,6 +1,8 @@
 import 'package:anetv/featuers/search/presentation/view/widget/search.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
+import '../../../../../core/utils/app_router.dart';
 import '../../../../search/presentation/view/widget/custom_search_text_field.dart';
 
 class CatogryItmeHome extends StatelessWidget {
@@ -18,13 +20,9 @@ class CatogryItmeHome extends StatelessWidget {
   Widget build(BuildContext context) {
     return title == "search"
         ? InkWell(
-            // onTap: () {
-            //   Navigator.push(context, MaterialPageRoute(
-            //     builder: (context) {
-            //       return   const Search();
-            //     },
-            //   ));
-            // },
+            onTap: () {
+              GoRouter.of(context).push(AppRouter.kSearch);
+            },
             child: Container(
                 decoration: BoxDecoration(
                   color:

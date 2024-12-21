@@ -130,7 +130,7 @@ class _MovesListState extends State<MovesList>
                           ),
                         },
                         child: Focus(
-                          focusNode: _focusNode[1],
+                          focusNode: FocusNode(),
                           autofocus: true,
                           child: Padding(
                             padding: const EdgeInsetsDirectional.only(
@@ -140,8 +140,6 @@ class _MovesListState extends State<MovesList>
                               height: 300,
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10),
-                                  // border: Border.all(
-                                  //     color: Colors.white, width: 2),
                                   color: Colors.transparent),
                               child: const Center(
                                 child: Padding(
