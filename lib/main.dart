@@ -8,30 +8,30 @@ import 'package:flutter/foundation.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+// import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:google_fonts/google_fonts.dart';
 // import 'package:cloudinary_url_gen/cloudinary.dart';
 // import 'package:cloudinary_flutter/image/cld_image.dart';
 // import 'package:cloudinary_flutter/cloudinary_context.dart';
 // import 'package:media_kit/media_kit.dart';
 // var cloudinary=Cloudinary.fromStringUrl('cloudinary://API_KEY:API_SECRET@CLOUD_NAME');
-WebViewEnvironment? webViewEnvironment;
+// WebViewEnvironment? webViewEnvironment;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
-    final availableVersion = await WebViewEnvironment.getAvailableVersion();
-    assert(availableVersion != null,
-    'Failed to find an installed WebView2 Runtime or non-stable Microsoft Edge installation.');
-
-    webViewEnvironment = await WebViewEnvironment.create(
-        settings:
-        WebViewEnvironmentSettings(userDataFolder: 'YOUR_CUSTOM_PATH'));
-  }
-
-  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-    await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
-  }
+  //
+  // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
+  //   final availableVersion = await WebViewEnvironment.getAvailableVersion();
+  //   assert(availableVersion != null,
+  //   'Failed to find an installed WebView2 Runtime or non-stable Microsoft Edge installation.');
+  //
+  //   webViewEnvironment = await WebViewEnvironment.create(
+  //       settings:
+  //       WebViewEnvironmentSettings(userDataFolder: 'YOUR_CUSTOM_PATH'));
+  // }
+  //
+  // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+  //   await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
+  // }
   // await Firebase.initializeApp(
   //   options: DefaultFirebaseOptions.currentPlatform,
   // );

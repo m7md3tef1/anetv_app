@@ -28,6 +28,11 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
         color: Colors.black),
     CatogryItmeModel(
         image: AssetsData.movies,
+        title: 'update',
+        catogry: 'update',
+        color: Colors.black),
+    CatogryItmeModel(
+        image: AssetsData.movies,
         title: 'All Movies',
         catogry: 'movies',
         color: Colors.black),
@@ -87,6 +92,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
   FocusNode? _focusNode8;
   FocusNode? _focusNode9;
   FocusNode? _focusNode10;
+  FocusNode? _focusNode11;
   _setFirstFocus(BuildContext context) {
     if (_focusNode1 == null) {
       _focusNode1 = FocusNode();
@@ -99,6 +105,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
       _focusNode8 = FocusNode();
       _focusNode9 = FocusNode();
       _focusNode10 = FocusNode();
+      _focusNode11 = FocusNode();
       FocusScope.of(context).requestFocus(_focusNode1);
     }
   }
@@ -117,6 +124,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
   @override
   void dispose() {
     super.dispose();
+    _focusNode1?.dispose();
     _focusNode2?.dispose();
     _focusNode3?.dispose();
     _focusNode4?.dispose();
@@ -126,13 +134,14 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
     _focusNode8?.dispose();
     _focusNode9?.dispose();
     _focusNode10?.dispose();
+    _focusNode11?.dispose();
   }
 
-  final double _itemHeight = 100.0; // Assuming each item has a fixed height
+  final double _itemHeight = 1.0; // Assuming each item has a fixed height
   void scrollToIndex(int index) {
-    print(":ddddddddddddddddddd");
+    // print(":ddddddddddddddddddd");
     double offset = _itemHeight * index;
-    print(offset);
+    // print(offset);
     _scrollController.animateTo(
       offset,
       duration: const Duration(milliseconds: 500),
@@ -151,125 +160,137 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
     return ActionHandler().handleArrowAndEnterAction(
-      child: ListView.builder(
-          shrinkWrap: true,
-          controller: _scrollController,
-          scrollDirection: Axis.vertical,
-          physics: const AlwaysScrollableScrollPhysics(),
-          padding: EdgeInsets.zero,
-          itemCount: listCatogry.length,
-          itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () {
-                page = 1;
-                page == 1;
-                // print("page");
-                // print(page);
-                index == 0
-                    ? ""
-                    : GoRouter.of(context)
-                        .push(AppRouter.kSearchView, extra: listCatogry[index]);
-              },
-              child: Padding(
-                padding: const EdgeInsetsDirectional.only(
-                    bottom: 10, top: 10, start: 10),
-                child: Actions(
-                  actions: <Type, Action<Intent>>{
-                    DownButtonIntent:
-                        CallbackAction<DownButtonIntent>(onInvoke: (intent) {
-                      return _changFocus(
-                          context,
+      child: SizedBox(
+        // width: width,
+        // height: height,
+        child: ListView.builder(
+            shrinkWrap: true,
+            controller: _scrollController,
+            scrollDirection: Axis.vertical,
+            physics: const BouncingScrollPhysics(),
+            padding: EdgeInsets.zero,
+            itemCount: listCatogry.length,
+            itemBuilder: (context, index) {
+              return InkWell(
+                onTap: () {
+                  page = 1;
+                  page == 1;
+                  // print("page");
+                  // print(page);
+                  index == 0
+                      ? ""
+                      : GoRouter.of(context).push(AppRouter.kSearchView,
+                          extra: listCatogry[index]);
+                },
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(
+                      bottom: 10, top: 0, start: 10),
+                  child: Actions(
+                    actions: <Type, Action<Intent>>{
+                      DownButtonIntent:
+                          CallbackAction<DownButtonIntent>(onInvoke: (intent) {
+                        print("index");
+                        print(index);
+                        return _changFocus(
+                            context,
+                            index == 0
+                                ? _focusNode2!
+                                : index == 1
+                                    ? _focusNode3!
+                                    : index == 2
+                                        ? _focusNode4!
+                                        : index == 3
+                                            ? _focusNode5!
+                                            : index == 4
+                                                ? _focusNode6!
+                                                : index == 5
+                                                    ? _focusNode7!
+                                                    : index == 6
+                                                        ? _focusNode8!
+                                                        : index == 7
+                                                            ? _focusNode9!
+                                                            : index == 8
+                                                                ? _focusNode10!
+                                                                : index == 9
+                                                                    ? _focusNode11!
+                                                                    : _focusNode1!,
+                            index == 10 ? 0 : index + 1);
+                      }),
+                      UpButtonIntent:
+                          CallbackAction<UpButtonIntent>(onInvoke: (intent) {
+                        return _changFocus(
+                            context,
+                            index == 0
+                                ? _focusNode11!
+                                : index == 1
+                                    ? _focusNode1!
+                                    : index == 2
+                                        ? _focusNode2!
+                                        : index == 3
+                                            ? _focusNode3!
+                                            : index == 4
+                                                ? _focusNode4!
+                                                : index == 5
+                                                    ? _focusNode5!
+                                                    : index == 6
+                                                        ? _focusNode6!
+                                                        : index == 7
+                                                            ? _focusNode7!
+                                                            : index == 8
+                                                                ? _focusNode8!
+                                                                : index == 9
+                                                                    ? _focusNode9!
+                                                                    : index ==
+                                                                            10
+                                                                        ? _focusNode10!
+                                                                        : _focusNode11!,
+                            index == 0 ? 10 : index - 1);
+                      }),
+                      EnterButtonIntent: CallbackAction<EnterButtonIntent>(
+                        onInvoke: (intent) {
+                          page = 1;
+                          page == 1;
                           index == 0
-                              ? _focusNode2!
-                              : index == 1
-                                  ? _focusNode3!
-                                  : index == 2
-                                      ? _focusNode4!
-                                      : index == 3
-                                          ? _focusNode5!
-                                          : index == 4
-                                              ? _focusNode6!
-                                              : index == 5
-                                                  ? _focusNode7!
-                                                  : index == 6
-                                                      ? _focusNode8!
-                                                      : index == 7
-                                                          ? _focusNode9!
-                                                          : index == 8
-                                                              ? _focusNode10!
-                                                              : _focusNode1!,
-                          index == 9 ? 0 : index + 1);
-                    }),
-                    UpButtonIntent:
-                        CallbackAction<UpButtonIntent>(onInvoke: (intent) {
-                      return _changFocus(
-                          context,
-                          index == 0
-                              ? _focusNode9!
-                              : index == 1
-                                  ? _focusNode1!
-                                  : index == 2
-                                      ? _focusNode2!
-                                      : index == 3
-                                          ? _focusNode3!
-                                          : index == 4
-                                              ? _focusNode4!
-                                              : index == 5
-                                                  ? _focusNode5!
-                                                  : index == 6
-                                                      ? _focusNode6!
-                                                      : index == 7
-                                                          ? _focusNode7!
-                                                          : index == 8
-                                                              ? _focusNode8!
-                                                              : index == 9
-                                                                  ? _focusNode9!
-                                                                  : _focusNode10!,
-                          index == 0 ? 9 : index - 1);
-                    }),
-                    EnterButtonIntent: CallbackAction<EnterButtonIntent>(
-                      onInvoke: (intent) {
-                        page = 1;
-                        page == 1;
-
-                        index == 0
-                            ? GoRouter.of(context).push(AppRouter.kSearch)
-                            : GoRouter.of(context).push(AppRouter.kSearchView,
-                                extra: listCatogry[index]);
-                        return listCatogry[index].color;
-                      },
-                    )
-                  },
-                  child: Focus(
-                    focusNode: index == 0
-                        ? _focusNode1
-                        : index == 1
-                            ? _focusNode2
-                            : index == 2
-                                ? _focusNode3
-                                : index == 3
-                                    ? _focusNode4
-                                    : index == 4
-                                        ? _focusNode5
-                                        : index == 5
-                                            ? _focusNode6
-                                            : index == 6
-                                                ? _focusNode7
-                                                : index == 7
-                                                    ? _focusNode8
-                                                    : index == 8
-                                                        ? _focusNode9
-                                                        : _focusNode10,
-                    child: CatogryItmeHome(
-                      images: listCatogry[index].image,
-                      title: listCatogry[index].title,
-                      color: listCatogry[index].color!,
+                              ? GoRouter.of(context).push(AppRouter.kSearch)
+                              : GoRouter.of(context).push(AppRouter.kSearchView,
+                                  extra: listCatogry[index]);
+                          return listCatogry[index].color;
+                        },
+                      )
+                    },
+                    child: Focus(
+                      focusNode: index == 0
+                          ? _focusNode1
+                          : index == 1
+                              ? _focusNode2
+                              : index == 2
+                                  ? _focusNode3
+                                  : index == 3
+                                      ? _focusNode4
+                                      : index == 4
+                                          ? _focusNode5
+                                          : index == 5
+                                              ? _focusNode6
+                                              : index == 6
+                                                  ? _focusNode7
+                                                  : index == 7
+                                                      ? _focusNode8
+                                                      : index == 8
+                                                          ? _focusNode9
+                                                          : index == 9
+                                                              ? _focusNode10
+                                                              : _focusNode11,
+                      child: CatogryItmeHome(
+                          images: listCatogry[index].image,
+                          title: listCatogry[index].title,
+                          color: listCatogry[index].color!,
+                          colorUpdate: listCatogry[1].color!),
                     ),
                   ),
                 ),
-              ),
-            );
-          }),
+              );
+            }),
+      ),
     );
   }
 }

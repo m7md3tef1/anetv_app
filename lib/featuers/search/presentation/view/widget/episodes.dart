@@ -99,7 +99,7 @@ class _EpisodesListState extends State<EpisodesList>
     double height = MediaQuery.of(context).size.height;
     return BlocBuilder<AllMoviesCubit, AllMoviesState>(
         builder: (context, state) {
-      print("jsonEncode(movies)");
+      // print("jsonEncode(movies)");
       // print(jsonEncode(movies));
       if (state is AllMoviesSuccess) {
         final allMoves = movies;
@@ -116,12 +116,50 @@ class _EpisodesListState extends State<EpisodesList>
           child: Column(
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    "Page Number = ${page.toString()}",
-                    style: Styels.textStyle18,
-                  ),
+                  page > 1
+                      ? InkWell(
+                          onTap: () {
+                            --page;
+                            BlocProvider.of<AllMoviesCubit>(context)
+                                .fetchMovie(catogry: widget.category);
+                          },
+                          child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                // borderRadius: BorderRadius.circular(20)
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.arrow_back_ios,
+                                  color: Colors.black,
+                                ),
+                              )))
+                      : const SizedBox(),
+                  Text("Page Number = ${page.toString()}",
+                      style: Styels.textStyle18),
+                  allMoves.isNotEmpty
+                      ? InkWell(
+                          onTap: () {
+                            ++page;
+                            BlocProvider.of<AllMoviesCubit>(context)
+                                .fetchMovie(catogry: widget.category);
+                          },
+                          child: Container(
+                              decoration: const BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                // borderRadius: BorderRadius.circular(20)
+                              ),
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(Icons.arrow_forward_ios,
+                                    color: Colors.black),
+                              )))
+                      : const SizedBox(),
                 ],
               ),
               const SizedBox(height: 10),
