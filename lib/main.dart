@@ -22,8 +22,8 @@ import 'package:google_fonts/google_fonts.dart';
 // WebViewEnvironment? webViewEnvironment;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await DBHelper().dB;
-  // await DBHelper().initDB();
+  await DBHelper().dB;
+  await DBHelper().initDB();
   //
   // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
   //   final availableVersion = await WebViewEnvironment.getAvailableVersion();

@@ -334,7 +334,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
 
   List<CatogryItmeModel> tasks = [];
   DBHelper db = DBHelper();
-  getTasks() async{
+  getTasks() async {
     _focusNode.clear();
     // for (int i = 0; i < listCatogry.length; i++) {
     //   // db.insertTask(CatogryItmeModel(
@@ -345,7 +345,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
     //   // print("kkkkkk");
     //   _focusNode.add(FocusNode());
     // }
-   await db.getAllTasks().then((v) {
+    await db.getAllTasks().then((v) {
       print("kkkkkk5555");
       print("${tasks.length}");
       setState(() {
@@ -454,340 +454,246 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
       builder: (context, state) {
         return ActionHandler().handleArrowAndEnterAction(
           child: SizedBox(
-            child:_focusNode.isEmpty?SizedBox(): ListView.builder(
-                shrinkWrap: true,
-                controller: _scrollController,
-                scrollDirection: Axis.vertical,
-                physics: const BouncingScrollPhysics(),
-                padding: EdgeInsets.zero,
-                itemCount: listCatogry.length,
-                itemBuilder: (context, index) {
-                  return InkWell(
-                    onTap: () {
-                      page = 1;
-                      page == 1;
-                      index == 0
-                          ? ""
-                          : index == 1
-                              ? {
-                                  for (int i = 0; i < listCatogry1.length; i++)
-                                    {
-                                      db.insertTask(CatogryItmeModel(
-                                          title: listCatogry1[i].title!,
-                                          catogry: listCatogry1[i].catogry!,
-                                          id: listCatogry1[i].id,
-                                          image: listCatogry1[i].image!)),
-                                    },
-                                  FavCubit.get(context).addProduct(),
-                                }
-                              : GoRouter.of(context).push(AppRouter.kSearchView,
-                                  extra: listCatogry[index]);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                          bottom: 10, top: 0, start: 10),
-                      child: Actions(
-                        actions: <Type, Action<Intent>>{
-                          DownButtonIntent: CallbackAction<DownButtonIntent>(
-                              onInvoke: (intent) {
-                            return _changFocus(
-                                context,
-                                _focusNode[
-                                    listCatogry.last.id == listCatogry[index].id
+            child: _focusNode.isEmpty
+                ? SizedBox()
+                : ListView.builder(
+                    shrinkWrap: true,
+                    controller: _scrollController,
+                    scrollDirection: Axis.vertical,
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.zero,
+                    itemCount: listCatogry.length,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () {
+                          page = 1;
+                          page == 1;
+                          index == 0
+                              ? ""
+                              : index == 1
+                                  ? {
+                                      for (int i = 0;
+                                          i < listCatogry1.length;
+                                          i++)
+                                        {
+                                          db.insertTask(CatogryItmeModel(
+                                              title: listCatogry1[i].title!,
+                                              catogry: listCatogry1[i].catogry!,
+                                              id: listCatogry1[i].id,
+                                              image: listCatogry1[i].image!)),
+                                        },
+                                      FavCubit.get(context).addProduct(),
+                                    }
+                                  : GoRouter.of(context).push(
+                                      AppRouter.kSearchView,
+                                      extra: listCatogry[index]);
+                        },
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                              bottom: 10, top: 0, start: 10),
+                          child: Actions(
+                            actions: <Type, Action<Intent>>{
+                              DownButtonIntent:
+                                  CallbackAction<DownButtonIntent>(
+                                      onInvoke: (intent) {
+                                return _changFocus(
+                                    context,
+                                    _focusNode[listCatogry.last.id ==
+                                            listCatogry[index].id
                                         ? 0
                                         : index + 1]!,
-                                listCatogry.last.title ==
-                                        listCatogry[index].title
-                                    ? 0
-                                    : index + 1);
-                            // return _changFocus(
-                            //     context,
-                            //     index == 0
-                            //         ? _focusNode2!
-                            //         : index == 1
-                            //             ? _focusNode3!
-                            //             : index == 2
-                            //                 ? _focusNode4!
-                            //                 : index == 3
-                            //                     ? _focusNode5!
-                            //                     : index == 4
-                            //                         ? _focusNode6!
-                            //                         : index == 5
-                            //                             ? _focusNode7!
-                            //                             : index == 6
-                            //                                 ? _focusNode8!
-                            //                                 : index == 7
-                            //                                     ? _focusNode9!
-                            //                                     : index == 8
-                            //                                         ? _focusNode10!
-                            //                                         : index == 9
-                            //                                             ? _focusNode11!
-                            //                                             : index ==
-                            //                                                     10
-                            //                                                 ? _focusNode12!
-                            //                                                 : index == 11
-                            //                                                     ? _focusNode13!
-                            //                                                     : index == 12
-                            //                                                         ? _focusNode14!
-                            //                                                         : index == 13
-                            //                                                             ? _focusNode15!
-                            //                                                             : index == 14
-                            //                                                                 ? _focusNode16!
-                            //                                                                 : index == 15
-                            //                                                                     ? _focusNode17!
-                            //                                                                     : index == 16
-                            //                                                                         ? _focusNode18!
-                            //                                                                         : index == 17
-                            //                                                                             ? _focusNode19!
-                            //                                                                             : index == 18
-                            //                                                                                 ? _focusNode20!
-                            //                                                                                 : index == 19
-                            //                                                                                     ? _focusNode21!
-                            //                                                                                     : _focusNode1!,
-                            //     index == 20 ? 0 : index + 1);
-                          }),
-                          UpButtonIntent: CallbackAction<UpButtonIntent>(
-                              onInvoke: (intent) {
-                            return _changFocus(
-                                context,
-                                _focusNode[listCatogry.first.id ==
-                                        listCatogry[index].id
-                                    ? 0
-                                    : index - 1]!,
-                                listCatogry.first.id == listCatogry[index].id
-                                    ? 0
-                                    : index - 1);
-                            // return _changFocus(
-                            //     context,
-                            //     index == 0
-                            //         ? _focusNode21!
-                            //         : index == 1
-                            //             ? _focusNode1!
-                            //             : index == 2
-                            //                 ? _focusNode2!
-                            //                 : index == 3
-                            //                     ? _focusNode3!
-                            //                     : index == 4
-                            //                         ? _focusNode4!
-                            //                         : index == 5
-                            //                             ? _focusNode5!
-                            //                             : index == 6
-                            //                                 ? _focusNode6!
-                            //                                 : index == 7
-                            //                                     ? _focusNode7!
-                            //                                     : index == 8
-                            //                                         ? _focusNode8!
-                            //                                         : index == 9
-                            //                                             ? _focusNode9!
-                            //                                             : index ==
-                            //                                                     10
-                            //                                                 ? _focusNode10!
-                            //                                                 : index == 11
-                            //                                                     ? _focusNode11!
-                            //                                                     : index == 12
-                            //                                                         ? _focusNode12!
-                            //                                                         : index == 13
-                            //                                                             ? _focusNode13!
-                            //                                                             : index == 14
-                            //                                                                 ? _focusNode14!
-                            //                                                                 : index == 15
-                            //                                                                     ? _focusNode15!
-                            //                                                                     : index == 16
-                            //                                                                         ? _focusNode16!
-                            //                                                                         : index == 17
-                            //                                                                             ? _focusNode17!
-                            //                                                                             : index == 18
-                            //                                                                                 ? _focusNode18!
-                            //                                                                                 : index == 19
-                            //                                                                                     ? _focusNode19!
-                            //                                                                                     : index == 20
-                            //                                                                                         ? _focusNode20!
-                            //                                                                                         : index == 20
-                            //                                                                                             ? _focusNode20!
-                            //                                                                                             : _focusNode21!,
-                            //     index == 0 ? 20 : index - 1);
-                          }),
-                          EnterButtonIntent: CallbackAction<EnterButtonIntent>(
-                            onInvoke: (intent) {
-                              page = 1;
-                              page == 1;
-                              index == 0
-                                  ? GoRouter.of(context).push(AppRouter.kSearch)
-                                  : listCatogry[index + 1].title == "1" ||
-                                          listCatogry[index + 1].title == "2" ||
-                                          listCatogry[index + 1].title == "3" ||
-                                          listCatogry[index + 1].title == "4" ||
-                                          listCatogry[index + 1].title == "5" ||
-                                          listCatogry[index + 1].title == "6" ||
-                                          listCatogry[index + 1].title == "7" ||
-                                          listCatogry[index + 1].title == "8" ||
-                                          listCatogry[index + 1].title == "9"
-                                      ? {
-                                          db.deleteTask(listCatogry[index]),
-                                          db.deleteTask(listCatogry[index - 1]),
-                                          FavCubit.get(context).addProduct(),
-                                        }
-                                      : listCatogry[index].title == "reset"
-                                          ? showDialog(
-                                              useRootNavigator: false,
-                                              useSafeArea: true,
-                                              context: context,
-                                              builder: (dialogContext) {
-                                                final TextEditingController
-                                                    controller =
-                                                    TextEditingController();
-                                                return ActionHandler()
-                                                    .handleArrowAndEnterAction3(
-                                                  child: Actions(
-                                                    actions: <Type,
-                                                        Action<Intent>>{
-                                                      CloseButtonIntent:
-                                                          CallbackAction<
-                                                              CloseButtonIntent>(
-                                                        onInvoke: (intent) {
-                                                          return Navigator.pop(
-                                                              context);
+                                    listCatogry.last.title ==
+                                            listCatogry[index].title
+                                        ? 0
+                                        : index + 1);
+                              }),
+                              UpButtonIntent: CallbackAction<UpButtonIntent>(
+                                  onInvoke: (intent) {
+                                return _changFocus(
+                                    context,
+                                    _focusNode[listCatogry.first.id ==
+                                            listCatogry[index].id
+                                        ? 0
+                                        : index - 1]!,
+                                    listCatogry.first.id ==
+                                            listCatogry[index].id
+                                        ? 0
+                                        : index - 1);
+                              }),
+                              EnterButtonIntent:
+                                  CallbackAction<EnterButtonIntent>(
+                                onInvoke: (intent) {
+                                  page = 1;
+                                  page == 1;
+                                  index == 0
+                                      ? GoRouter.of(context)
+                                          .push(AppRouter.kSearch)
+                                      : listCatogry[index + 1].title == "1" ||
+                                              listCatogry[index + 1].title ==
+                                                  "2" ||
+                                              listCatogry[index + 1].title ==
+                                                  "3" ||
+                                              listCatogry[index + 1].title ==
+                                                  "4" ||
+                                              listCatogry[index + 1].title ==
+                                                  "5" ||
+                                              listCatogry[index + 1].title ==
+                                                  "6" ||
+                                              listCatogry[index + 1].title ==
+                                                  "7" ||
+                                              listCatogry[index + 1].title ==
+                                                  "8" ||
+                                              listCatogry[index + 1].title ==
+                                                  "9"
+                                          ? {
+                                              db.deleteTask(listCatogry[index]),
+                                              db.deleteTask(
+                                                  listCatogry[index - 1]),
+                                              FavCubit.get(context)
+                                                  .addProduct(),
+                                            }
+                                          : listCatogry[index].title == "reset"
+                                              ? showDialog(
+                                                  useRootNavigator: false,
+                                                  useSafeArea: true,
+                                                  context: context,
+                                                  builder: (dialogContext) {
+                                                    final TextEditingController
+                                                        controller =
+                                                        TextEditingController();
+                                                    return ActionHandler()
+                                                        .handleArrowAndEnterAction3(
+                                                      child: Actions(
+                                                        actions: <Type,
+                                                            Action<Intent>>{
+                                                          CloseButtonIntent:
+                                                              CallbackAction<
+                                                                  CloseButtonIntent>(
+                                                            onInvoke: (intent) {
+                                                              return Navigator
+                                                                  .pop(context);
+                                                            },
+                                                          )
                                                         },
-                                                      )
-                                                    },
-                                                    child: AlertDialog(
-                                                        insetPadding:
-                                                            EdgeInsets.zero,
-                                                        contentPadding:
-                                                            EdgeInsets.zero,
-                                                        clipBehavior: Clip
-                                                            .antiAliasWithSaveLayer,
-                                                        titlePadding:
-                                                            const EdgeInsets.only(
-                                                                left: 10,
-                                                                right: 10,
-                                                                top: 10,
-                                                                bottom: 10),
-                                                        shape: const RoundedRectangleBorder(
-                                                            side: BorderSide(
-                                                                color: Color(
-                                                                    0xFFD6CECE),
-                                                                width: 1),
-                                                            borderRadius:
-                                                                BorderRadius
+                                                        child: AlertDialog(
+                                                            insetPadding:
+                                                                EdgeInsets.zero,
+                                                            contentPadding:
+                                                                EdgeInsets.zero,
+                                                            clipBehavior: Clip
+                                                                .antiAliasWithSaveLayer,
+                                                            titlePadding:
+                                                                const EdgeInsets
+                                                                    .only(
+                                                                    left: 10,
+                                                                    right: 10,
+                                                                    top: 10,
+                                                                    bottom: 10),
+                                                            shape: const RoundedRectangleBorder(
+                                                                side: BorderSide(
+                                                                    color: Color(
+                                                                        0xFFD6CECE),
+                                                                    width: 1),
+                                                                borderRadius: BorderRadius
                                                                     .all(Radius
                                                                         .circular(
                                                                             10))),
-                                                        content:
-                                                            StatefulBuilder(
-                                                          builder: (context,
-                                                              setState) {
-                                                            return SizedBox(
-                                                              height: 100.h,
-                                                              width: .8.sw,
-                                                              child: Column(
-                                                                children: [
-                                                                  Padding(
-                                                                    padding:
-                                                                        const EdgeInsets
+                                                            content:
+                                                                StatefulBuilder(
+                                                              builder: (context,
+                                                                  setState) {
+                                                                return SizedBox(
+                                                                  height: 100.h,
+                                                                  width: .8.sw,
+                                                                  child: Column(
+                                                                    children: [
+                                                                      Padding(
+                                                                        padding: const EdgeInsets
                                                                             .all(
                                                                             8.0),
-                                                                    child:
-                                                                        TextFormField(
-                                                                      controller:
-                                                                          controller,
-                                                                      textInputAction:
-                                                                          TextInputAction
-                                                                              .done,
-                                                                      autofocus:
-                                                                          false,
-                                                                      onFieldSubmitted:
-                                                                          (value) {
-                                                                        if (value.toString().trim() ==
-                                                                            "Anettva1") {
-                                                                          for (int i = 0;
-                                                                              i < listCatogry.length;
-                                                                              i++) {
-                                                                            db.insertTask(CatogryItmeModel(
-                                                                                title: listCatogry[i].title!,
-                                                                                catogry: listCatogry[i].catogry!,
-                                                                                id: listCatogry[i].id,
-                                                                                image: listCatogry[i].image!));
-                                                                          }
-                                                                          FavCubit.get(context)
-                                                                              .addProduct();
-                                                                          Navigator.pop(
-                                                                              context);
-                                                                        } else {
-                                                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                                                              backgroundColor: Colors.red,
-                                                                              content: Text(
-                                                                                "Password Is Wrong",
-                                                                                style: TextStyle(fontSize: 15.sp, color: Colors.white),
-                                                                              )));
-                                                                        }
-                                                                      },
-                                                                      onChanged:
-                                                                          (value) {},
-                                                                      decoration:
-                                                                          const InputDecoration(
-                                                                        labelText:
-                                                                            "Enter Password To Reset",
-                                                                        border:
-                                                                            OutlineInputBorder(),
+                                                                        child:
+                                                                            TextFormField(
+                                                                          controller:
+                                                                              controller,
+                                                                          textInputAction:
+                                                                              TextInputAction.done,
+                                                                          autofocus:
+                                                                              false,
+                                                                          onFieldSubmitted:
+                                                                              (value) {
+                                                                            if (value.toString().trim() ==
+                                                                                "Anettva1") {
+                                                                              for (int i = 0; i < listCatogry.length; i++) {
+                                                                                db.insertTask(CatogryItmeModel(title: listCatogry[i].title!, catogry: listCatogry[i].catogry!, id: listCatogry[i].id, image: listCatogry[i].image!));
+                                                                              }
+                                                                              FavCubit.get(context).addProduct();
+                                                                              Navigator.pop(context);
+                                                                            } else {
+                                                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                                                  backgroundColor: Colors.red,
+                                                                                  content: Text(
+                                                                                    "Password Is Wrong",
+                                                                                    style: TextStyle(fontSize: 15.sp, color: Colors.white),
+                                                                                  )));
+                                                                            }
+                                                                          },
+                                                                          onChanged:
+                                                                              (value) {},
+                                                                          decoration:
+                                                                              const InputDecoration(
+                                                                            labelText:
+                                                                                "Enter Password To Reset",
+                                                                            border:
+                                                                                OutlineInputBorder(),
+                                                                          ),
+                                                                        ),
                                                                       ),
-                                                                    ),
+                                                                    ],
                                                                   ),
-                                                                ],
-                                                              ),
-                                                            );
-                                                          },
-                                                        )),
-                                                  ),
-                                                );
-                                              })
-                                          // print('reeeeeeee'),
-
-                                          : listCatogry[index].title == "update"
-                                              ? launchUrl(
-                                                  "https://aneting.net/ANETV%202.apk")
-                                              : GoRouter.of(context).push(
-                                                  AppRouter.kSearchView,
-                                                  extra:
-                                                      listCatogry[index - 1]);
-                              return listCatogry[index].color;
+                                                                );
+                                                              },
+                                                            )),
+                                                      ),
+                                                    );
+                                                  })
+                                              : listCatogry[index].title ==
+                                                      "update"
+                                                  ? launchUrl(
+                                                      "https://aneting.net/ANETV%202.apk")
+                                                  : GoRouter.of(context).push(
+                                                      AppRouter.kSearchView,
+                                                      extra: listCatogry[
+                                                          index - 1]);
+                                  return listCatogry[index].color;
+                                },
+                              )
                             },
-                          )
-                        },
-                        child: Focus(
-                          focusNode: _focusNode[index],
-                          child: CatogryItmeHome(
-                            images: listCatogry[index].image!,
-                            title: listCatogry[index].title!,
-                            title1: listCatogry[index < 3 ? index : index - 1]
-                                .title!,
-                            color: listCatogry[index].color!,
-                            index: index,
-                            // color1:index>2? listCatogry[3].color!:Colors.transparent,
-                            listCatogry: listCatogry,
-                            listCatogry1: listCatogry1,
-                            // color2: listCatogry[5].color!,
-                            // color3: listCatogry[7].color!,
-                            // color4: listCatogry[9].color!,
-                            // color5: listCatogry[11].color!,
-                            // color6: listCatogry[13].color!,
-                            // color7: listCatogry[15].color!,
-                            // color8: listCatogry[17].color!,
-                            // color9: listCatogry[19].color!,
-                            colorUpdate: listCatogry[2].color!,
-                            colorReset: listCatogry[1].color!,
+                            child: Focus(
+                              focusNode: _focusNode[index],
+                              child: CatogryItmeHome(
+                                images: listCatogry[index].image!,
+                                title: listCatogry[index].title!,
+                                title1:
+                                    listCatogry[index < 3 ? index : index - 1]
+                                        .title!,
+                                color: listCatogry[index].color!,
+                                index: index,
+                                listCatogry: listCatogry,
+                                listCatogry1: listCatogry1,
+                                colorUpdate: listCatogry[2].color!,
+                                colorReset: listCatogry[1].color!,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
-                  );
-                }),
+                      );
+                    }),
           ),
         );
       },
       listener: (BuildContext context, FavState state) {
         if (state is AddFav) {
-          print("favvvvvvvvvvvvvvvv");
+          // print("favvvvvvvvvvvvvvvv");
           db.getAllTasks().then(
             (value) {
               setState(() {
