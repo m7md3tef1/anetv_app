@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/actionHandeler.dart';
+import 'package:anetv/featuers/home/presentation/views/widgets/list_catogry_itme_home.dart';
 import 'package:dio/dio.dart';
 // import 'package:cloudinary_public/cloudinary_public.dart';
 // import 'package:better_player/better_player.dart';
@@ -805,11 +806,23 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   //   _controller.runJavaScript(
   //       'document.querySelector("video").currentTime = $seconds;');
   // }
-
+  Future downloadFile(String url) async {
+    Dio dio = Dio();
+    launchUrlStatic(url);
+    try {
+      var dir = await getApplicationDocumentsDirectory();
+      await dio.download(url, "${dir.path}/myFile.txt", onReceiveProgress: (rec, total) {
+        print("Rec: $rec , Total: $total");
+      });
+    } catch (e) {
+      print(e);
+    }
+    print("Download completed");
+  }
   bool? isPlaying = true;
   @override
   Widget build(BuildContext context) {
-    // downloadVideo("https://drive.google.com/uc?export=download&id=${widget.url}",context);
+    downloadFile("https://drive.google.com/uc?export=download&id=${widget.url}");
     return
         // ActionHandler().handleArrowAndEnterAction3(
         // child:

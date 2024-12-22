@@ -13,7 +13,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../data/repo/sql_helper.dart';
 
-void launchUrl(String url) async {
+void launchUrlStatic(String url) async {
   await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
 }
 
@@ -658,7 +658,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
                                                   })
                                               : listCatogry[index].title ==
                                                       "update"
-                                                  ? launchUrl(
+                                                  ? launchUrlStatic(
                                                       "https://aneting.net/ANETV%202.apk")
                                                   : GoRouter.of(context).push(
                                                       AppRouter.kSearchView,

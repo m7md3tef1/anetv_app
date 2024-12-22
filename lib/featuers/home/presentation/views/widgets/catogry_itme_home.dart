@@ -254,7 +254,7 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                 const SizedBox(width: 5),
                 InkWell(
                   onTap: () {
-                    launchUrl("https://aneting.net/ANETV%202.apk");
+                    launchUrlStatic("https://aneting.net/ANETV%202.apk");
                   },
                   child: Container(
                       width: 100,
