@@ -1,11 +1,14 @@
 import 'dart:io';
 
 import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/actionHandeler.dart';
+import 'package:dio/dio.dart';
 // import 'package:cloudinary_public/cloudinary_public.dart';
 // import 'package:better_player/better_player.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:url_launcher/url_launcher.dart';
 // import 'package:flutter_vlc_player/flutter_vlc_player.dart';
@@ -565,6 +568,7 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   void initState() {
     super.initState();
 
+
     // print("widget.url");print(widget.url.contains("iframe") || widget.url.contains("</iframe>"));
     if (widget.url.contains("iframe") || widget.url.contains("</iframe>")) {
       print("widget.url2222");
@@ -680,8 +684,66 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
     setState(() {
       _mousePosition += delta;
     });
-  }
+  }bool isDownloading = false;
+  String progress = "";
+  Future<void> downloadVideo(String driveLink,context) async {
+    // Request storage permission
+    if (await Permission.storage.request().isGranted) {
+      try {
+        setState(() {
+          isDownloading = true;
+          progress = "Starting download...";
+        });
 
+        // Use Dio for file download
+        final dio = Dio();
+
+        // Get Videos folder path
+        final directory = Directory('/storage/emulated/0/Movies'); // Common path for Videos folder
+        if (!await directory.exists()) {
+          await directory.create(recursive: true);
+        }
+
+        final filePath = "${directory.path}/downloaded_video.mp4";
+
+        // Start downloading
+        await dio.download(
+          driveLink,
+          filePath,
+          onReceiveProgress: (received, total) {
+            if (total != -1) {
+              setState(() {
+                progress =
+                "Downloading: ${(received / total * 100).toStringAsFixed(0)}%";
+              });
+            }
+          },
+        );
+
+        setState(() {
+          isDownloading = false;
+          progress = "Download complete! Saved to Videos folder.";
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Video saved to: $filePath')),
+        );
+      } catch (e) {
+        setState(() {
+          isDownloading = false;
+          progress = "Download failed: $e";
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Download failed: $e')),
+        );
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Storage permission denied')),
+      );
+    }
+  }
   // void handleKeyPress(RawKeyEvent event) {
   //   if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
   //     // Seek forward
@@ -747,6 +809,7 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   bool? isPlaying = true;
   @override
   Widget build(BuildContext context) {
+    // downloadVideo("https://drive.google.com/uc?export=download&id=${widget.url}",context);
     return
         // ActionHandler().handleArrowAndEnterAction3(
         // child:

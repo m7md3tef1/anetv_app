@@ -13,6 +13,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 // import 'package:cloudinary_url_gen/cloudinary.dart';
 // import 'package:cloudinary_flutter/image/cld_image.dart';
@@ -24,6 +25,10 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await DBHelper().dB;
   await DBHelper().initDB();
+  await Permission.storage.request().then((value) {
+    print("dddddddddddddddddddd");
+    print(value);
+  },);
   //
   // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
   //   final availableVersion = await WebViewEnvironment.getAvailableVersion();
