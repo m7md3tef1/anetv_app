@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/utils/styels.dart';
@@ -34,7 +35,7 @@ class _MovesList2State extends State<MovesList2>
     super.initState();
   }
 
-  final double _itemHeight = 100.0; // Assuming each item has a fixed height
+  final double _itemHeight = 5.0; // Assuming each item has a fixed height
   void scrollToIndex(int index) {
     double offset = _itemHeight * index;
     _scrollController.animateTo(
@@ -55,7 +56,8 @@ class _MovesList2State extends State<MovesList2>
 
   ScrollController listScrollController = ScrollController();
 
-  changFocus(BuildContext context, FocusNode node,List<Episodes> allMoves, index) {
+  changFocus(
+      BuildContext context, FocusNode node, List<Episodes> allMoves, index) {
     FocusScope.of(context).requestFocus(node);
 
     setState(() {
@@ -68,8 +70,7 @@ class _MovesList2State extends State<MovesList2>
           title: allMoves[i].title,
           content: allMoves[i].content,
           embedLink: allMoves[i].embedLink,
-          tags: allMoves[i].tags
-      );
+          tags: allMoves[i].tags);
       allMoves[index] = Episodes(
           color: Colors.white,
           categories: allMoves[index].categories,
@@ -80,8 +81,6 @@ class _MovesList2State extends State<MovesList2>
           content: allMoves[i].content,
           embedLink: allMoves[i].embedLink,
           tags: allMoves[i].tags);
-
-
 
       scrollToIndex(index);
       i = index;
@@ -142,7 +141,7 @@ class _MovesList2State extends State<MovesList2>
                           padding: EdgeInsets.symmetric(vertical: 5.0),
                           child: Center(
                             child: Text(
-                              "الحلقات",
+                              "Episodes",
                               style: Styels.textStyle20,
                             ),
                           ),
@@ -169,157 +168,142 @@ class _MovesList2State extends State<MovesList2>
                     }
                   }
 
-                  return SizedBox(
-                    width: width,
-                    height: height,
-                    child: GridView.builder(
-                      // shrinkWrap: true,
-                      controller: _scrollController,
-                      padding: EdgeInsetsDirectional.zero,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2, mainAxisExtent: 200),
-                      scrollDirection: Axis.vertical,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      itemCount: allMoves.length,
-                      itemBuilder: (context, index) => Padding(
-                        padding: const EdgeInsets.only(
-                            bottom: 10, left: 5, right: 5),
-                        child: InkWell(
-                          onTap: () {
-                            print(jsonEncode(allMoves[index]));
-                            GoRouter.of(context).push(
-                                AppRouter.kWatchingMovieView,
-                                extra: allMoves[index].video_id);
-                          },
-                          child: Actions(
-                            actions: <Type, Action<Intent>>{
-                              DownButtonIntent:
-                                  CallbackAction<DownButtonIntent>(
-                                onInvoke: (intent) {
-                                  return changFocus(
-                                      context,
-                                      _focusNode[
-                                          allMoves.last.id == allMoves[index].id
-                                              ? 0
-                                              : index + 1]!,
-                                      allMoves,
-                                      allMoves.last.id == allMoves[index].id
-                                          ? 0
-                                          : index + 1);
-                                },
+                  return allMoves.isEmpty
+                      ? Focus(
+                          focusNode: FocusNode(),
+                          autofocus: true,
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.only(
+                                start: 5.0, end: 5, bottom: 10),
+                            child: Container(
+                              width: 300,
+                              height: 300,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.transparent),
+                              child: const Center(
+                                child: Padding(
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Not Found Episodes",
+                                    textAlign: TextAlign.start,
+                                    maxLines: 5,
+                                    style: TextStyle(
+                                        fontSize: 15,
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
                               ),
-                              // ScrollIntent: ScrollAction(_scrollController),
-                              UpButtonIntent: CallbackAction<UpButtonIntent>(
-                                onInvoke: (intent) {
-                                  return changFocus(
-                                      context,
-                                      _focusNode[allMoves.first.id ==
-                                              allMoves[index].id
-                                          ? 0
-                                          : index - 1]!,
-                                      allMoves,
-                                      allMoves.first.id == allMoves[index].id
-                                          ? 0
-                                          : index - 1);
-                                },
-                              ),
-                              EnterButtonIntent:
-                                  CallbackAction<EnterButtonIntent>(
-                                onInvoke: (intent) {
-                                  print(jsonEncode(allMoves[index]));
-                                  return GoRouter.of(context).push(
+                            ),
+                          ),
+                        )
+                      : SizedBox(
+                          width: width,
+                          height: height,
+                          child: GridView.builder(
+                            // shrinkWrap: true,
+                            controller: _scrollController,
+                            padding: EdgeInsetsDirectional.zero,
+                            gridDelegate:
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 4,
+                                    mainAxisExtent: 130.h,
+                                    crossAxisSpacing: 0),
+                            scrollDirection: Axis.vertical,
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            itemCount: allMoves.length,
+                            itemBuilder: (context, index) => Padding(
+                              padding:   EdgeInsets.only(
+                                  bottom: 10.h, left: 0, right: 5.w),
+                              child: InkWell(
+                                onTap: () {
+                                  // print(jsonEncode(allMoves[index]));
+                                  GoRouter.of(context).push(
                                       AppRouter.kWatchingMovieView,
                                       extra: allMoves[index].video_id);
                                 },
-                              ),
-                            },
-                            child: Focus(
-                              focusNode: _focusNode[index],
-                              autofocus: true,
-                              child: Padding(
-                                padding: const EdgeInsetsDirectional.only(
-                                    start: 5.0, end: 5, bottom: 10),
-                                child: Container(
-                                  width: 300,
-                                  height: 300,
-                                  // color: allMoves[index].color,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10),
-                                      border: Border.all(
-                                          color: Colors.white, width: 2),
-                                      color: allMoves[index].color),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Expanded(
-                                          child: SizedBox(
-                                            // width: 100,
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.all(5.0),
-                                              child: Text(
-                                                allMoves[index].title!,
-                                                textAlign: TextAlign.start,
-                                                maxLines: 5,
-                                                style: TextStyle(
-                                                    fontSize:
-                                                        allMoves[index].color ==
-                                                                Colors.white
-                                                            ? 20
-                                                            : 15,
-                                                    color:
-                                                        allMoves[index].color ==
-                                                                Colors.white
-                                                            ? Colors.black
-                                                            : Colors.white,
-                                                    fontWeight:
-                                                        FontWeight.bold),
-                                              ),
-                                            ),
-                                          ),
+                                child: Actions(
+                                  actions: <Type, Action<Intent>>{
+                                    DownButtonIntent:
+                                        CallbackAction<DownButtonIntent>(
+                                      onInvoke: (intent) {
+                                        return changFocus(
+                                            context,
+                                            _focusNode[allMoves.last.id ==
+                                                    allMoves[index].id
+                                                ? 0
+                                                : index + 1]!,
+                                            allMoves,
+                                            allMoves.last.id ==
+                                                    allMoves[index].id
+                                                ? 0
+                                                : index + 1);
+                                      },
+                                    ),
+                                    // ScrollIntent: ScrollAction(_scrollController),
+                                    UpButtonIntent:
+                                        CallbackAction<UpButtonIntent>(
+                                      onInvoke: (intent) {
+                                        return changFocus(
+                                            context,
+                                            _focusNode[allMoves.first.id ==
+                                                    allMoves[index].id
+                                                ? 0
+                                                : index - 1]!,
+                                            allMoves,
+                                            allMoves.first.id ==
+                                                    allMoves[index].id
+                                                ? 0
+                                                : index - 1);
+                                      },
+                                    ),
+                                    EnterButtonIntent:
+                                        CallbackAction<EnterButtonIntent>(
+                                      onInvoke: (intent) {
+                                        // print(jsonEncode(allMoves[index]));
+                                        return GoRouter.of(context).push(
+                                            AppRouter.kWatchingMovieView,
+                                            extra: allMoves[index].video_id);
+                                      },
+                                    ),
+                                  },
+                                  child: Focus(
+                                    focusNode: _focusNode[index],
+                                    autofocus: true,
+                                    child: Container(
+                                      // width: 100,
+                                      // height: 50,
+                                      decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                          border: Border.all(
+                                              color: Colors.white, width: 2),
+                                          color: allMoves[index].color),
+                                      child: Center(
+                                        child: Text(
+                                          allMoves[index].title!,
+                                          textAlign: TextAlign.center,
+                                          maxLines: 3,
+                                          style: TextStyle(
+                                              fontSize: allMoves[index].color ==
+                                                      Colors.white
+                                                  ? 12.sp
+                                                  : 10.sp,
+                                              color: allMoves[index].color ==
+                                                      Colors.white
+                                                  ? Colors.black
+                                                  : Colors.white,
+                                              fontWeight: FontWeight.bold),
                                         ),
-                                        const SizedBox(width: 10),
-                                        CachedNetworkImage(
-                                          imageUrl: widget.image,
-                                          width: 250,
-                                          height: 250,
-                                          fit: BoxFit.fill,
-                                          imageBuilder:
-                                              (context, imageProvider) =>
-                                                  Container(
-                                            width: 250,
-                                            height: 250,
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                              image: DecorationImage(
-                                                  image: imageProvider,
-                                                  fit: BoxFit.fill),
-                                            ),
-                                          ),
-                                          placeholder: (context, url) =>
-                                              const Center(
-                                                  child:
-                                                      CircularProgressIndicator()),
-                                          errorWidget: (context, url, error) =>
-                                              const Center(
-                                                  child: Icon(Icons.error)),
-                                        ),
-                                      ],
+                                      ),
                                     ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                      ),
-                    ),
-                  );
+                        );
                 }),
               ),
             ],

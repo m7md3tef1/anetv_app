@@ -1,15 +1,19 @@
 import 'package:anetv/constants.dart';
 import 'package:anetv/core/utils/app_router.dart';
 import 'package:anetv/core/utils/service_locator.dart';
+import 'package:anetv/featuers/home/data/repo/addCubit.dart';
 import 'package:anetv/featuers/home/data/repo/all_movies_home_repo_impl.dart';
+import 'package:anetv/featuers/home/data/repo/sql_helper.dart';
 import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/actionHandeler.dart';
 import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/all_movies_cubit.dart';
 import 'package:flutter/foundation.dart';
 // import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 // import 'package:cloudinary_url_gen/cloudinary.dart';
 // import 'package:cloudinary_flutter/image/cld_image.dart';
 // import 'package:cloudinary_flutter/cloudinary_context.dart';
@@ -18,6 +22,8 @@ import 'package:google_fonts/google_fonts.dart';
 // WebViewEnvironment? webViewEnvironment;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await DBHelper().dB;
+  await DBHelper().initDB();
   //
   // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
   //   final availableVersion = await WebViewEnvironment.getAvailableVersion();
@@ -46,17 +52,34 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AllMoviesCubit(getIt.get<AllMoviesHomeRepoImpl>()),
-      child: MaterialApp.router(
-        routerConfig: AppRouter.router,
-        theme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: kPrimaryColor,
-          textTheme:
-              GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
-        ),
-        debugShowCheckedModeBanner: false,
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (_) => AllMoviesCubit(getIt.get<AllMoviesHomeRepoImpl>())),
+        BlocProvider(create: (_) => FavCubit()),
+      ],
+      child: ScreenUtilInit(
+          designSize: const Size(375, 812),
+          minTextAdapt: true,
+          splitScreenMode: true,
+          builder: (BuildContext context, Widget? child) {
+            return MediaQuery(
+              data: MediaQuery.of(context)
+                  .copyWith(textScaler: const TextScaler.linear(1.0)),
+              child: MaterialApp.router(
+                routerConfig: AppRouter.router,
+                // localizationsDelegates: context.localizationDelegates,
+                // locale: context.locale,
+                // supportedLocales: context.supportedLocales,
+                theme: ThemeData.dark().copyWith(
+                  scaffoldBackgroundColor: kPrimaryColor,
+                  textTheme: GoogleFonts.montserratTextTheme(
+                      ThemeData.dark().textTheme),
+                ),
+                debugShowCheckedModeBanner: false,
+              ),
+            );
+          }),
     );
   }
 }

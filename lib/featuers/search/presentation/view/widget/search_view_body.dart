@@ -54,7 +54,7 @@ class _SearchViewBodyState extends State<SearchViewBody> {
                     padding: const EdgeInsets.symmetric(vertical: 5.0),
                     child: Center(
                       child: Text(
-                        widget.cat != null ? "Search" : widget.category.title,
+                        widget.cat != null ? "Search" : widget.category.title!,
                         style: Styels.textStyle20,
                       ),
                     ),

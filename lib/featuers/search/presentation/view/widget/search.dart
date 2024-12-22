@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../home/data/models/catogry_itme_model.dart';
 import '../../../../home/presentation/manager/all_movies_cubit/actionHandeler.dart';
 import '../../../../home/presentation/manager/all_movies_cubit/all_movies_cubit.dart';
@@ -166,9 +167,10 @@ class _SearchState extends State<Search> {
       24: change == true ? "x" : "ه",
       25: change == true ? "y" : "و",
       26: change == true ? "z" : "ي",
-      27: change == true ? 'Clear' : "مسح",
-      28: change == true ? 'Search' : "بحث",
-      29: change == true ? 'Change language' : "تغبير اللغه",
+      27: change == true ? "." : ".",
+      28: change == true ? 'Clear' : "مسح",
+      29: change == true ? 'Search' : "بحث",
+      30: change == true ? 'Change lang' : "تغبير اللغه",
     };
     for (int i = 0; i < names.length; i++) {
       focusNode.add(FocusNode());
@@ -207,7 +209,8 @@ class _SearchState extends State<Search> {
                                 catogry: "catogry",
                                 image: "image",
                                 title: "title",
-                                color: color),
+                                color: color,
+                                id: 0),
                             cat:
                                 "https://alaanetstreaming.com/api/search/?search=$value");
                       },
@@ -228,7 +231,7 @@ class _SearchState extends State<Search> {
                     child: Container(
                   color: Colors.black12,
                   child: GridView.count(
-                      crossAxisCount: 12,
+                      crossAxisCount: 10,
                       shrinkWrap: true,
                       children: names.entries
                           .map(
@@ -248,11 +251,25 @@ class _SearchState extends State<Search> {
                                             : key.key);
                                   },
                                 ),
+                                DownButtonIntent:
+                                    CallbackAction<DownButtonIntent>(
+                                  onInvoke: (intent) {
+                                    return changFocus2(
+                                        context,
+                                        focusNode[names.entries.last.value ==
+                                                key.value
+                                            ? 0
+                                            : key.key + 9]!,
+                                        names.entries.last.value == key.value
+                                            ? 0
+                                            : key.key + 9);
+                                  },
+                                ),
                                 EnterButtonIntent:
                                     CallbackAction<EnterButtonIntent>(
                                   onInvoke: (intent) {
-                                    print(key.value);
-                                    return key.value == "Change language" ||
+                                    // print(key.value);
+                                    return key.value == "Change lang" ||
                                             key.value == "تغبير اللغه"
                                         ? changeLang()
                                         : key.value == "Clear" ||
@@ -272,7 +289,8 @@ class _SearchState extends State<Search> {
                                                                       "image",
                                                                   title:
                                                                       "title",
-                                                                  color: color),
+                                                                  color: color,
+                                                                  id: 0),
                                                           cat:
                                                               "https://alaanetstreaming.com/api/search/?search=${_controller.text}");
                                                     },
@@ -294,9 +312,22 @@ class _SearchState extends State<Search> {
                                             : key.key - 2);
                                   },
                                 ),
+                                UpButtonIntent: CallbackAction<UpButtonIntent>(
+                                  onInvoke: (intent) {
+                                    return changFocus2(
+                                        context,
+                                        focusNode[names.entries.first.value ==
+                                                key.value
+                                            ? 0
+                                            : key.key - 9]!,
+                                        names.entries.first.value == key.value
+                                            ? 0
+                                            : key.key - 9);
+                                  },
+                                ),
                               },
                               child: GestureDetector(
-                                onTap: () => key.value == "Change language" ||
+                                onTap: () => key.value == "Change lang" ||
                                         key.value == "تغبير اللغه"
                                     ? changeLang()
                                     : key.value == "Clear" || key.value == "مسح"
@@ -311,7 +342,8 @@ class _SearchState extends State<Search> {
                                                           catogry: "catogry",
                                                           image: "image",
                                                           title: "title",
-                                                          color: color),
+                                                          color: color,
+                                                          id: 0),
                                                       cat:
                                                           "https://alaanetstreaming.com/api/search/?search=${_controller.text}");
                                                 },
@@ -321,16 +353,17 @@ class _SearchState extends State<Search> {
                                   focusNode: focusNode[key.key - 1],
                                   child: Container(
                                     // height: 10,
-                                    // width: 20,
-                                    margin: const EdgeInsets.all(4),
+                                    // width: 50.w,
+                                    margin: EdgeInsets.only(
+                                        right: 2.w, bottom: 2.h, top: 2.h),
                                     color: colors[key.key - 1] == Colors.blue
                                         ? Colors.blue
                                         : Colors.grey,
                                     alignment: Alignment.center,
                                     child: Text(
                                       key.value,
-                                      style: const TextStyle(
-                                          fontSize: 15, color: Colors.white),
+                                      style: TextStyle(
+                                          fontSize: 8.sp, color: Colors.white),
                                     ),
                                   ),
                                 ),

@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../../core/utils/styels.dart';
@@ -213,18 +214,17 @@ class _EpisodesListState extends State<EpisodesList>
                         shrinkWrap: true,
                         controller: _scrollController,
                         padding: EdgeInsetsDirectional.zero,
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 2, mainAxisExtent: 200),
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2, mainAxisExtent: 200.h),
                         scrollDirection: Axis.vertical,
                         physics: const AlwaysScrollableScrollPhysics(),
                         itemCount: allMoves.length,
                         itemBuilder: (context, index) => Padding(
-                          padding: const EdgeInsets.only(
-                              bottom: 10, left: 5, right: 5),
+                          padding:
+                              EdgeInsets.only(bottom: 10.h, left: 5, right: 5),
                           child: InkWell(
                             onTap: () {
-                              print(jsonEncode(allMoves[index]));
+                              // print(jsonEncode(allMoves[index]));
                               Navigator.push(context, MaterialPageRoute(
                                 builder: (context) {
                                   return MovesList2(allMoves[index].episodes!,
@@ -292,7 +292,7 @@ class _EpisodesListState extends State<EpisodesList>
                                 EnterButtonIntent:
                                     CallbackAction<EnterButtonIntent>(
                                   onInvoke: (intent) {
-                                    print(jsonEncode(allMoves[index]));
+                                    // print(jsonEncode(allMoves[index]));
                                     Navigator.push(context, MaterialPageRoute(
                                       builder: (context) {
                                         return MovesList2(
@@ -310,8 +310,8 @@ class _EpisodesListState extends State<EpisodesList>
                                   padding: const EdgeInsetsDirectional.only(
                                       start: 5.0, end: 5, bottom: 10),
                                   child: Container(
-                                    width: 300,
-                                    height: 300,
+                                    width: 300.w,
+                                    height: 300.h,
                                     decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(10),
                                         border: Border.all(
@@ -337,8 +337,8 @@ class _EpisodesListState extends State<EpisodesList>
                                                       fontSize: allMoves[index]
                                                                   .color ==
                                                               Colors.white
-                                                          ? 20
-                                                          : 15,
+                                                          ? 15.sp
+                                                          : 12.sp,
                                                       color: allMoves[index]
                                                                   .color ==
                                                               Colors.white
@@ -350,34 +350,36 @@ class _EpisodesListState extends State<EpisodesList>
                                               ),
                                             ),
                                           ),
-                                          const SizedBox(width: 10),
-                                          CachedNetworkImage(
-                                            imageUrl:
-                                                '${allMoves[index].thumbnail}',
-                                            width: 250,
-                                            height: 250,
-                                            fit: BoxFit.fill,
-                                            imageBuilder:
-                                                (context, imageProvider) =>
-                                                    Container(
-                                              width: 250,
-                                              height: 250,
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                    BorderRadius.circular(10),
-                                                image: DecorationImage(
-                                                    image: imageProvider,
-                                                    fit: BoxFit.fill),
+                                          SizedBox(width: 10.w),
+                                          Expanded(
+                                            child: CachedNetworkImage(
+                                              imageUrl:
+                                                  '${allMoves[index].thumbnail}',
+                                              width: 200.w,
+                                              height: 200.h,
+                                              fit: BoxFit.fill,
+                                              imageBuilder:
+                                                  (context, imageProvider) =>
+                                                      Container(
+                                                width: 200.w,
+                                                height: 200.h,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
+                                                  image: DecorationImage(
+                                                      image: imageProvider,
+                                                      fit: BoxFit.fill),
+                                                ),
                                               ),
+                                              placeholder: (context, url) =>
+                                                  const Center(
+                                                      child:
+                                                          CircularProgressIndicator()),
+                                              errorWidget: (context, url,
+                                                      error) =>
+                                                  const Center(
+                                                      child: Icon(Icons.error)),
                                             ),
-                                            placeholder: (context, url) =>
-                                                const Center(
-                                                    child:
-                                                        CircularProgressIndicator()),
-                                            errorWidget: (context, url,
-                                                    error) =>
-                                                const Center(
-                                                    child: Icon(Icons.error)),
                                           ),
                                         ],
                                       ),
