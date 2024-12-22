@@ -10,6 +10,7 @@ import '../../../../search/presentation/view/widget/custom_search_text_field.dar
 import '../../../data/models/catogry_itme_model.dart';
 import '../../../data/repo/all_movies_home_repo_impl.dart';
 import '../../../data/repo/sql_helper.dart';
+import 'list_catogry_itme_home.dart';
 
 class CatogryItmeHome extends StatefulWidget {
   const CatogryItmeHome({
@@ -21,17 +22,17 @@ class CatogryItmeHome extends StatefulWidget {
     required this.colorReset,
     required this.color,
     required this.index,
-    required this.color1,
-    required this.color2,
-    required this.color3,
-    required this.color4,
-    required this.color5,
-    required this.color6,
-    required this.color7,
-    required this.color8,
+    // this.color1,
+    // this.color2,
+    // this.color3,
+    // this.color4,
+    // this.color5,
+    // this.color6,
+    // this.color7,
+    // this.color8,
     required this.listCatogry,
     required this.listCatogry1,
-    required this.color9,
+    // this.color9,
   });
 
   final String images;
@@ -41,15 +42,15 @@ class CatogryItmeHome extends StatefulWidget {
   final int index;
   final Color colorUpdate;
   final Color colorReset;
-  final Color color1;
-  final Color color2;
-  final Color color3;
-  final Color color4;
-  final Color color5;
-  final Color color6;
-  final Color color7;
-  final Color color8;
-  final Color color9;
+  // final Color? color1;
+  // final Color? color2;
+  // final Color? color3;
+  // final Color? color4;
+  // final Color? color5;
+  // final Color? color6;
+  // final Color? color7;
+  // final Color? color8;
+  // final Color? color9;
   final List<CatogryItmeModel> listCatogry;
   final List<CatogryItmeModel> listCatogry1;
 
@@ -115,99 +116,98 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                         useSafeArea: true,
                         context: context,
                         builder: (dialogContext) {
-                          final TextEditingController
-                          controller =
-                          TextEditingController();
+                          final TextEditingController controller =
+                              TextEditingController();
                           return ActionHandler().handleArrowAndEnterAction3(
                             child: Actions(
                               actions: <Type, Action<Intent>>{
-                                CloseButtonIntent: CallbackAction<CloseButtonIntent>(
+                                CloseButtonIntent:
+                                    CallbackAction<CloseButtonIntent>(
                                   onInvoke: (intent) {
                                     return Navigator.pop(context);
                                   },
                                 )
                               },
                               child: AlertDialog(
-                                  insetPadding:
-                                  EdgeInsets.zero,
-                                  // titlePadding: EdgeInsets.zero,
-                                  contentPadding:
-                                  EdgeInsets.zero,
-                                  clipBehavior: Clip
-                                      .antiAliasWithSaveLayer,
-                                  titlePadding:
-                                  const EdgeInsets.only(
-                                      left: 10,
-                                      right: 10,
-                                      top: 10,
-                                      bottom: 10),
+                                  insetPadding: EdgeInsets.zero,
+                                  contentPadding: EdgeInsets.zero,
+                                  clipBehavior: Clip.antiAliasWithSaveLayer,
+                                  titlePadding: const EdgeInsets.only(
+                                      left: 10, right: 10, top: 10, bottom: 10),
                                   shape: const RoundedRectangleBorder(
                                       side: BorderSide(
-                                          color: Color(
-                                              0xFFD6CECE),
-                                          width: 1),
-                                      borderRadius:
-                                      BorderRadius
-                                          .all(Radius
-                                          .circular(
-                                          10))),
-                                  content:
-                                  StatefulBuilder(
-                                    builder: (context,
-                                        setState) {
+                                          color: Color(0xFFD6CECE), width: 1),
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(10))),
+                                  content: StatefulBuilder(
+                                    builder: (context, setState) {
                                       return SizedBox(
                                         height: 100.h,
                                         width: .8.sw,
                                         child: Column(
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
                                               child: TextFormField(
-                                                controller:
-                                                controller,
-                                                autofocus:
-                                                false,
-                                                onFieldSubmitted:
-                                                    (value) {
-                                                  if (value
-                                                      .toString() ==
+                                                controller: controller,
+                                                autofocus: false,
+                                                onFieldSubmitted: (value) {
+                                                  if (value.toString().trim() ==
                                                       "Anettva1") {
-                                                    for (int i = 0; i < widget.listCatogry1.length; i++) {
-                                                      // print("widget.listCatogry1.length");
-                                                      // print(widget.listCatogry1[i].image!);
-                                                      db.insertTask(CatogryItmeModel(
-                                                          title: widget.listCatogry1[i].title!,
-                                                          catogry: widget.listCatogry1[i].catogry!,
-                                                          id: widget.listCatogry1[i].id,
-                                                          image: widget.listCatogry1[i].image!));
+                                                    for (int i = 0;
+                                                        i <
+                                                            widget.listCatogry1
+                                                                .length;
+                                                        i++) {
+                                                      db.insertTask(
+                                                          CatogryItmeModel(
+                                                              title: widget
+                                                                  .listCatogry1[
+                                                                      i]
+                                                                  .title!,
+                                                              catogry: widget
+                                                                  .listCatogry1[
+                                                                      i]
+                                                                  .catogry!,
+                                                              id: widget
+                                                                  .listCatogry1[
+                                                                      i]
+                                                                  .id,
+                                                              image: widget
+                                                                  .listCatogry1[
+                                                                      i]
+                                                                  .image!));
                                                     }
-                                                    FavCubit.get(context).addProduct();
+                                                    FavCubit.get(context)
+                                                        .addProduct();
                                                     Navigator.pop(context);
-                                                  }else{
-                                                    ScaffoldMessenger.of(context).showSnackBar(
-                                                        SnackBar(
+                                                  } else {
+                                                    ScaffoldMessenger.of(
+                                                            context)
+                                                        .showSnackBar(SnackBar(
                                                             backgroundColor:
-                                                           Colors.red,
+                                                                Colors.red,
                                                             content: Text(
                                                               "Password Is Wrong",
                                                               style: TextStyle(
-                                                                  fontSize: 15.sp,
-                                                                  color: Colors.white),
+                                                                  fontSize:
+                                                                      15.sp,
+                                                                  color: Colors
+                                                                      .white),
                                                             )));
                                                   }
                                                 },
                                                 // focusNode: _focusNode,
-                                                onChanged:
-                                                    (value) {
+                                                onChanged: (value) {
                                                   // print("value");
                                                   // print(value);
                                                 },
                                                 decoration:
-                                                const InputDecoration(
+                                                    const InputDecoration(
                                                   labelText:
-                                                  "Enter Password To Reset",
-                                                  border:
-                                                  OutlineInputBorder(),
+                                                      "Enter Password To Reset",
+                                                  border: OutlineInputBorder(),
                                                 ),
                                               ),
                                             ),
@@ -219,8 +219,6 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                             ),
                           );
                         });
-                    // print('reeeeeeee');
-
                   },
                   child: Container(
                       width: 100,
@@ -256,9 +254,7 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                 const SizedBox(width: 5),
                 InkWell(
                   onTap: () {
-                    //    page = 1;
-                    page == 1;
-                    GoRouter.of(context).push(AppRouter.kSearch);
+                    launchUrl("https://aneting.net/ANETV%202.apk");
                   },
                   child: Container(
                       width: 100,
@@ -306,13 +302,14 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                           FavCubit.get(context).addProduct();
                         },
                         child: Container(
-                            // width: double.infinity,
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 20, vertical: 10),
                             decoration: BoxDecoration(
-                              color: widget.color1 == Colors.white
-                                  ? Colors.black
-                                  : Colors.white,
+                              color:
+                                  widget.listCatogry[widget.index - 1].color ==
+                                          Colors.white
+                                      ? Colors.black
+                                      : Colors.white,
                               borderRadius: BorderRadius.circular(5),
                               border: Border.all(color: Colors.white, width: 2),
                               boxShadow: [
@@ -373,21 +370,19 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                           InkWell(
                             onTap: () {
                               setState(() {
-                                // print("lllllllllllllllllllllllll");
                                 db.deleteTask(widget.listCatogry[widget.index]);
                                 db.deleteTask(
                                     widget.listCatogry[widget.index - 1]);
                                 FavCubit.get(context).addProduct();
-                                // FavCubit.get(context).addProduct();
-                                // print(widget.index);
                               });
                             },
                             child: Container(
-                                // width: double.infinity,
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 20, vertical: 10),
                                 decoration: BoxDecoration(
-                                  color: widget.color2 == Colors.white
+                                  color: widget.listCatogry[widget.index - 1]
+                                              .color ==
+                                          Colors.white
                                       ? Colors.black
                                       : Colors.white,
                                   borderRadius: BorderRadius.circular(5),
@@ -426,10 +421,9 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                                       Border.all(color: Colors.white, width: 2),
                                   boxShadow: [
                                     BoxShadow(
-                                      color: Colors.grey.withOpacity(0.5),
-                                      blurRadius: 5,
-                                      offset: const Offset(0, 3),
-                                    ),
+                                        color: Colors.grey.withOpacity(0.5),
+                                        blurRadius: 5,
+                                        offset: const Offset(0, 3)),
                                   ],
                                 ),
                                 child: Text(
@@ -453,19 +447,18 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                             children: [
                               InkWell(
                                 onTap: () {
-                                  // print("lllllllllllllllllllllllll");
                                   db.deleteTask(
                                       widget.listCatogry[widget.index]);
                                   db.deleteTask(
                                       widget.listCatogry[widget.index - 1]);
                                   FavCubit.get(context).addProduct();
-                                  // print(widget.index);
                                 },
                                 child: Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 10),
                                     decoration: BoxDecoration(
-                                      color: widget.color3 == Colors.white
+                                      color: widget.listCatogry[widget.index-1].color ==
+                                              Colors.white
                                           ? Colors.black
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(5),
@@ -497,7 +490,9 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 20, vertical: 10),
                                     decoration: BoxDecoration(
-                                      color: widget.color == Colors.white
+                                      color: widget
+                                                  .color ==
+                                              Colors.white
                                           ? Colors.black
                                           : Colors.white,
                                       borderRadius: BorderRadius.circular(10),
@@ -532,20 +527,21 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                                 children: [
                                   InkWell(
                                     onTap: () {
-                                      // print("lllllllllllllllllllllllll");
                                       db.deleteTask(
                                           widget.listCatogry[widget.index]);
                                       db.deleteTask(
                                           widget.listCatogry[widget.index - 1]);
                                       FavCubit.get(context).addProduct();
-                                      // print(widget.index);
                                     },
                                     child: Container(
-                                        // width: double.infinity,
                                         padding: const EdgeInsets.symmetric(
                                             horizontal: 20, vertical: 10),
                                         decoration: BoxDecoration(
-                                          color: widget.color4 == Colors.white
+                                          color: widget
+                                                      .listCatogry[
+                                                          widget.index - 1]
+                                                      .color ==
+                                                  Colors.white
                                               ? Colors.black
                                               : Colors.white,
                                           borderRadius:
@@ -617,23 +613,23 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                                     children: [
                                       InkWell(
                                         onTap: () {
-                                          // print("lllllllllllllllllllllllll");
                                           db.deleteTask(
                                               widget.listCatogry[widget.index]);
                                           db.deleteTask(widget
                                               .listCatogry[widget.index - 1]);
                                           FavCubit.get(context).addProduct();
-                                          // print(widget.index);
                                         },
                                         child: Container(
-                                            // width: double.infinity,
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 20, vertical: 10),
                                             decoration: BoxDecoration(
-                                              color:
-                                                  widget.color5 == Colors.white
-                                                      ? Colors.black
-                                                      : Colors.white,
+                                              color: widget
+                                                          .listCatogry[
+                                                              widget.index - 1]
+                                                          .color ==
+                                                      Colors.white
+                                                  ? Colors.black
+                                                  : Colors.white,
                                               borderRadius:
                                                   BorderRadius.circular(5),
                                               border: Border.all(
@@ -706,24 +702,24 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                                         children: [
                                           InkWell(
                                             onTap: () {
-                                              // print(
-                                              //     "lllllllllllllllllllllllll");
                                               db.deleteTask(widget
                                                   .listCatogry[widget.index]);
                                               db.deleteTask(widget.listCatogry[
                                                   widget.index - 1]);
                                               FavCubit.get(context)
                                                   .addProduct();
-                                              // print(widget.index);
                                             },
                                             child: Container(
-                                                // width: double.infinity,
                                                 padding:
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 20,
                                                         vertical: 10),
                                                 decoration: BoxDecoration(
-                                                  color: widget.color6 ==
+                                                  color: widget
+                                                              .listCatogry[
+                                                                  widget.index -
+                                                                      1]
+                                                              .color ==
                                                           Colors.white
                                                       ? Colors.black
                                                       : Colors.white,
@@ -804,8 +800,6 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                                             children: [
                                               InkWell(
                                                 onTap: () {
-                                                  // print(
-                                                  //     "lllllllllllllllllllllllll");
                                                   db.deleteTask(
                                                       widget.listCatogry[
                                                           widget.index]);
@@ -814,16 +808,18 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                                                           widget.index - 1]);
                                                   FavCubit.get(context)
                                                       .addProduct();
-                                                  // print(widget.index);
                                                 },
                                                 child: Container(
-                                                    // width: double.infinity,
                                                     padding: const EdgeInsets
                                                         .symmetric(
                                                         horizontal: 20,
                                                         vertical: 10),
                                                     decoration: BoxDecoration(
-                                                      color: widget.color7 ==
+                                                      color: widget
+                                                                  .listCatogry[
+                                                                      widget.index -
+                                                                          1]
+                                                                  .color ==
                                                               Colors.white
                                                           ? Colors.black
                                                           : Colors.white,
@@ -919,10 +915,8 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                                                           widget.index - 1]);
                                                       FavCubit.get(context)
                                                           .addProduct();
-                                                      // print(widget.index);
                                                     },
                                                     child: Container(
-                                                        // width: double.infinity,
                                                         padding:
                                                             const EdgeInsets
                                                                 .symmetric(
@@ -931,7 +925,10 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                                                         decoration:
                                                             BoxDecoration(
                                                           color: widget
-                                                                      .color8 ==
+                                                                      .listCatogry[
+                                                                          widget.index -
+                                                                              1]
+                                                                      .color ==
                                                                   Colors.white
                                                               ? Colors.black
                                                               : Colors.white,
@@ -1043,7 +1040,6 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                                                               .addProduct();
                                                         },
                                                         child: Container(
-                                                            // width: double.infinity,
                                                             padding:
                                                                 const EdgeInsets
                                                                     .symmetric(
@@ -1054,7 +1050,9 @@ class _CatogryItmeHomeState extends State<CatogryItmeHome> {
                                                             decoration:
                                                                 BoxDecoration(
                                                               color: widget
-                                                                          .color9 ==
+                                                                          .listCatogry[widget.index -
+                                                                              1]
+                                                                          .color ==
                                                                       Colors
                                                                           .white
                                                                   ? Colors.black

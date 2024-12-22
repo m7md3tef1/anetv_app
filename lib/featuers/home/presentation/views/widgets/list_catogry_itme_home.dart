@@ -10,7 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../data/repo/sql_helper.dart';
+
+void launchUrl(String url) async {
+  await canLaunch(url) ? await launch(url) : throw 'Could not launch $url';
+}
 
 class ListCatogryItmeHome extends StatefulWidget {
   const ListCatogryItmeHome({super.key});
@@ -286,51 +291,34 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
         color: Colors.black),
   ];
   var i = 0;
-  FocusNode? _focusNode1;
-  FocusNode? _focusNode2;
-  FocusNode? _focusNode3;
-  FocusNode? _focusNode4;
-  FocusNode? _focusNode5;
-  FocusNode? _focusNode6;
-  FocusNode? _focusNode7;
-  FocusNode? _focusNode8;
-  FocusNode? _focusNode9;
-  FocusNode? _focusNode10;
-  FocusNode? _focusNode11;
-  FocusNode? _focusNode12;
-  FocusNode? _focusNode13;
-  FocusNode? _focusNode14;
-  FocusNode? _focusNode15;
-  FocusNode? _focusNode16;
-  FocusNode? _focusNode17;
-  FocusNode? _focusNode18;
-  FocusNode? _focusNode19;
-  FocusNode? _focusNode20;
-  FocusNode? _focusNode21;
+  final List<FocusNode?> _focusNode = [];
+  // FocusNode? _focusNode1;
+  // FocusNode? _focusNode2;
+  // FocusNode? _focusNode3;
+  // FocusNode? _focusNode4;
+  // FocusNode? _focusNode5;
+  // FocusNode? _focusNode6;
+  // FocusNode? _focusNode7;
+  // FocusNode? _focusNode8;
+  // FocusNode? _focusNode9;
+  // FocusNode? _focusNode10;
+  // FocusNode? _focusNode11;
+  // FocusNode? _focusNode12;
+  // FocusNode? _focusNode13;
+  // FocusNode? _focusNode14;
+  // FocusNode? _focusNode15;
+  // FocusNode? _focusNode16;
+  // FocusNode? _focusNode17;
+  // FocusNode? _focusNode18;
+  // FocusNode? _focusNode19;
+  // FocusNode? _focusNode20;
+  // FocusNode? _focusNode21;
   _setFirstFocus(BuildContext context) {
-    if (_focusNode1 == null) {
-      _focusNode1 = FocusNode();
-      _focusNode2 = FocusNode();
-      _focusNode3 = FocusNode();
-      _focusNode4 = FocusNode();
-      _focusNode5 = FocusNode();
-      _focusNode6 = FocusNode();
-      _focusNode7 = FocusNode();
-      _focusNode8 = FocusNode();
-      _focusNode9 = FocusNode();
-      _focusNode10 = FocusNode();
-      _focusNode11 = FocusNode();
-      _focusNode12 = FocusNode();
-      _focusNode13 = FocusNode();
-      _focusNode14 = FocusNode();
-      _focusNode15 = FocusNode();
-      _focusNode16 = FocusNode();
-      _focusNode17 = FocusNode();
-      _focusNode18 = FocusNode();
-      _focusNode19 = FocusNode();
-      _focusNode20 = FocusNode();
-      _focusNode21 = FocusNode();
-      FocusScope.of(context).requestFocus(_focusNode1);
+    if (_focusNode[0] == null) {
+      for (int i = 1; i < _focusNode.length; i++) {
+        _focusNode[i] = FocusNode(descendantsAreFocusable: false);
+      }
+      FocusScope.of(context).requestFocus(_focusNode[0]);
     }
   }
 
@@ -346,20 +334,32 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
 
   List<CatogryItmeModel> tasks = [];
   DBHelper db = DBHelper();
-  getTasks() {
-    db.getAllTasks().then((v) {
+  getTasks() async{
+    _focusNode.clear();
+    // for (int i = 0; i < listCatogry.length; i++) {
+    //   // db.insertTask(CatogryItmeModel(
+    //   //     title: listCatogry[i].title!,
+    //   //     catogry: listCatogry[i].catogry!,
+    //   //     id: listCatogry[i].id,
+    //   //     image: listCatogry[i].image!));
+    //   // print("kkkkkk");
+    //   _focusNode.add(FocusNode());
+    // }
+   await db.getAllTasks().then((v) {
+      print("kkkkkk5555");
+      print("${tasks.length}");
       setState(() {
         tasks = v;
-        // print("tasks");
-        // print(tasks.length);
+
         if (tasks.isEmpty) {
-          // print(listCatogry.length);
           for (int i = 0; i < listCatogry.length; i++) {
             db.insertTask(CatogryItmeModel(
                 title: listCatogry[i].title!,
                 catogry: listCatogry[i].catogry!,
                 id: listCatogry[i].id,
                 image: listCatogry[i].image!));
+            // print("kkkkkk");
+            _focusNode.add(FocusNode());
           }
           db.getAllTasks().then(
             (value) {
@@ -368,6 +368,11 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
             },
           );
         } else {
+          print("kkkkkk1111111111111");
+          for (int i = 0; i < tasks.length; i++) {
+            print("kkkkkk");
+            _focusNode.add(FocusNode());
+          }
           listCatogry = tasks;
         }
       });
@@ -377,39 +382,49 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
   @override
   void initState() {
     getTasks();
-
+    // if (_focusNode[0] == null) {
+    //   for (int i = 1; i < _focusNode.length; i++) {
+    //     _focusNode[i] = FocusNode();
+    //   }
+    //   FocusScope.of(context).requestFocus(_focusNode[0]);
+    //   _setFirstFocus(context);
+    // }
+    // _focusNode.clear();
+    // for (int i = 0; i < 1; i++) {
+    //   _focusNode.add(FocusNode());
+    // }
     super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _focusNode1?.dispose();
-    _focusNode2?.dispose();
-    _focusNode3?.dispose();
-    _focusNode4?.dispose();
-    _focusNode5?.dispose();
-    _focusNode6?.dispose();
-    _focusNode7?.dispose();
-    _focusNode8?.dispose();
-    _focusNode9?.dispose();
-    _focusNode10?.dispose();
-    _focusNode11?.dispose();
-    _focusNode12?.dispose();
-    _focusNode13?.dispose();
-    _focusNode14?.dispose();
-    _focusNode15?.dispose();
-    _focusNode16?.dispose();
-    _focusNode17?.dispose();
-    _focusNode18?.dispose();
-    _focusNode19?.dispose();
-    _focusNode20?.dispose();
-    _focusNode21?.dispose();
+    _focusNode.clear();
+    // _focusNode1?.dispose();
+    // _focusNode2?.dispose();
+    // _focusNode3?.dispose();
+    // _focusNode4?.dispose();
+    // _focusNode5?.dispose();
+    // _focusNode6?.dispose();
+    // _focusNode7?.dispose();
+    // _focusNode8?.dispose();
+    // _focusNode9?.dispose();
+    // _focusNode10?.dispose();
+    // _focusNode11?.dispose();
+    // _focusNode12?.dispose();
+    // _focusNode13?.dispose();
+    // _focusNode14?.dispose();
+    // _focusNode15?.dispose();
+    // _focusNode16?.dispose();
+    // _focusNode17?.dispose();
+    // _focusNode18?.dispose();
+    // _focusNode19?.dispose();
+    // _focusNode20?.dispose();
+    // _focusNode21?.dispose();
   }
 
   final double _itemHeight = 1.0; // Assuming each item has a fixed height
   void scrollToIndex(int index) {
-    // print(":ddddddddddddddddddd");
     double offset = _itemHeight * index;
     // print(offset);
     _scrollController.animateTo(
@@ -422,16 +437,24 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
   final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    // listCatogry = tasks;
-    if (_focusNode1 == null) {
-      listCatogry[0].color = Colors.white;
-      _setFirstFocus(context);
-    }
+    // if(_focusNode.isEmpty){
+    //   // _focusNode.clear();
+    //   for (int i = 0; i < listCatogry.length; i++) {
+    //     _focusNode.add(FocusNode());
+    //   }
+    //   if (_focusNode[0] == null) {
+    //     for (int i = 1; i < _focusNode.length; i++) {
+    //       _focusNode[i] = FocusNode();
+    //     }
+    //     FocusScope.of(context).requestFocus(_focusNode[0]);
+    //     _setFirstFocus(context);
+    //   }
+    // }
     return BlocConsumer<FavCubit, FavState>(
       builder: (context, state) {
         return ActionHandler().handleArrowAndEnterAction(
           child: SizedBox(
-            child: ListView.builder(
+            child:_focusNode.isEmpty?SizedBox(): ListView.builder(
                 shrinkWrap: true,
                 controller: _scrollController,
                 scrollDirection: Axis.vertical,
@@ -447,11 +470,8 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
                           ? ""
                           : index == 1
                               ? {
-                                  // print('reeeeeeee'),
                                   for (int i = 0; i < listCatogry1.length; i++)
                                     {
-                                      // print("listCatogry1.length");
-                                      // print(listCatogry1[i].image!);
                                       db.insertTask(CatogryItmeModel(
                                           title: listCatogry1[i].title!,
                                           catogry: listCatogry1[i].catogry!,
@@ -472,101 +492,120 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
                               onInvoke: (intent) {
                             return _changFocus(
                                 context,
-                                index == 0
-                                    ? _focusNode2!
-                                    : index == 1
-                                        ? _focusNode3!
-                                        : index == 2
-                                            ? _focusNode4!
-                                            : index == 3
-                                                ? _focusNode5!
-                                                : index == 4
-                                                    ? _focusNode6!
-                                                    : index == 5
-                                                        ? _focusNode7!
-                                                        : index == 6
-                                                            ? _focusNode8!
-                                                            : index == 7
-                                                                ? _focusNode9!
-                                                                : index == 8
-                                                                    ? _focusNode10!
-                                                                    : index == 9
-                                                                        ? _focusNode11!
-                                                                        : index ==
-                                                                                10
-                                                                            ? _focusNode12!
-                                                                            : index == 11
-                                                                                ? _focusNode13!
-                                                                                : index == 12
-                                                                                    ? _focusNode14!
-                                                                                    : index == 13
-                                                                                        ? _focusNode15!
-                                                                                        : index == 14
-                                                                                            ? _focusNode16!
-                                                                                            : index == 15
-                                                                                                ? _focusNode17!
-                                                                                                : index == 16
-                                                                                                    ? _focusNode18!
-                                                                                                    : index == 17
-                                                                                                        ? _focusNode19!
-                                                                                                        : index == 18
-                                                                                                            ? _focusNode20!
-                                                                                                            : index == 19
-                                                                                                                ? _focusNode21!
-                                                                                                                : _focusNode1!,
-                                index == 20 ? 0 : index + 1);
+                                _focusNode[
+                                    listCatogry.last.id == listCatogry[index].id
+                                        ? 0
+                                        : index + 1]!,
+                                listCatogry.last.title ==
+                                        listCatogry[index].title
+                                    ? 0
+                                    : index + 1);
+                            // return _changFocus(
+                            //     context,
+                            //     index == 0
+                            //         ? _focusNode2!
+                            //         : index == 1
+                            //             ? _focusNode3!
+                            //             : index == 2
+                            //                 ? _focusNode4!
+                            //                 : index == 3
+                            //                     ? _focusNode5!
+                            //                     : index == 4
+                            //                         ? _focusNode6!
+                            //                         : index == 5
+                            //                             ? _focusNode7!
+                            //                             : index == 6
+                            //                                 ? _focusNode8!
+                            //                                 : index == 7
+                            //                                     ? _focusNode9!
+                            //                                     : index == 8
+                            //                                         ? _focusNode10!
+                            //                                         : index == 9
+                            //                                             ? _focusNode11!
+                            //                                             : index ==
+                            //                                                     10
+                            //                                                 ? _focusNode12!
+                            //                                                 : index == 11
+                            //                                                     ? _focusNode13!
+                            //                                                     : index == 12
+                            //                                                         ? _focusNode14!
+                            //                                                         : index == 13
+                            //                                                             ? _focusNode15!
+                            //                                                             : index == 14
+                            //                                                                 ? _focusNode16!
+                            //                                                                 : index == 15
+                            //                                                                     ? _focusNode17!
+                            //                                                                     : index == 16
+                            //                                                                         ? _focusNode18!
+                            //                                                                         : index == 17
+                            //                                                                             ? _focusNode19!
+                            //                                                                             : index == 18
+                            //                                                                                 ? _focusNode20!
+                            //                                                                                 : index == 19
+                            //                                                                                     ? _focusNode21!
+                            //                                                                                     : _focusNode1!,
+                            //     index == 20 ? 0 : index + 1);
                           }),
                           UpButtonIntent: CallbackAction<UpButtonIntent>(
                               onInvoke: (intent) {
                             return _changFocus(
                                 context,
-                                index == 0
-                                    ? _focusNode21!
-                                    : index == 1
-                                        ? _focusNode1!
-                                        : index == 2
-                                            ? _focusNode2!
-                                            : index == 3
-                                                ? _focusNode3!
-                                                : index == 4
-                                                    ? _focusNode4!
-                                                    : index == 5
-                                                        ? _focusNode5!
-                                                        : index == 6
-                                                            ? _focusNode6!
-                                                            : index == 7
-                                                                ? _focusNode7!
-                                                                : index == 8
-                                                                    ? _focusNode8!
-                                                                    : index == 9
-                                                                        ? _focusNode9!
-                                                                        : index ==
-                                                                                10
-                                                                            ? _focusNode10!
-                                                                            : index == 11
-                                                                                ? _focusNode11!
-                                                                                : index == 12
-                                                                                    ? _focusNode12!
-                                                                                    : index == 13
-                                                                                        ? _focusNode13!
-                                                                                        : index == 14
-                                                                                            ? _focusNode14!
-                                                                                            : index == 15
-                                                                                                ? _focusNode15!
-                                                                                                : index == 16
-                                                                                                    ? _focusNode16!
-                                                                                                    : index == 17
-                                                                                                        ? _focusNode17!
-                                                                                                        : index == 18
-                                                                                                            ? _focusNode18!
-                                                                                                            : index == 19
-                                                                                                                ? _focusNode19!
-                                                                                                                : index == 20
-                                                                                                                    ? _focusNode20!
-                                                                                                                    : index == 20
-                                                                                                                        ? _focusNode20!
-                                                                                                                        : _focusNode21!,
-                                index == 0 ? 20 : index - 1);
+                                _focusNode[listCatogry.first.id ==
+                                        listCatogry[index].id
+                                    ? 0
+                                    : index - 1]!,
+                                listCatogry.first.id == listCatogry[index].id
+                                    ? 0
+                                    : index - 1);
+                            // return _changFocus(
+                            //     context,
+                            //     index == 0
+                            //         ? _focusNode21!
+                            //         : index == 1
+                            //             ? _focusNode1!
+                            //             : index == 2
+                            //                 ? _focusNode2!
+                            //                 : index == 3
+                            //                     ? _focusNode3!
+                            //                     : index == 4
+                            //                         ? _focusNode4!
+                            //                         : index == 5
+                            //                             ? _focusNode5!
+                            //                             : index == 6
+                            //                                 ? _focusNode6!
+                            //                                 : index == 7
+                            //                                     ? _focusNode7!
+                            //                                     : index == 8
+                            //                                         ? _focusNode8!
+                            //                                         : index == 9
+                            //                                             ? _focusNode9!
+                            //                                             : index ==
+                            //                                                     10
+                            //                                                 ? _focusNode10!
+                            //                                                 : index == 11
+                            //                                                     ? _focusNode11!
+                            //                                                     : index == 12
+                            //                                                         ? _focusNode12!
+                            //                                                         : index == 13
+                            //                                                             ? _focusNode13!
+                            //                                                             : index == 14
+                            //                                                                 ? _focusNode14!
+                            //                                                                 : index == 15
+                            //                                                                     ? _focusNode15!
+                            //                                                                     : index == 16
+                            //                                                                         ? _focusNode16!
+                            //                                                                         : index == 17
+                            //                                                                             ? _focusNode17!
+                            //                                                                             : index == 18
+                            //                                                                                 ? _focusNode18!
+                            //                                                                                 : index == 19
+                            //                                                                                     ? _focusNode19!
+                            //                                                                                     : index == 20
+                            //                                                                                         ? _focusNode20!
+                            //                                                                                         : index == 20
+                            //                                                                                             ? _focusNode20!
+                            //                                                                                             : _focusNode21!,
+                            //     index == 0 ? 20 : index - 1);
                           }),
                           EnterButtonIntent: CallbackAction<EnterButtonIntent>(
                             onInvoke: (intent) {
@@ -652,11 +691,14 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
                                                                         TextFormField(
                                                                       controller:
                                                                           controller,
+                                                                      textInputAction:
+                                                                          TextInputAction
+                                                                              .done,
                                                                       autofocus:
                                                                           false,
                                                                       onFieldSubmitted:
                                                                           (value) {
-                                                                        if (value.toString() ==
+                                                                        if (value.toString().trim() ==
                                                                             "Anettva1") {
                                                                           for (int i = 0;
                                                                               i < listCatogry.length;
@@ -702,7 +744,8 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
                                           // print('reeeeeeee'),
 
                                           : listCatogry[index].title == "update"
-                                              ? ""
+                                              ? launchUrl(
+                                                  "https://aneting.net/ANETV%202.apk")
                                               : GoRouter.of(context).push(
                                                   AppRouter.kSearchView,
                                                   extra:
@@ -712,48 +755,7 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
                           )
                         },
                         child: Focus(
-                          focusNode: index == 0
-                              ? _focusNode1
-                              : index == 1
-                                  ? _focusNode2
-                                  : index == 2
-                                      ? _focusNode3
-                                      : index == 3
-                                          ? _focusNode4
-                                          : index == 4
-                                              ? _focusNode5
-                                              : index == 5
-                                                  ? _focusNode6
-                                                  : index == 6
-                                                      ? _focusNode7
-                                                      : index == 7
-                                                          ? _focusNode8
-                                                          : index == 8
-                                                              ? _focusNode9
-                                                              : index == 9
-                                                                  ? _focusNode10
-                                                                  : index == 10
-                                                                      ? _focusNode11
-                                                                      : index ==
-                                                                              11
-                                                                          ? _focusNode12
-                                                                          : index == 12
-                                                                              ? _focusNode13
-                                                                              : index == 13
-                                                                                  ? _focusNode14
-                                                                                  : index == 14
-                                                                                      ? _focusNode15
-                                                                                      : index == 15
-                                                                                          ? _focusNode16
-                                                                                          : index == 16
-                                                                                              ? _focusNode17
-                                                                                              : index == 17
-                                                                                                  ? _focusNode18
-                                                                                                  : index == 18
-                                                                                                      ? _focusNode19
-                                                                                                      : index == 19
-                                                                                                          ? _focusNode20
-                                                                                                          : _focusNode21,
+                          focusNode: _focusNode[index],
                           child: CatogryItmeHome(
                             images: listCatogry[index].image!,
                             title: listCatogry[index].title!,
@@ -761,17 +763,17 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
                                 .title!,
                             color: listCatogry[index].color!,
                             index: index,
-                            color1: listCatogry[index].color!,
+                            // color1:index>2? listCatogry[3].color!:Colors.transparent,
                             listCatogry: listCatogry,
                             listCatogry1: listCatogry1,
-                            color2: listCatogry[index].color!,
-                            color3: listCatogry[index].color!,
-                            color4: listCatogry[index].color!,
-                            color5: listCatogry[index].color!,
-                            color6: listCatogry[index].color!,
-                            color7: listCatogry[index].color!,
-                            color8: listCatogry[index].color!,
-                            color9: listCatogry[index].color!,
+                            // color2: listCatogry[5].color!,
+                            // color3: listCatogry[7].color!,
+                            // color4: listCatogry[9].color!,
+                            // color5: listCatogry[11].color!,
+                            // color6: listCatogry[13].color!,
+                            // color7: listCatogry[15].color!,
+                            // color8: listCatogry[17].color!,
+                            // color9: listCatogry[19].color!,
                             colorUpdate: listCatogry[2].color!,
                             colorReset: listCatogry[1].color!,
                           ),
@@ -791,6 +793,10 @@ class _ListCatogryItmeHomeState extends State<ListCatogryItmeHome>
               setState(() {
                 tasks = value;
                 listCatogry = tasks;
+                _focusNode.clear();
+                for (int i = 0; i < listCatogry.length; i++) {
+                  _focusNode.add(FocusNode());
+                }
               });
             },
           );

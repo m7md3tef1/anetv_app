@@ -13,6 +13,7 @@ class FavCubit extends Cubit<FavState> {
   DBHelper db = DBHelper();
 
   addProduct( ) async {
+
     // favList.add(contacts);
     print("favList.length");
     // print(favList.length);
