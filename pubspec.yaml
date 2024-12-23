@@ -46,6 +46,7 @@ dependencies:
   url_launcher:            # For handling downloads
   path_provider: ^2.0.13  # To get file paths for saving
   permission_handler: ^11.1.0
+  flutter_file_downloader:
 #  better_player:
 #  flutter_vlc_player: ^7.1.0
 #  cloudinary_flutter: ^1.3.0

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:anetv/featuers/home/presentation/manager/all_movies_cubit/actionHandeler.dart';
+import 'package:anetv/featuers/home/presentation/views/widgets/catogry_itme_home.dart';
 import 'package:anetv/featuers/home/presentation/views/widgets/list_catogry_itme_home.dart';
 import 'package:dio/dio.dart';
 // import 'package:cloudinary_public/cloudinary_public.dart';
@@ -8,6 +9,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_file_downloader/flutter_file_downloader.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 // import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -503,8 +506,6 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
 
 */
 
- 
-
 class WatchingMovieView extends StatefulWidget {
   final String url;
 
@@ -568,7 +569,6 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   @override
   void initState() {
     super.initState();
-
 
     // print("widget.url");print(widget.url.contains("iframe") || widget.url.contains("</iframe>"));
     if (widget.url.contains("iframe") || widget.url.contains("</iframe>")) {
@@ -667,6 +667,7 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
     }
     // #enddocregion platform_features
   }
+
   void _injectVideoSettings() {
     _controller.runJavaScript('''
      (function() {
@@ -685,9 +686,11 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
     setState(() {
       _mousePosition += delta;
     });
-  }bool isDownloading = false;
+  }
+
+  bool isDownloading = false;
   String progress = "";
-  Future<void> downloadVideo(String driveLink,context) async {
+  Future<void> downloadVideo(String driveLink, context) async {
     // Request storage permission
     if (await Permission.storage.request().isGranted) {
       try {
@@ -700,7 +703,8 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
         final dio = Dio();
 
         // Get Videos folder path
-        final directory = Directory('/storage/emulated/0/Movies'); // Common path for Videos folder
+        final directory = Directory(
+            '/storage/emulated/0/Movies'); // Common path for Videos folder
         if (!await directory.exists()) {
           await directory.create(recursive: true);
         }
@@ -715,7 +719,7 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
             if (total != -1) {
               setState(() {
                 progress =
-                "Downloading: ${(received / total * 100).toStringAsFixed(0)}%";
+                    "Downloading: ${(received / total * 100).toStringAsFixed(0)}%";
               });
             }
           },
@@ -808,21 +812,48 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   // }
   Future downloadFile(String url) async {
     Dio dio = Dio();
-    launchUrlStatic(url);
+    // launchUrlStatic(
+    //     "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
+    // FileDownloader.downloadFile(
+    //   url: url,
+    //   onDownloadCompleted: (path) {
+    //     print("pathfffffffffffffffffffffffffffff");
+    //     print(path);
+    //   },onProgress: (fileName, progress) {
+    //     print("progress");
+    //     print(progress);
+    //   },
+    //   onDownloadError: (errorMessage) {
+    //     print("eroor");
+    //     print(errorMessage);
+    //   },
+    // );
     try {
       var dir = await getApplicationDocumentsDirectory();
-      await dio.download(url, "${dir.path}/myFile.txt", onReceiveProgress: (rec, total) {
+      await dio.download(url, "${dir.path}/myFile.mp4",
+          onReceiveProgress: (rec, total) {
         print("Rec: $rec , Total: $total");
+        print("${dir.path}/myFile.mp4");
       });
     } catch (e) {
       print(e);
     }
     print("Download completed");
   }
+
+  var _progress = 0.0;
+
   bool? isPlaying = true;
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    downloadFile("https://drive.google.com/uc?export=download&id=${widget.url}");
+    // downloadFile(
+    //     "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
     return
         // ActionHandler().handleArrowAndEnterAction3(
         // child:
@@ -906,91 +937,161 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
         //   ),
         // },
         child: Stack(
+          alignment: Alignment.topCenter,
           children: [
-            Focus(
-              autofocus: true,
-              child: WebViewWidget(controller: _controller),
-              // child: InAppWebView(
-              //   key: webViewKey,
-              //   webViewEnvironment: webViewEnvironment,
-              //   initialUrlRequest: URLRequest(
-              //       url: WebUri(
-              //           "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")),
-              //   initialSettings: settings,
-              //   pullToRefreshController: pullToRefreshController,
-              //   onWebViewCreated: (controller) {
-              //     webViewController = controller;
-              //   },
-              //   onLoadStart: (controller, url) {
-              //     setState(() {
-              //       this.url = url.toString();
-              //       urlController.text = this.url;
-              //     });
-              //   },
-              //   onPermissionRequest: (controller, request) async {
-              //     return PermissionResponse(
-              //         resources: request.resources,
-              //         action: PermissionResponseAction.GRANT);
-              //   },
-              //   shouldOverrideUrlLoading: (controller, navigationAction) async {
-              //     var uri = navigationAction.request.url!;
-              //
-              //     if (![
-              //       "http",
-              //       "https",
-              //       "file",
-              //       "chrome",
-              //       "data",
-              //       "javascript",
-              //       "about"
-              //     ].contains(uri.scheme)) {
-              //       if (await canLaunchUrl(uri)) {
-              //         // Launch the App
-              //         await launchUrl(
-              //           uri,
-              //         );
-              //         // and cancel the request
-              //         return NavigationActionPolicy.CANCEL;
-              //       }
-              //     }
-              //
-              //     return NavigationActionPolicy.ALLOW;
-              //   },
-              //   onLoadStop: (controller, url) async {
-              //     pullToRefreshController?.endRefreshing();
-              //     setState(() {
-              //       this.url = url.toString();
-              //       urlController.text = this.url;
-              //     });
-              //   },
-              //   onReceivedError: (controller, request, error) {
-              //     pullToRefreshController?.endRefreshing();
-              //   },
-              //   onProgressChanged: (controller, progress) {
-              //     if (progress == 100) {
-              //       pullToRefreshController?.endRefreshing();
-              //     }
-              //     setState(() {
-              //       this.progress = progress / 100;
-              //       urlController.text = url;
-              //     });
-              //   },
-              //   onUpdateVisitedHistory: (controller, url, androidIsReload) {
-              //     setState(() {
-              //       this.url = url.toString();
-              //       urlController.text = this.url;
-              //     });
-              //   },
-              //   onConsoleMessage: (controller, consoleMessage) {
-              //     if (kDebugMode) {
-              //       print(consoleMessage);
-              //     }
-              //   },
-              // ),
+            Stack(
+              alignment: Alignment.topLeft,
+              children: [
+                Focus(
+                  autofocus: true,
+                  child: WebViewWidget(controller: _controller),
+                  // child: InAppWebView(
+                  //   key: webViewKey,
+                  //   webViewEnvironment: webViewEnvironment,
+                  //   initialUrlRequest: URLRequest(
+                  //       url: WebUri(
+                  //           "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")),
+                  //   initialSettings: settings,
+                  //   pullToRefreshController: pullToRefreshController,
+                  //   onWebViewCreated: (controller) {
+                  //     webViewController = controller;
+                  //   },
+                  //   onLoadStart: (controller, url) {
+                  //     setState(() {
+                  //       this.url = url.toString();
+                  //       urlController.text = this.url;
+                  //     });
+                  //   },
+                  //   onPermissionRequest: (controller, request) async {
+                  //     return PermissionResponse(
+                  //         resources: request.resources,
+                  //         action: PermissionResponseAction.GRANT);
+                  //   },
+                  //   shouldOverrideUrlLoading: (controller, navigationAction) async {
+                  //     var uri = navigationAction.request.url!;
+                  //
+                  //     if (![
+                  //       "http",
+                  //       "https",
+                  //       "file",
+                  //       "chrome",
+                  //       "data",
+                  //       "javascript",
+                  //       "about"
+                  //     ].contains(uri.scheme)) {
+                  //       if (await canLaunchUrl(uri)) {
+                  //         // Launch the App
+                  //         await launchUrl(
+                  //           uri,
+                  //         );
+                  //         // and cancel the request
+                  //         return NavigationActionPolicy.CANCEL;
+                  //       }
+                  //     }
+                  //
+                  //     return NavigationActionPolicy.ALLOW;
+                  //   },
+                  //   onLoadStop: (controller, url) async {
+                  //     pullToRefreshController?.endRefreshing();
+                  //     setState(() {
+                  //       this.url = url.toString();
+                  //       urlController.text = this.url;
+                  //     });
+                  //   },
+                  //   onReceivedError: (controller, request, error) {
+                  //     pullToRefreshController?.endRefreshing();
+                  //   },
+                  //   onProgressChanged: (controller, progress) {
+                  //     if (progress == 100) {
+                  //       pullToRefreshController?.endRefreshing();
+                  //     }
+                  //     setState(() {
+                  //       this.progress = progress / 100;
+                  //       urlController.text = url;
+                  //     });
+                  //   },
+                  //   onUpdateVisitedHistory: (controller, url, androidIsReload) {
+                  //     setState(() {
+                  //       this.url = url.toString();
+                  //       urlController.text = this.url;
+                  //     });
+                  //   },
+                  //   onConsoleMessage: (controller, consoleMessage) {
+                  //     if (kDebugMode) {
+                  //       print(consoleMessage);
+                  //     }
+                  //   },
+                  // ),
+                ),
+                Positioned(
+                  top: 50.h,
+                  left: 10.w,
+                  child: InkWell(
+                    onTap: () {
+                      // print(
+                      //     // "fffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+                      FileDownloader.downloadFile(
+                        name: "PANDA",
+                        url:
+                            "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
+                        onDownloadCompleted: (path) {
+                          // print("pathfffffffffffffffffffffffffffff");
+                          // print(path);
+                          // final File file = File(path);
+                          // print(file);
+                        },
+                        onProgress: (fileName, progress) {
+                          // print("progress");
+                          // print(progress);
+                          setState(() {
+                            _progress = double.parse(progress.toString().replaceAll("-", ""));
+                          });
+                        },
+                        onDownloadError: (errorMessage) {
+                          print("eroor");
+                          print(errorMessage);
+                        },
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                          color: Colors.green,
+                          borderRadius: BorderRadiusDirectional.circular(5.r)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          "Download",
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 15.sp,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ),
+                )
+                // progress < 1.0
+                //     ? LinearProgressIndicator(value: progress)
+                //     : Container(),
+              ],
             ),
-            // progress < 1.0
-            //     ? LinearProgressIndicator(value: progress)
-            //     : Container(),
+            Positioned(
+              top: 40.h,
+              child: Center(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      height: 10.h,
+                      width: _progress * 4,
+                      color: Colors.red,
+                    ),
+                    Text(_progress.toString())
+                  ],
+                ),
+              ),
+            ),
           ],
         ),
         // ),

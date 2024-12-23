@@ -23,12 +23,13 @@ import 'package:permission_handler/permission_handler.dart';
 // WebViewEnvironment? webViewEnvironment;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await DBHelper().dB;
-  await DBHelper().initDB();
   await Permission.storage.request().then((value) {
     print("dddddddddddddddddddd");
     print(value);
   },);
+  await DBHelper().dB;
+  await DBHelper().initDB();
+
   //
   // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
   //   final availableVersion = await WebViewEnvironment.getAvailableVersion();
