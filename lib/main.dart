@@ -27,8 +27,8 @@ void main() async {
     print("dddddddddddddddddddd");
     print(value);
   },);
-  await DBHelper().dB;
-  await DBHelper().initDB();
+  // await DBHelper().dB;
+  // await DBHelper().initDB();
 
   //
   // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {

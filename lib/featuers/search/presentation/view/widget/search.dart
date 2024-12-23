@@ -21,18 +21,14 @@ class _SearchState extends State<Search> {
     final cursorPosition = _controller.selection.baseOffset;
 
     if (cursorPosition == -1) {
-      // No cursor: Append text to the end
       _controller.text = currentText + newText;
     } else {
-      // Insert text at cursor position
       final updatedText = currentText.replaceRange(
         cursorPosition,
         cursorPosition,
         newText,
       );
       _controller.text = updatedText;
-
-      // Update cursor position
       _controller.selection = TextSelection.fromPosition(
         TextPosition(offset: cursorPosition + newText.length),
       );
@@ -43,13 +39,10 @@ class _SearchState extends State<Search> {
   void _clearLetter(String letter) {
     String currentText = _controller.text;
 
-    // Remove all occurrences of the specified letter
     currentText = currentText.replaceAll(letter, '');
 
-    // Update the controller text
     _controller.text = currentText;
 
-    // Maintain the cursor position
     _controller.selection = TextSelection.fromPosition(
       TextPosition(offset: currentText.length),
     );
@@ -58,8 +51,6 @@ class _SearchState extends State<Search> {
   var i = 0;
   changFocus2(BuildContext context, FocusNode node, index) {
     FocusScope.of(context).requestFocus(node);
-    // print(index);
-    // print(I);
     setState(() {
       colors[I] = Colors.blue;
       colors[index] = Colors.grey;
@@ -190,9 +181,6 @@ class _SearchState extends State<Search> {
     }
     return BlocBuilder<AllMoviesCubit, AllMoviesState>(
       builder: (context, state) {
-        // if (state is AllSearchSuccess) {
-        //
-        //   }
         return Scaffold(
           body: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -254,15 +242,19 @@ class _SearchState extends State<Search> {
                                 DownButtonIntent:
                                     CallbackAction<DownButtonIntent>(
                                   onInvoke: (intent) {
-                                    return changFocus2(
-                                        context,
-                                        focusNode[names.entries.last.value ==
-                                                key.value
-                                            ? 0
-                                            : key.key + 9]!,
-                                        names.entries.last.value == key.value
-                                            ? 0
-                                            : key.key + 9);
+                                    return key.key < 21
+                                        ? changFocus2(
+                                            context,
+                                            focusNode[
+                                                names.entries.last.value ==
+                                                        key.value
+                                                    ? 0
+                                                    : key.key + 9]!,
+                                            names.entries.last.value ==
+                                                    key.value
+                                                ? 0
+                                                : key.key + 9)
+                                        : "";
                                   },
                                 ),
                                 EnterButtonIntent:
@@ -314,15 +306,19 @@ class _SearchState extends State<Search> {
                                 ),
                                 UpButtonIntent: CallbackAction<UpButtonIntent>(
                                   onInvoke: (intent) {
-                                    return changFocus2(
-                                        context,
-                                        focusNode[names.entries.first.value ==
-                                                key.value
-                                            ? 0
-                                            : key.key - 9]!,
-                                        names.entries.first.value == key.value
-                                            ? 0
-                                            : key.key - 9);
+                                    return key.key > 10
+                                        ? changFocus2(
+                                            context,
+                                            focusNode[
+                                                names.entries.first.value ==
+                                                        key.value
+                                                    ? 0
+                                                    : key.key - 9]!,
+                                            names.entries.first.value ==
+                                                    key.value
+                                                ? 0
+                                                : key.key - 9)
+                                        : "";
                                   },
                                 ),
                               },

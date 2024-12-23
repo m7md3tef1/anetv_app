@@ -565,11 +565,17 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   //           },
   //         );
   // }
-
+  bool _visible = true;
   @override
   void initState() {
     super.initState();
-
+    Future.delayed(const Duration(minutes: 2), () {
+      if (this.mounted) {
+        setState(() {
+          _visible = false;
+        });
+      }
+    });
     // print("widget.url");print(widget.url.contains("iframe") || widget.url.contains("</iframe>"));
     if (widget.url.contains("iframe") || widget.url.contains("</iframe>")) {
       print("widget.url2222");
@@ -668,87 +674,8 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
     // #enddocregion platform_features
   }
 
-  void _injectVideoSettings() {
-    _controller.runJavaScript('''
-     (function() {
-          const video = document.querySelector('video');
-          if (video) {
-            video.currentTime += 10;
-          }
-        })();
-      ''');
-  }
-
-  Offset _mousePosition = Offset.zero;
-  // bool _isShortcutActivated = false;
-
-  void _moveMouse(Offset delta) {
-    setState(() {
-      _mousePosition += delta;
-    });
-  }
-
   bool isDownloading = false;
   String progress = "";
-  Future<void> downloadVideo(String driveLink, context) async {
-    // Request storage permission
-    if (await Permission.storage.request().isGranted) {
-      try {
-        setState(() {
-          isDownloading = true;
-          progress = "Starting download...";
-        });
-
-        // Use Dio for file download
-        final dio = Dio();
-
-        // Get Videos folder path
-        final directory = Directory(
-            '/storage/emulated/0/Movies'); // Common path for Videos folder
-        if (!await directory.exists()) {
-          await directory.create(recursive: true);
-        }
-
-        final filePath = "${directory.path}/downloaded_video.mp4";
-
-        // Start downloading
-        await dio.download(
-          driveLink,
-          filePath,
-          onReceiveProgress: (received, total) {
-            if (total != -1) {
-              setState(() {
-                progress =
-                    "Downloading: ${(received / total * 100).toStringAsFixed(0)}%";
-              });
-            }
-          },
-        );
-
-        setState(() {
-          isDownloading = false;
-          progress = "Download complete! Saved to Videos folder.";
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Video saved to: $filePath')),
-        );
-      } catch (e) {
-        setState(() {
-          isDownloading = false;
-          progress = "Download failed: $e";
-        });
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Download failed: $e')),
-        );
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Storage permission denied')),
-      );
-    }
-  }
   // void handleKeyPress(RawKeyEvent event) {
   //   if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
   //     // Seek forward
@@ -774,7 +701,7 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   //   }
   // }
 
-  double _currentTime = 20.0;
+  // double _currentTime = 20.0;
   String jsPlay = """
     var video = document.querySelector('video');
     if (video) {
@@ -810,50 +737,17 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   //   _controller.runJavaScript(
   //       'document.querySelector("video").currentTime = $seconds;');
   // }
-  Future downloadFile(String url) async {
-    Dio dio = Dio();
-    // launchUrlStatic(
-    //     "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
-    // FileDownloader.downloadFile(
-    //   url: url,
-    //   onDownloadCompleted: (path) {
-    //     print("pathfffffffffffffffffffffffffffff");
-    //     print(path);
-    //   },onProgress: (fileName, progress) {
-    //     print("progress");
-    //     print(progress);
-    //   },
-    //   onDownloadError: (errorMessage) {
-    //     print("eroor");
-    //     print(errorMessage);
-    //   },
-    // );
-    try {
-      var dir = await getApplicationDocumentsDirectory();
-      await dio.download(url, "${dir.path}/myFile.mp4",
-          onReceiveProgress: (rec, total) {
-        print("Rec: $rec , Total: $total");
-        print("${dir.path}/myFile.mp4");
-      });
-    } catch (e) {
-      print(e);
-    }
-    print("Download completed");
-  }
 
   var _progress = 0.0;
 
   bool? isPlaying = true;
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // downloadFile(
-    //     "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209");
     return
         // ActionHandler().handleArrowAndEnterAction3(
         // child:
@@ -1023,53 +917,58 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
                   //   },
                   // ),
                 ),
-                Positioned(
-                  top: 50.h,
-                  left: 10.w,
-                  child: InkWell(
-                    onTap: () {
-                      // print(
-                      //     // "fffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-                      FileDownloader.downloadFile(
-                        name: "PANDA",
-                        url:
-                            "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
-                        onDownloadCompleted: (path) {
-                          // print("pathfffffffffffffffffffffffffffff");
-                          // print(path);
-                          // final File file = File(path);
-                          // print(file);
-                        },
-                        onProgress: (fileName, progress) {
-                          // print("progress");
-                          // print(progress);
-                          setState(() {
-                            _progress = double.parse(progress.toString().replaceAll("-", ""));
-                          });
-                        },
-                        onDownloadError: (errorMessage) {
-                          print("eroor");
-                          print(errorMessage);
-                        },
-                      );
-                    },
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.green,
-                          borderRadius: BorderRadiusDirectional.circular(5.r)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          "Download",
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 15.sp,
-                              fontWeight: FontWeight.bold),
+                _visible
+                    ? Positioned(
+                        top: 50.h,
+                        left: 10.w,
+                        child: InkWell(
+                          onTap: () {
+                            // print(
+                            //     // "fffffffffffffffffffffffffffffffffffffffffffffffffffffff");
+                            FileDownloader.downloadFile(
+                              name: "PANDA",
+                              url:
+                                  "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
+                              onDownloadCompleted: (path) {
+                                print("pathfffffffffffffffffffffffffffff");
+                                print(path);
+                                final File file = File(path);
+                                print(file);
+                              },
+                              onProgress: (fileName, progress) {
+                                print("progress");
+                                print(progress);
+                                setState(() {
+                                  _progress = double.parse(
+                                      progress.toString().replaceAll("-", ""));
+                                });
+                              },
+                              onDownloadError: (errorMessage) {
+                                print("eroor");
+                                print(errorMessage);
+                              },
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                                color: Colors.green,
+                                borderRadius:
+                                    BorderRadiusDirectional.circular(5.r)),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 8.h, horizontal: 8.w),
+                              child: Text(
+                                "Download",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12.sp,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  ),
-                )
+                      )
+                    : const SizedBox()
                 // progress < 1.0
                 //     ? LinearProgressIndicator(value: progress)
                 //     : Container(),
@@ -1087,7 +986,7 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
                       width: _progress * 4,
                       color: Colors.red,
                     ),
-                    Text(_progress.toString())
+                    Text(_progress == 0.0 ? "" : _progress.toString())
                   ],
                 ),
               ),

@@ -17,9 +17,6 @@ class SearchView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text("ssssssssssss"),
-      // ),
       body: ActionHandler().handleArrowAndEnterAction(
         child: Actions(
           actions: <Type, Action<Intent>>{
