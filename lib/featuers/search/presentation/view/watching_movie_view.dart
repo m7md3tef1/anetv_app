@@ -836,7 +836,7 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
             Stack(
               alignment: Alignment.topLeft,
               children: [
-        WebViewWidget(controller: _controller
+        WebViewWidget(controller: WebViewController()
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
           ..loadRequest(Uri.parse(
               "https://drive.google.com/file/d/${widget.url}/view"

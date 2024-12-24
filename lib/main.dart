@@ -35,7 +35,7 @@ void main() async {
   await DBHelper().initDB();
   await CacheHelper.init();
   isLogin = CacheHelper.getBool(SharedKeys.isLogin);
-  Email = CacheHelper.getString(SharedKeys.email);
+  email = CacheHelper.getString(SharedKeys.email);
   // print(Email);
   // print(isLogin);
   //

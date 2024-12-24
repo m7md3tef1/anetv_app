@@ -227,7 +227,7 @@ class _LoginState extends State<Login> {
                     isLogin = CacheHelper.getBool(SharedKeys.isLogin);
                     CacheHelper.putString(
                         SharedKeys.email, _controller.text.toString().trim());
-                    Email = CacheHelper.getString(SharedKeys.email);
+                    email = CacheHelper.getString(SharedKeys.email);
                     // print("Email");
                     // print(Email);
                   }
@@ -325,7 +325,7 @@ class _LoginState extends State<Login> {
                                                             _controller.text
                                                                 .toString()
                                                                 .trim()),
-                                                        Email = CacheHelper
+                                                        email = CacheHelper
                                                             .getString(
                                                                 SharedKeys
                                                                     .email),
@@ -424,7 +424,7 @@ class _LoginState extends State<Login> {
                                                         _controller.text
                                                             .toString()
                                                             .trim()),
-                                                    Email =
+                                                    email =
                                                         CacheHelper.getString(
                                                             SharedKeys.email),
                                                     // print("Email"),

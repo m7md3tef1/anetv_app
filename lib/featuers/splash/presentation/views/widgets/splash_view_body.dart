@@ -51,7 +51,7 @@ class _SplashViewBodyState extends State<SplashViewBody>
       // print(Email);
       // print(users!.length);
       for (int i = 0; i < users!.length; i++) {
-        if (Email.toString() == users![i].email.toString()) {
+        if (email.toString() == users![i].email.toString()) {
           find = true;
         }
       }

@@ -13,7 +13,7 @@ enum SharedKeys {
   isSubscribe
 }
 bool? isLogin = false;
-String? Email = "";
+String? email = "";
 class CacheHelper {
   static late SharedPreferences sharedPreferences;
   static init() async {
