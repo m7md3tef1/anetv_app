@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../home/data/local/cacheHelper.dart';
+import '../../login.dart';
 
 class SplashViewBody extends StatefulWidget {
   const SplashViewBody({super.key});
@@ -22,7 +23,11 @@ class _SplashViewBodyState extends State<SplashViewBody>
   void initState() {
     super.initState();
     // initSlidingAnimation();
-    navigateToHome();
+    getUsers().then(
+      (value) {
+        navigateToHome();
+      },
+    );
   }
 
   @override
@@ -41,8 +46,23 @@ class _SplashViewBodyState extends State<SplashViewBody>
 
   void navigateToHome() {
     Future.delayed(const Duration(seconds: 3), () {
-      GoRouter.of(context)
-          .push(isLogin == true ? AppRouter.kHomeView : AppRouter.kLoginView);
+      bool find = false;
+      // print("Email");
+      // print(Email);
+      // print(users!.length);
+      for (int i = 0; i < users!.length; i++) {
+        if (Email.toString() == users![i].email.toString()) {
+          find = true;
+        }
+      }
+      // print("find");
+      // print(find);
+      if (find == true) {
+        GoRouter.of(context)
+            .push(isLogin == true ? AppRouter.kHomeView : AppRouter.kLoginView);
+      } else {
+        GoRouter.of(context).push(AppRouter.kLoginView);
+      }
       // Get.to(()=>const HomeView(),transition:Transition.fade,duration: kTranstionDuration);
     });
   }

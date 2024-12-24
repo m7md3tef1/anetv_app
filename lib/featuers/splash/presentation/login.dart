@@ -216,10 +216,6 @@ class _LoginState extends State<Login> {
               autofocus: false,
               onFieldSubmitted: (value) {
                 for (int i = 0; i < users!.length; i++) {
-                  // print(users![i].email.toString());
-                  // print(_controller.text.toString().trim());
-                  // print(users![i].email.toString() ==
-                  //     _controller.text.toString().trim());
                   if (_controller.text.toString().trim() ==
                       users![i].email.toString()) {
                     Navigator.push(context, MaterialPageRoute(
@@ -229,25 +225,15 @@ class _LoginState extends State<Login> {
                     ));
                     CacheHelper.putBool(SharedKeys.isLogin, true);
                     isLogin = CacheHelper.getBool(SharedKeys.isLogin);
-                    CacheHelper.putString(SharedKeys.email, _controller.text.toString());
+                    CacheHelper.putString(
+                        SharedKeys.email, _controller.text.toString().trim());
                     Email = CacheHelper.getString(SharedKeys.email);
+                    // print("Email");
+                    // print(Email);
                   }
-                  // else if (users!.last.email.toString()!=_controller.text.toString().trim()
-                  //     ) {
-                  //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  //       backgroundColor: Colors.red,
-                  //       content: Text(
-                  //         "This Email Not Found",
-                  //         style:
-                  //             TextStyle(fontSize: 15.sp, color: Colors.white),
-                  //       )));
-                  // }
                 }
               },
-              onChanged: (value) {
-                // print("value");
-                // print(value);
-              },
+              onChanged: (value) {},
               decoration: const InputDecoration(
                 labelText: "Enter Email",
                 border: OutlineInputBorder(),
@@ -304,55 +290,66 @@ class _LoginState extends State<Login> {
                                         : key.value == "Login" ||
                                                 key.value == "تسجيل"
                                             ? {
-                                  for (int i = 0;
-                                  i < users!.length;
-                                  i++)
-                                    {
-                                      // print(users![i]
-                                      //     .email
-                                      //     .toString() ==
-                                      //     _controller.text
-                                      //         .toString()
-                                      //         .trim()),
-                                      if (_controller.text
-                                          .toString()
-                                          .trim() ==
-                                          users![i].email.toString())
-                                        {
-                                          Navigator.push(context,
-                                              MaterialPageRoute(
-                                                builder: (context) {
-                                                  return const HomeView();
-                                                },
-                                              )),
-                                          CacheHelper.putBool(
-                                              SharedKeys.isLogin,
-                                              true),
-                                          isLogin =
-                                              CacheHelper.getBool(
-                                                  SharedKeys.isLogin);
-                                CacheHelper.putString(SharedKeys.email, _controller.text.toString());
-                                Email = CacheHelper.getString(SharedKeys.email);
-
-                                        }
-                                      // else if (users!.last.email.toString()!=_controller.text.toString().trim() )
-                                      //   {
-                                      //     ScaffoldMessenger.of(
-                                      //         context)
-                                      //         .showSnackBar(SnackBar(
-                                      //         backgroundColor:
-                                      //         Colors.red,
-                                      //         content: Text(
-                                      //           "This Email Not Found",
-                                      //           style: TextStyle(
-                                      //               fontSize:
-                                      //               15.sp,
-                                      //               color: Colors
-                                      //                   .white),
-                                      //         ))),
-                                      //   }
-                                    }
-                                }
+                                                for (int i = 0;
+                                                    i < users!.length;
+                                                    i++)
+                                                  {
+                                                    // print(users![i]
+                                                    //     .email
+                                                    //     .toString() ==
+                                                    //     _controller.text
+                                                    //         .toString()
+                                                    //         .trim()),
+                                                    if (_controller.text
+                                                            .toString()
+                                                            .trim() ==
+                                                        users![i]
+                                                            .email
+                                                            .toString())
+                                                      {
+                                                        Navigator.push(context,
+                                                            MaterialPageRoute(
+                                                          builder: (context) {
+                                                            return const HomeView();
+                                                          },
+                                                        )),
+                                                        CacheHelper.putBool(
+                                                            SharedKeys.isLogin,
+                                                            true),
+                                                        isLogin =
+                                                            CacheHelper.getBool(
+                                                                SharedKeys
+                                                                    .isLogin),
+                                                        CacheHelper.putString(
+                                                            SharedKeys.email,
+                                                            _controller.text
+                                                                .toString()
+                                                                .trim()),
+                                                        Email = CacheHelper
+                                                            .getString(
+                                                                SharedKeys
+                                                                    .email),
+                                                        // print("Email"),
+                                                        // print(Email),
+                                                      }
+                                                    // else if (users!.last.email.toString()!=_controller.text.toString().trim() )
+                                                    //   {
+                                                    //     ScaffoldMessenger.of(
+                                                    //         context)
+                                                    //         .showSnackBar(SnackBar(
+                                                    //         backgroundColor:
+                                                    //         Colors.red,
+                                                    //         content: Text(
+                                                    //           "This Email Not Found",
+                                                    //           style: TextStyle(
+                                                    //               fontSize:
+                                                    //               15.sp,
+                                                    //               color: Colors
+                                                    //                   .white),
+                                                    //         ))),
+                                                    //   }
+                                                  }
+                                              }
                                             : _addText(key.value);
                               },
                             ),
@@ -422,10 +419,17 @@ class _LoginState extends State<Login> {
                                                     isLogin =
                                                         CacheHelper.getBool(
                                                             SharedKeys.isLogin),
-                                                  CacheHelper.putString(SharedKeys.email, _controller.text.toString());
-                                                  Email = CacheHelper.getString(SharedKeys.email);
+                                                    CacheHelper.putString(
+                                                        SharedKeys.email,
+                                                        _controller.text
+                                                            .toString()
+                                                            .trim()),
+                                                    Email =
+                                                        CacheHelper.getString(
+                                                            SharedKeys.email),
+                                                    // print("Email"),
+                                                    // print(Email),
                                                   }
-
                                               }
                                           }
                                         : _addText(key.value),

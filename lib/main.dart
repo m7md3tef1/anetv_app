@@ -25,17 +25,19 @@ import 'featuers/home/data/local/cacheHelper.dart';
 // WebViewEnvironment? webViewEnvironment;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Permission.storage.request().then((value) {
-    print("dddddddddddddddddddd");
-    print(value);
-  },);
+  await Permission.storage.request().then(
+    (value) {
+      // print("dddddddddddddddddddd");
+      // print(value);
+    },
+  );
   await DBHelper().dB;
   await DBHelper().initDB();
   await CacheHelper.init();
   isLogin = CacheHelper.getBool(SharedKeys.isLogin);
   Email = CacheHelper.getString(SharedKeys.email);
-  print(CacheHelper.getBool(SharedKeys.isLogin));
-  print(isLogin);
+  // print(Email);
+  // print(isLogin);
   //
   // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
   //   final availableVersion = await WebViewEnvironment.getAvailableVersion();
