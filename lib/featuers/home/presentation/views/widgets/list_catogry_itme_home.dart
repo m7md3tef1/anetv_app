@@ -47,18 +47,18 @@ class _ListCategoryItemHomeState extends State<ListCategoryItemHome>
         title: 'update',
         catogry: 'update',
         color: Colors.black),
-    // CatogryItmeModel(
-    //     id: 4,
-    //     image: AssetsData.movies,
-    //     title: 'All Movies',
-    //     catogry: 'movies',
-    //     color: Colors.black),
-    // CatogryItmeModel(
-    //     id: 5,
-    //     image: AssetsData.movies,
-    //     title: '1',
-    //     catogry: '1',
-    //     color: Colors.black),
+    CatogryItmeModel(
+        id: 4,
+        image: AssetsData.movies,
+        title: 'All Movies',
+        catogry: 'movies',
+        color: Colors.black),
+    CatogryItmeModel(
+        id: 5,
+        image: AssetsData.movies,
+        title: '1',
+        catogry: '1',
+        color: Colors.black),
     CatogryItmeModel(
         id: 6,
         image: AssetsData.christmas2024,
@@ -387,21 +387,6 @@ class _ListCategoryItemHomeState extends State<ListCategoryItemHome>
   final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
-    // if(_focusNode.isEmpty){
-    //   // _focusNode.clear();
-    // listCatogry=listCatogry1;
-    //   for (int i = 0; i < listCatogry1.length; i++) {
-    //     _focusNode.add(FocusNode());
-    //   }
-    // if (_focusNode[0] == null) {
-    // listCategory = listCategory1;
-    // for (int i = 0; i < listCategory1.length; i++) {
-    //   _focusNode.add(FocusNode());
-    // }
-    //   FocusScope.of(context).requestFocus(_focusNode[0]);
-    //   _setFirstFocus(context);
-    // }
-    // }
     return BlocConsumer<FavCubit, FavState>(
       builder: (context, state) {
         return ActionHandler().handleArrowAndEnterAction(
@@ -476,8 +461,8 @@ class _ListCategoryItemHomeState extends State<ListCategoryItemHome>
                               EnterButtonIntent:
                                   CallbackAction<EnterButtonIntent>(
                                 onInvoke: (intent) {
-                                  print(jsonEncode(listCategory[index + 1]));
-                                  print(jsonEncode(listCategory[index]));
+                                  // print(jsonEncode(listCategory[index + 1]));
+                                  // print(jsonEncode(listCategory[index]));
                                   page = 1;
                                   page == 1;
                                   index == 0

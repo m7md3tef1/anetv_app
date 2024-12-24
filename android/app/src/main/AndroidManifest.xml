@@ -24,6 +24,7 @@
         android:label="ANETV"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
+        android:allowBackup = "false"
         android:requestLegacyExternalStorage="true"
         android:usesCleartextTraffic="true">
         <activity

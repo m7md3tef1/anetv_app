@@ -15,6 +15,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import 'featuers/home/data/local/cacheHelper.dart';
+
 // import 'package:cloudinary_url_gen/cloudinary.dart';
 // import 'package:cloudinary_flutter/image/cld_image.dart';
 // import 'package:cloudinary_flutter/cloudinary_context.dart';
@@ -27,9 +29,13 @@ void main() async {
     print("dddddddddddddddddddd");
     print(value);
   },);
-  // await DBHelper().dB;
-  // await DBHelper().initDB();
-
+  await DBHelper().dB;
+  await DBHelper().initDB();
+  await CacheHelper.init();
+  isLogin = CacheHelper.getBool(SharedKeys.isLogin);
+  Email = CacheHelper.getString(SharedKeys.email);
+  print(CacheHelper.getBool(SharedKeys.isLogin));
+  print(isLogin);
   //
   // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
   //   final availableVersion = await WebViewEnvironment.getAvailableVersion();

@@ -104,48 +104,54 @@ class _MovesListState extends State<MovesList>
             children: [
               widget.category == "search"
                   ? const SizedBox()
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        page > 1
-                            ? InkWell(
-                                onTap: () {
-                                  --page;
-                                  BlocProvider.of<AllMoviesCubit>(context)
-                                      .fetchMovie(catogry: widget.category);
-                                },
-                                child: Container(
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                      // borderRadius: BorderRadius.circular(20)
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(Icons.arrow_back_ios,color: Colors.black,),
-                                    )))
-                            : const SizedBox(),
-                        Text("Page Number = ${page.toString()}",
-                            style: Styels.textStyle18),
-                        allMoves.isNotEmpty
-                            ? InkWell(
-                                onTap: () {
-                                  ++page;
-                                  BlocProvider.of<AllMoviesCubit>(context)
-                                      .fetchMovie(catogry: widget.category);
-                                },
-                                child: Container(
-                                    decoration: const BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                      // borderRadius: BorderRadius.circular(20)
-                                    ),
-                                    child: const Padding(
-                                      padding: EdgeInsets.all(8.0),
-                                      child: Icon(Icons.arrow_forward_ios, color: Colors.black),
-                                    )))
-                            : const SizedBox(),
-                      ],
+                  : Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 5.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          page > 1
+                              ? InkWell(
+                                  onTap: () {
+                                    --page;
+                                    BlocProvider.of<AllMoviesCubit>(context)
+                                        .fetchMovie(catogry: widget.category);
+                                  },
+                                  child: Container(
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle
+                                      ),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(
+                                          Icons.arrow_back_ios,
+                                          color: Colors.black,
+                                        ),
+                                      )))
+                              : const SizedBox(),
+                          Text("Page Number = ${page.toString()}",
+                              style: Styels.textStyle18),
+                          allMoves.isNotEmpty
+                              ? InkWell(
+                                  onTap: () {
+                                    ++page;
+                                    BlocProvider.of<AllMoviesCubit>(context)
+                                        .fetchMovie(catogry: widget.category);
+                                  },
+                                  child: Container(
+                                      decoration: const BoxDecoration(
+                                        color: Colors.white,
+                                        shape: BoxShape.circle,
+                                        // borderRadius: BorderRadius.circular(20)
+                                      ),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(8.0),
+                                        child: Icon(Icons.arrow_forward_ios,
+                                            color: Colors.black),
+                                      )))
+                              : const SizedBox(),
+                        ],
+                      ),
                     ),
               const SizedBox(height: 10),
               Expanded(

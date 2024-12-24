@@ -1,10 +1,10 @@
-
 import 'package:anetv/core/utils/app_router.dart';
 import 'package:anetv/core/utils/assets.dart';
 import 'package:anetv/featuers/splash/presentation/views/widgets/sliding_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../home/data/local/cacheHelper.dart';
 
 class SplashViewBody extends StatefulWidget {
   const SplashViewBody({super.key});
@@ -35,15 +35,14 @@ class _SplashViewBodyState extends State<SplashViewBody>
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height;
     return Center(
-      child: SizedBox(
-        height: height*.5,
-        child: Image.asset(AssetsData.logo)),
+      child: SizedBox(height: height * .5, child: Image.asset(AssetsData.logo)),
     );
   }
 
   void navigateToHome() {
     Future.delayed(const Duration(seconds: 3), () {
-      GoRouter.of(context).push(AppRouter.kHomeView);
+      GoRouter.of(context)
+          .push(isLogin == true ? AppRouter.kHomeView : AppRouter.kLoginView);
       // Get.to(()=>const HomeView(),transition:Transition.fade,duration: kTranstionDuration);
     });
   }
