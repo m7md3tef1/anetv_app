@@ -10,6 +10,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_file_downloader/flutter_file_downloader.dart';
+// import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -545,7 +546,13 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
   // @override
   // void initState() {
   //   super.initState();
-  //
+  //   Future.delayed(const Duration(minutes: 2), () {
+  //     if (this.mounted) {
+  //       setState(() {
+  //         _visible = false;
+  //       });
+  //     }
+  //   });
   //   pullToRefreshController = kIsWeb ||
   //           ![TargetPlatform.iOS, TargetPlatform.android]
   //               .contains(defaultTargetPlatform)
@@ -576,106 +583,153 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
         });
       }
     });
-//     if (widget.url.contains("iframe") || widget.url.contains("</iframe>")) {
-//       print("widget.url2222");
-//       // _controller = WebViewController()
-//       //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-//       //   ..loadRequest(Uri.dataFromString(widget.url));
-//     }
-//     else {
-//       // #docregion platform_features
-//       late final PlatformWebViewControllerCreationParams params;
-//
-//       if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-//         params = WebKitWebViewControllerCreationParams(
-//           // allowsInlineMediaPlayback: true,
-//           mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{
-//             PlaybackMediaTypes.video
-//           },
-//         );
-//       } else {
-//         params = const PlatformWebViewControllerCreationParams();
-//       }
-//
-//       _controller = WebViewController.fromPlatformCreationParams(params);
-//
-//       _controller
-//         ..setJavaScriptMode(JavaScriptMode.unrestricted)
-//         ..getUserAgent()
-//         ..enableZoom(true)
-//         ..setNavigationDelegate(
-//           NavigationDelegate(
-//             onProgress: (int progress) {
-//               // debugPrint('WebView is loading (progress : $progress%)');
-//             },
-//             onPageStarted: (String url) {
-//               // debugPrint('Page started loading: $url');
-//             },
-//             onPageFinished: (String url) {
-//               //         _controller.evaluateJavascript('''
-//               //   var videos = document.querySelectorAll('video');
-//               //   videos.forEach(function(video) {
-//               //     video.autoplay = true;
-//               //     video.muted = true;  // If you want muted autoplay
-//               //     video.play();
-//               //   });
-//               // ''');
-//             },
-//             onWebResourceError: (WebResourceError error) {
-// //             debugPrint('''
-// // Page resource error:
-// //   code: ${error.errorCode}
-// //   description: ${error.description}
-// //   errorType: ${error.errorType}
-// //   isForMainFrame: ${error.isForMainFrame}
-// //           ''');
-//             },
-//             onNavigationRequest: (NavigationRequest request) {
-//               if (request.url.startsWith('https://drive.google.com/')) {
-//                 debugPrint('blocking navigation to ${request.url}');
-//                 return NavigationDecision.prevent;
-//               }
-//               debugPrint('allowing navigation to ${request.url}');
-//               return NavigationDecision.navigate;
-//             },
-//             onHttpError: (HttpResponseError error) {
-//               // debugPrint('Error occurred on page: ${error.response?.statusCode}');
-//             },
-//             onUrlChange: (UrlChange change) {
-//               // debugPrint('url change to ${change.url}');
-//             },
-//             onHttpAuthRequest: (HttpAuthRequest request) {},
-//           ),
-//         )
-//         ..addJavaScriptChannel(
-//           'flutter_invoke',
-//           onMessageReceived: (JavaScriptMessage message) {
-//             setState(() {
-//               _isPlaying = message.message == 'playing';
-//             });
-//           },
-//         )
-//         ..loadRequest(Uri.parse(
-//             "https://drive.google.com/file/d/${widget.url}/view"
-//             // "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"
-//             // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-//             ));
-//
-//       if (kIsWeb || !Platform.isMacOS) {
-//         _controller.setBackgroundColor(const Color(0x80000000));
-//       }
-//
-//       // #docregion platform_features
-//       if (_controller.platform is AndroidWebViewController) {
-//         AndroidWebViewController.enableDebugging(true);
-//         (_controller.platform as AndroidWebViewController)
-//             .setMediaPlaybackRequiresUserGesture(false);
-//       }
-//     }
+    const String htmlContent = '''
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+          }
+          iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+          }
+          #fullscreen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: black;
+          }
+          #video-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+          }
+        </style>
+      </head>
+      <body>
+        <div id="video-container">
+          <iframe 
+            id="video"
+            src="https://drive.google.com/file/d/FILE_ID/preview?controls=0&autoplay=1&fs=0" 
+            allow="autoplay"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </body>
+      </html>
+    ''';
+    // if (widget.url.contains("iframe") || widget.url.contains("</iframe>")) {
+    //   print("widget.url2222");
+    //   // _controller = WebViewController()
+    //   //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    //   //   ..loadRequest(Uri.dataFromString(widget.url));
+    // } else
+    {
+      // #docregion platform_features
+      late final PlatformWebViewControllerCreationParams params;
+
+      if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+        params = WebKitWebViewControllerCreationParams(
+          // allowsInlineMediaPlayback: true,
+          mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{
+            PlaybackMediaTypes.video
+          },
+        );
+      } else {
+        params = const PlatformWebViewControllerCreationParams();
+      }
+
+      _controller = WebViewController.fromPlatformCreationParams(params);
+
+      _controller
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..getUserAgent()
+        ..enableZoom(true)
+        ..setNavigationDelegate(
+          NavigationDelegate(
+            onProgress: (int progress) {
+              // debugPrint('WebView is loading (progress : $progress%)');
+            },
+            onPageStarted: (String url) {
+              // debugPrint('Page started loading: $url');
+            },
+            onPageFinished: (String url) {
+              //         _controller.evaluateJavascript('''
+              //   var videos = document.querySelectorAll('video');
+              //   videos.forEach(function(video) {
+              //     video.autoplay = true;
+              //     video.muted = true;  // If you want muted autoplay
+              //     video.play();
+              //   });
+              // ''');
+            },
+            onWebResourceError: (WebResourceError error) {
+//             debugPrint('''
+// Page resource error:
+//   code: ${error.errorCode}
+//   description: ${error.description}
+//   errorType: ${error.errorType}
+//   isForMainFrame: ${error.isForMainFrame}
+//           ''');
+            },
+            onNavigationRequest: (NavigationRequest request) {
+              if (request.url.startsWith('https://drive.google.com/')) {
+                debugPrint('blocking navigation to ${request.url}');
+                return NavigationDecision.prevent;
+              }
+              debugPrint('allowing navigation to ${request.url}');
+              return NavigationDecision.navigate;
+            },
+            onHttpError: (HttpResponseError error) {
+              // debugPrint('Error occurred on page: ${error.response?.statusCode}');
+            },
+            onUrlChange: (UrlChange change) {
+              // debugPrint('url change to ${change.url}');
+            },
+            onHttpAuthRequest: (HttpAuthRequest request) {},
+          ),
+        )
+        ..addJavaScriptChannel(
+          'flutter_invoke',
+          onMessageReceived: (JavaScriptMessage message) {
+            setState(() {
+              _isPlaying = message.message == 'playing';
+            });
+          },
+        )
+        // ..loadHtmlString(htmlContent.replaceAll(
+        //     'FILE_ID', widget.url));
+      ..loadRequest(Uri.parse(
+          // "https://drive.google.com/file/d/${widget.url}/view"
+          "https://drive.google.com/file/d/${widget.url}/preview?controls=0&autoplay=1&fs=0&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"
+          // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+          ));
+
+      if (kIsWeb || !Platform.isMacOS) {
+        _controller.setBackgroundColor(const Color(0x80000000));
+      }
+      print(
+          "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&controls=0&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w");
+      // #docregion platform_features
+      if (_controller.platform is AndroidWebViewController) {
+        AndroidWebViewController.enableDebugging(true);
+        (_controller.platform as AndroidWebViewController)
+            .setMediaPlaybackRequiresUserGesture(false);
+      }
+    }
   }
 
   bool isDownloading = false;
-  String progress = "";
+  // String progress = "";
   // void handleKeyPress(RawKeyEvent event) {
   //   if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
   //     // Seek forward
@@ -748,6 +802,89 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
 
   @override
   Widget build(BuildContext context) {
+    // InAppWebView(
+    //   key: webViewKey,
+    //   webViewEnvironment: webViewEnvironment,
+    //   initialUrlRequest:
+    //   URLRequest(url: WebUri("https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")),
+    //   initialSettings: settings,
+    //   pullToRefreshController: pullToRefreshController,
+    //   onWebViewCreated: (controller) async{
+    //     webViewController = controller;print("dddddddddddddddddddddddd===========");
+    //    await webViewController!.resume();
+    //   },
+    //   onLoadStart: (controller, url) {
+    //     setState(() {
+    //       print("dddddddddddddddddddddddd");
+    //       webViewController!.resume();
+    //       this.url = url.toString();
+    //       urlController.text = this.url;
+    //     });
+    //   },
+    //   onPermissionRequest: (controller, request) async {
+    //     return PermissionResponse(
+    //         resources: request.resources,
+    //         action: PermissionResponseAction.GRANT);
+    //   },
+    //   shouldOverrideUrlLoading:
+    //       (controller, navigationAction) async {
+    //     var uri = navigationAction.request.url!;
+    //
+    //     if (![
+    //       "http",
+    //       "https",
+    //       "file",
+    //       "chrome",
+    //       "data",
+    //       "javascript",
+    //       "about"
+    //     ].contains(uri.scheme)) {
+    //       if (await canLaunchUrl(uri)) {
+    //         // Launch the App
+    //         await launchUrl(
+    //           uri,
+    //         );
+    //         // and cancel the request
+    //         return NavigationActionPolicy.CANCEL;
+    //       }
+    //     }
+    //
+    //     return NavigationActionPolicy.ALLOW;
+    //   },
+    //   onLoadStop: (controller, url) async {
+    //     pullToRefreshController?.endRefreshing();
+    //     setState(() {
+    //       this.url = url.toString();
+    //       urlController.text = this.url;
+    //     });
+    //   },
+    //   onReceivedError: (controller, request, error) {
+    //     pullToRefreshController?.endRefreshing();
+    //   },
+    //   onProgressChanged: (controller, progress) {
+    //     if (progress == 100) {
+    //       pullToRefreshController?.endRefreshing();
+    //     }
+    //     setState(() {
+    //       this.progress = progress / 100;
+    //       urlController.text = url;
+    //     });
+    //   },
+    //   onUpdateVisitedHistory: (controller, url, androidIsReload) {
+    //     setState(() {
+    //       this.url = url.toString();
+    //       urlController.text = this.url;
+    //     });
+    //   },
+    //   onConsoleMessage: (controller, consoleMessage) {
+    //     if (kDebugMode) {
+    //       print(consoleMessage);
+    //     }
+    //   },
+    // ),
+    // progress < 1.0
+    //     ? LinearProgressIndicator(value: progress)
+    //     : Container(),
     return
         // ActionHandler().handleArrowAndEnterAction3(
         // child:
@@ -830,95 +967,15 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
         //     },
         //   ),
         // },
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Stack(
-              alignment: Alignment.topLeft,
-              children: [
-        WebViewWidget(controller: WebViewController()
-        ..setJavaScriptMode(JavaScriptMode.unrestricted)
-          ..loadRequest(Uri.parse(
-              "https://drive.google.com/file/d/${widget.url}/view"
-            // "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"
-            // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-          ))),
-                _visible
-                    ? Positioned(
-                        top: 50.h,
-                        left: 10.w,
-                        child: InkWell(
-                          onTap: () {
-                            // print(
-                            //     // "fffffffffffffffffffffffffffffffffffffffffffffffffffffff");
-                            FileDownloader.downloadFile(
-                              name: "PANDA",
-                              url:
-                                  "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209",
-                              onDownloadCompleted: (path) {
-                                print("pathfffffffffffffffffffffffffffff");
-                                print(path);
-                                final File file = File(path);
-                                print(file);
-                              },
-                              onProgress: (fileName, progress) {
-                                print("progress");
-                                print(progress);
-                                setState(() {
-                                  _progress = double.parse(
-                                      progress.toString().replaceAll("-", ""));
-                                });
-                              },
-                              onDownloadError: (errorMessage) {
-                                print("eroor");
-                                print(errorMessage);
-                              },
-                            );
-                          },
-                          child: Container(
-                            decoration: BoxDecoration(
-                                color: Colors.green,
-                                borderRadius:
-                                    BorderRadiusDirectional.circular(5.r)),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 8.h, horizontal: 8.w),
-                              child: Text(
-                                "Download",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        ),
-                      )
-                    : const SizedBox()
-                // progress < 1.0
-                //     ? LinearProgressIndicator(value: progress)
-                //     : Container(),
-              ],
+        child: WebViewWidget(controller: _controller
+            // WebViewController()
+            // ..setJavaScriptMode(JavaScriptMode.unrestricted)
+            //   ..loadRequest(Uri.parse(
+            //       "https://drive.google.com/file/d/${widget.url}/view"
+            //     // "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"
+            //     // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+            //   ))
             ),
-            Positioned(
-              top: 40.h,
-              child: Center(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      height: 10.h,
-                      width: _progress * 4,
-                      color: Colors.red,
-                    ),
-                    Text(_progress == 0.0 ? "" : _progress.toString())
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
         // ),
         // ),
         // )
