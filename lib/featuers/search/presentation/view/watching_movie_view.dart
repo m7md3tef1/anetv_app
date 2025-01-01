@@ -507,480 +507,581 @@ class _WatchingMovieViewState extends State<WatchingMovieView> {
 
 */
 
+// class WatchingMovieView extends StatefulWidget {
+//   final String url;
+//
+//   const WatchingMovieView({super.key, required this.url});
+//
+//   @override
+//   WatchingMovieViewState createState() => WatchingMovieViewState();
+// }
+//
+// class WatchingMovieViewState extends State<WatchingMovieView> {
+//   // late VideoPlayerController _controller;
+//   // late WebViewController _webViewController;
+//   bool isIframe = false;
+//   bool _isPlaying = false;
+//   late WebViewController _controller;
+//   final GlobalKey webViewKey = GlobalKey();
+//
+//   // InAppWebViewController? webViewController;
+//   // InAppWebViewSettings settings = InAppWebViewSettings(
+//   //     isInspectable: kDebugMode,
+//   //     javaScriptEnabled: true,
+//   //     mediaPlaybackRequiresUserGesture: false,
+//   //     cacheEnabled: true,
+//   //     useHybridComposition: true, // For better rendering performance
+//   //     allowsInlineMediaPlayback: true, // Enables inline video playback
+//   //     disableContextMenu: true,
+//   //     useWideViewPort: true, // Optimizes rendering
+//   //     loadWithOverviewMode: true,
+//   //     iframeAllow: "camera; microphone",
+//   //     iframeAllowFullscreen: true);
+//   //
+//   // PullToRefreshController? pullToRefreshController;
+//   // String url = "";
+//   // double progress = 0;
+//   // final urlController = TextEditingController();
+//
+//   // @override
+//   // void initState() {
+//   //   super.initState();
+//   //   Future.delayed(const Duration(minutes: 2), () {
+//   //     if (this.mounted) {
+//   //       setState(() {
+//   //         _visible = false;
+//   //       });
+//   //     }
+//   //   });
+//   //   pullToRefreshController = kIsWeb ||
+//   //           ![TargetPlatform.iOS, TargetPlatform.android]
+//   //               .contains(defaultTargetPlatform)
+//   //       ? null
+//   //       : PullToRefreshController(
+//   //           settings: PullToRefreshSettings(
+//   //             color: Colors.blue,
+//   //           ),
+//   //           onRefresh: () async {
+//   //             if (defaultTargetPlatform == TargetPlatform.android) {
+//   //               webViewController?.reload();
+//   //             } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+//   //               webViewController?.loadUrl(
+//   //                   urlRequest:
+//   //                       URLRequest(url: await webViewController?.getUrl()));
+//   //             }
+//   //           },
+//   //         );
+//   // }
+//   bool _visible = true;
+//   @override
+//   void initState() {
+//     super.initState();
+//     Future.delayed(const Duration(minutes: 2), () {
+//       if (this.mounted) {
+//         setState(() {
+//           _visible = false;
+//         });
+//       }
+//     });
+//     const String htmlContent1 = '''
+//       <!DOCTYPE html>
+//       <html>
+//       <head>
+//         <style>
+//           body, html {
+//             margin: 0;
+//             padding: 0;
+//             width: 100%;
+//             height: 100%;
+//             overflow: hidden;
+//           }
+//           iframe {
+//             width: 100%;
+//             height: 100%;
+//             border: none;
+//           }
+//           #fullscreen {
+//             position: absolute;
+//             top: 0;
+//             left: 0;
+//             width: 100%;
+//             height: 100%;
+//             background: black;
+//           }
+//           #video-container {
+//             position: relative;
+//             width: 100%;
+//             height: 100%;
+//           }
+//         </style>
+//       </head>
+//       <body>
+//         <div id="video-container">
+//           <iframe
+//             id="video"
+//             src="https://drive.google.com/file/d/FILE_ID/preview?controls=0&autoplay=1&fs=0"
+//             allow="autoplay"
+//             allowfullscreen>
+//           </iframe>
+//         </div>
+//       </body>
+//       </html>
+//     ''';
+//     // HTML content for overlapping controllers
+//     String htmlContent = '''
+//     <!DOCTYPE html>
+//     <html>
+//     <head>
+//       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//       <style>
+//         body {
+//           margin: 0;
+//           padding: 0;
+//           display: flex;
+//           justify-content: center;
+//           align-items: center;
+//           height: 100vh;
+//           background-color: #000;
+//         }
+//         .player-container {
+//           position: relative;
+//           width: 90%;
+//           height: 300px;
+//         }
+//         iframe {
+//           position: absolute;
+//           top: 0;
+//           left: 0;
+//           width: 100%;
+//           height: 100%;
+//           border: none;
+//         }
+//         .player1 {
+//           opacity: 0.8;
+//         }
+//         .player2 {
+//           opacity: 0.5;
+//         }
+//       </style>
+//     </head>
+//     <body>
+//       <div class="player-container">
+//         <!-- First Player -->
+//         <iframe
+//           class="player1"
+//           src="https://drive.google.com/file/d/FILE_ID/preview"
+//           allowfullscreen>
+//         </iframe>
+//
+//         <!-- Second Player -->
+//         <iframe
+//           class="player2"
+//           src="https://drive.google.com/file/d/FILE_ID/preview"
+//           allowfullscreen>
+//         </iframe>
+//       </div>
+//     </body>
+//     </html>
+//     ''';
+//     // if (widget.url.contains("iframe") || widget.url.contains("</iframe>")) {
+//     //   print("widget.url2222");
+//     //   // _controller = WebViewController()
+//     //   //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+//     //   //   ..loadRequest(Uri.dataFromString(widget.url));
+//     // } else
+//     {
+//       // #docregion platform_features
+//       late final PlatformWebViewControllerCreationParams params;
+//
+//       if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+//         params = WebKitWebViewControllerCreationParams(
+//           allowsInlineMediaPlayback: false,
+//           mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{
+//             PlaybackMediaTypes.video,
+//             PlaybackMediaTypes.audio
+//           },
+//         );
+//       } else {
+//         params = const PlatformWebViewControllerCreationParams();
+//       }
+//
+//       _controller = WebViewController.fromPlatformCreationParams(params);
+//
+//       _controller
+//         ..setJavaScriptMode(JavaScriptMode.unrestricted)
+// //         ..getUserAgent()
+// //         ..enableZoom(true)
+// //         ..setNavigationDelegate(
+// //           NavigationDelegate(
+// //             onProgress: (int progress) {
+// //               // debugPrint('WebView is loading (progress : $progress%)');
+// //             },
+// //             onPageStarted: (String url) {
+// //               // debugPrint('Page started loading: $url');
+// //             },
+// //             onPageFinished: (String url) {
+// //               //         _controller.evaluateJavascript('''
+// //               //   var videos = document.querySelectorAll('video');
+// //               //   videos.forEach(function(video) {
+// //               //     video.autoplay = true;
+// //               //     video.muted = true;  // If you want muted autoplay
+// //               //     video.play();
+// //               //   });
+// //               // ''');
+// //             },
+// //             onWebResourceError: (WebResourceError error) {
+// // //             debugPrint('''
+// // // Page resource error:
+// // //   code: ${error.errorCode}
+// // //   description: ${error.description}
+// // //   errorType: ${error.errorType}
+// // //   isForMainFrame: ${error.isForMainFrame}
+// // //           ''');
+// //             },
+// //             onNavigationRequest: (NavigationRequest request) {
+// //               if (request.url.startsWith('https://drive.google.com/')) {
+// //                 debugPrint('blocking navigation to ${request.url}');
+// //                 return NavigationDecision.prevent;
+// //               }
+// //               debugPrint('allowing navigation to ${request.url}');
+// //               return NavigationDecision.navigate;
+// //             },
+// //             onHttpError: (HttpResponseError error) {
+// //               // debugPrint('Error occurred on page: ${error.response?.statusCode}');
+// //             },
+// //             onUrlChange: (UrlChange change) {
+// //               // debugPrint('url change to ${change.url}');
+// //             },
+// //             onHttpAuthRequest: (HttpAuthRequest request) {},
+// //           ),
+// //         )
+// //         ..addJavaScriptChannel(
+// //           'flutter_invoke',
+// //           onMessageReceived: (JavaScriptMessage message) {
+// //             setState(() {
+// //               _isPlaying = message.message == 'playing';
+// //             });
+// //           },
+// //         )
+//         // ..loadHtmlString(htmlContent.replaceAll(
+//         //     'FILE_ID', widget.url));
+//         ..loadRequest(Uri.parse(
+//             // "https://drive.google.com/file/d/${widget.url}/view"
+//             "https://drive.google.com/file/d/${widget.url}/preview?controls=0&autoplay=1&fs=0&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"
+//             // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+//             ));
+//
+//       if (kIsWeb || !Platform.isMacOS) {
+//         _controller.setBackgroundColor(const Color(0x80000000));
+//       }
+//       print(
+//           "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&controls=0&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w");
+//       // #docregion platform_features
+//       if (_controller.platform is AndroidWebViewController) {
+//         (_controller.platform as AndroidWebViewController)
+//           ..setMediaPlaybackRequiresUserGesture(false)
+//           ..setOnPlatformPermissionRequest(
+//               (PlatformWebViewPermissionRequest request) {
+//             request.grant();
+//           });
+//       }
+//     }
+//   }
+//
+//   bool isDownloading = false;
+//   // String progress = "";
+//   // void handleKeyPress(RawKeyEvent event) {
+//   //   if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
+//   //     // Seek forward
+//   //     _controller.runJavaScript("""
+//   //       const video = document.querySelector('video');
+//   //       if (video) video.currentTime += 10;
+//   //     """);
+//   //   } else if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
+//   //     // Seek backward
+//   //     _controller.runJavaScript("""
+//   //       const video = document.querySelector('video');
+//   //       if (video) video.currentTime -= 10;
+//   //     """);
+//   //   } else if (event.isKeyPressed(LogicalKeyboardKey.space)) {
+//   //     // Play/Pause toggle
+//   //     _controller.runJavaScript("""
+//   //       const video = document.querySelector('video');
+//   //       if (video) {
+//   //         if (video.paused) video.play();
+//   //         else video.pause();
+//   //       }
+//   //     """);
+//   //   }
+//   // }
+//
+//   // double _currentTime = 20.0;
+//   String jsPlay = """
+//     var video = document.querySelector('video');
+//     if (video) {
+//       video.play();
+//     }
+//   """;
+//
+//   String jsPause = """
+//     var video = document.querySelector('video');
+//     if (video) {
+//       video.pause();
+//     }
+//   """;
+//
+//   String jsSeekTo(double time) {
+//     return """
+//       var video = document.querySelector('video');
+//       if (video) {
+//         video.currentTime = $time;
+//       }
+//     """;
+//   }
+//
+//   // void _play() {
+//   //   _controller.runJavaScript('document.querySelector("video").play();');
+//   // }
+//   //
+//   // void _pause() {
+//   //   _controller.runJavaScript('document.querySelector("video").pause();');
+//   // }
+//   //
+//   // void _seekTo(int seconds) {
+//   //   _controller.runJavaScript(
+//   //       'document.querySelector("video").currentTime = $seconds;');
+//   // }
+//
+//   var _progress = 0.0;
+//
+//   bool? isPlaying = true;
+//   @override
+//   void dispose() {
+//     super.dispose();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     // InAppWebView(
+//     //   key: webViewKey,
+//     //   webViewEnvironment: webViewEnvironment,
+//     //   initialUrlRequest:
+//     //   URLRequest(url: WebUri("https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")),
+//     //   initialSettings: settings,
+//     //   pullToRefreshController: pullToRefreshController,
+//     //   onWebViewCreated: (controller) async{
+//     //     webViewController = controller;print("dddddddddddddddddddddddd===========");
+//     //    await webViewController!.resume();
+//     //   },
+//     //   onLoadStart: (controller, url) {
+//     //     setState(() {
+//     //       print("dddddddddddddddddddddddd");
+//     //       webViewController!.resume();
+//     //       this.url = url.toString();
+//     //       urlController.text = this.url;
+//     //     });
+//     //   },
+//     //   onPermissionRequest: (controller, request) async {
+//     //     return PermissionResponse(
+//     //         resources: request.resources,
+//     //         action: PermissionResponseAction.GRANT);
+//     //   },
+//     //   shouldOverrideUrlLoading:
+//     //       (controller, navigationAction) async {
+//     //     var uri = navigationAction.request.url!;
+//     //
+//     //     if (![
+//     //       "http",
+//     //       "https",
+//     //       "file",
+//     //       "chrome",
+//     //       "data",
+//     //       "javascript",
+//     //       "about"
+//     //     ].contains(uri.scheme)) {
+//     //       if (await canLaunchUrl(uri)) {
+//     //         // Launch the App
+//     //         await launchUrl(
+//     //           uri,
+//     //         );
+//     //         // and cancel the request
+//     //         return NavigationActionPolicy.CANCEL;
+//     //       }
+//     //     }
+//     //
+//     //     return NavigationActionPolicy.ALLOW;
+//     //   },
+//     //   onLoadStop: (controller, url) async {
+//     //     pullToRefreshController?.endRefreshing();
+//     //     setState(() {
+//     //       this.url = url.toString();
+//     //       urlController.text = this.url;
+//     //     });
+//     //   },
+//     //   onReceivedError: (controller, request, error) {
+//     //     pullToRefreshController?.endRefreshing();
+//     //   },
+//     //   onProgressChanged: (controller, progress) {
+//     //     if (progress == 100) {
+//     //       pullToRefreshController?.endRefreshing();
+//     //     }
+//     //     setState(() {
+//     //       this.progress = progress / 100;
+//     //       urlController.text = url;
+//     //     });
+//     //   },
+//     //   onUpdateVisitedHistory: (controller, url, androidIsReload) {
+//     //     setState(() {
+//     //       this.url = url.toString();
+//     //       urlController.text = this.url;
+//     //     });
+//     //   },
+//     //   onConsoleMessage: (controller, consoleMessage) {
+//     //     if (kDebugMode) {
+//     //       print(consoleMessage);
+//     //     }
+//     //   },
+//     // ),
+//     // progress < 1.0
+//     //     ? LinearProgressIndicator(value: progress)
+//     //     : Container(),
+//     return
+//         // ActionHandler().handleArrowAndEnterAction3(
+//         // child:
+//         Scaffold(
+//       body: SizedBox(
+//         height: double.infinity,
+//         width: double.infinity,
+//         // child: RawKeyboardListener(
+//         // focusNode: FocusNode(),
+//         // child: Actions(
+//         // actions: <Type, Action<Intent>>{
+//         //   CloseButtonIntent: CallbackAction<CloseButtonIntent>(
+//         //     onInvoke: (intent) {
+//         //       Navigator.pop(context);
+//         //       return true;
+//         //     },
+//         //   ),
+//         //   UpButtonIntent: CallbackAction<UpButtonIntent>(
+//         //     onInvoke: (intent) {
+//         //       // _seekForward(10);
+//         //       // return _seekForward;
+//         //     },
+//         //   ),
+//         //   DownButtonIntent: CallbackAction<DownButtonIntent>(
+//         //     onInvoke: (intent) {
+//         //       // print("sssssssssssssssssssssssssssssssssssssssss");
+//         //       // _seekBackward(const Duration(minutes: 10));
+//         //       // return _seekBackward;
+//         //     },
+//         //   ),
+//         //   EnterButtonIntent: CallbackAction<EnterButtonIntent>(
+//         //     onInvoke: (intent) {
+//         //       if (isPlaying == true || isPlaying! == null) {
+//         //         webViewController?.pause();
+//         //         setState(() {
+//         //           isPlaying = false;
+//         //           isPlaying == false;
+//         //           print("object11112222 $isPlaying");
+//         //         });
+//         //       } else {
+//         //         webViewController?.resume();
+//         //         setState(() {
+//         //           isPlaying = true;
+//         //           isPlaying == true;
+//         //           print("object11113333 $isPlaying");
+//         //         });
+//         //       }
+//         //       return {
+//         //         if (isPlaying == true || isPlaying! == null)
+//         //           {
+//         //             webViewController?.pause(),
+//         //             setState(() {
+//         //               isPlaying = false;
+//         //               isPlaying == false;
+//         //               print("object11112222 $isPlaying");
+//         //             }),
+//         //           }
+//         //         else
+//         //           {
+//         //             webViewController?.resume(),
+//         //             setState(() {
+//         //               isPlaying = true;
+//         //               isPlaying == true;
+//         //               print("object11113333 $isPlaying");
+//         //             }),
+//         //           }
+//         //       };
+//         //     },
+//         //   ),
+//         //   RightButtonIntent: CallbackAction<RightButtonIntent>(
+//         //     onInvoke: (intent) {
+//         //       // _controller.runJavaScript(jsSeekTo(30));
+//         //       // return _controller.runJavaScript(jsSeekTo(30));
+//         //     },
+//         //   ),
+//         //   LeftButtonIntent: CallbackAction<LeftButtonIntent>(
+//         //     onInvoke: (intent) {
+//         //       // _controller.runJavaScript(jsSeekTo(30));
+//         //       // return _controller.runJavaScript(jsSeekTo(30));
+//         //     },
+//         //   ),
+//         // },
+//         child: WebViewWidget(controller: _controller
+//             // WebViewController()
+//             // ..setJavaScriptMode(JavaScriptMode.unrestricted)
+//             //   ..loadRequest(Uri.parse(
+//             //       "https://drive.google.com/file/d/${widget.url}/view"
+//             //     // "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"
+//             //     // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
+//             //   ))
+//             ),
+//         // ),
+//         // ),
+//         // )
+//       ),
+//     );
+//   }
+// }
+import 'package:flutter/material.dart';
+import 'package:flick_video_player/flick_video_player.dart';
+import 'package:video_player/video_player.dart';
+
 class WatchingMovieView extends StatefulWidget {
   final String url;
 
   const WatchingMovieView({super.key, required this.url});
 
   @override
-  WatchingMovieViewState createState() => WatchingMovieViewState();
+  _WatchingMovieViewState createState() => _WatchingMovieViewState();
 }
 
-class WatchingMovieViewState extends State<WatchingMovieView> {
-  // late VideoPlayerController _controller;
-  // late WebViewController _webViewController;
-  bool isIframe = false;
-  bool _isPlaying = false;
-  late WebViewController _controller;
-  final GlobalKey webViewKey = GlobalKey();
-
-  // InAppWebViewController? webViewController;
-  // InAppWebViewSettings settings = InAppWebViewSettings(
-  //     isInspectable: kDebugMode,
-  //     javaScriptEnabled: true,
-  //     mediaPlaybackRequiresUserGesture: false,
-  //     cacheEnabled: true,
-  //     useHybridComposition: true, // For better rendering performance
-  //     allowsInlineMediaPlayback: true, // Enables inline video playback
-  //     disableContextMenu: true,
-  //     useWideViewPort: true, // Optimizes rendering
-  //     loadWithOverviewMode: true,
-  //     iframeAllow: "camera; microphone",
-  //     iframeAllowFullscreen: true);
-  //
-  // PullToRefreshController? pullToRefreshController;
-  // String url = "";
-  // double progress = 0;
-  // final urlController = TextEditingController();
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   Future.delayed(const Duration(minutes: 2), () {
-  //     if (this.mounted) {
-  //       setState(() {
-  //         _visible = false;
-  //       });
-  //     }
-  //   });
-  //   pullToRefreshController = kIsWeb ||
-  //           ![TargetPlatform.iOS, TargetPlatform.android]
-  //               .contains(defaultTargetPlatform)
-  //       ? null
-  //       : PullToRefreshController(
-  //           settings: PullToRefreshSettings(
-  //             color: Colors.blue,
-  //           ),
-  //           onRefresh: () async {
-  //             if (defaultTargetPlatform == TargetPlatform.android) {
-  //               webViewController?.reload();
-  //             } else if (defaultTargetPlatform == TargetPlatform.iOS) {
-  //               webViewController?.loadUrl(
-  //                   urlRequest:
-  //                       URLRequest(url: await webViewController?.getUrl()));
-  //             }
-  //           },
-  //         );
-  // }
-  bool _visible = true;
+class _WatchingMovieViewState extends State<WatchingMovieView> {
+  late FlickManager flickManager;
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(minutes: 2), () {
-      if (this.mounted) {
-        setState(() {
-          _visible = false;
-        });
-      }
-    });
-    const String htmlContent = '''
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <style>
-          body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-          }
-          iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-          }
-          #fullscreen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: black;
-          }
-          #video-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-          }
-        </style>
-      </head>
-      <body>
-        <div id="video-container">
-          <iframe 
-            id="video"
-            src="https://drive.google.com/file/d/FILE_ID/preview?controls=0&autoplay=1&fs=0" 
-            allow="autoplay"
-            allowfullscreen>
-          </iframe>
-        </div>
-      </body>
-      </html>
-    ''';
-    // if (widget.url.contains("iframe") || widget.url.contains("</iframe>")) {
-    //   print("widget.url2222");
-    //   // _controller = WebViewController()
-    //   //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    //   //   ..loadRequest(Uri.dataFromString(widget.url));
-    // } else
-    {
-      // #docregion platform_features
-      late final PlatformWebViewControllerCreationParams params;
-
-      if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-        params = WebKitWebViewControllerCreationParams(
-          // allowsInlineMediaPlayback: true,
-          mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{
-            PlaybackMediaTypes.video
-          },
-        );
-      } else {
-        params = const PlatformWebViewControllerCreationParams();
-      }
-
-      _controller = WebViewController.fromPlatformCreationParams(params);
-
-      _controller
-        ..setJavaScriptMode(JavaScriptMode.unrestricted)
-        ..getUserAgent()
-        ..enableZoom(true)
-        ..setNavigationDelegate(
-          NavigationDelegate(
-            onProgress: (int progress) {
-              // debugPrint('WebView is loading (progress : $progress%)');
-            },
-            onPageStarted: (String url) {
-              // debugPrint('Page started loading: $url');
-            },
-            onPageFinished: (String url) {
-              //         _controller.evaluateJavascript('''
-              //   var videos = document.querySelectorAll('video');
-              //   videos.forEach(function(video) {
-              //     video.autoplay = true;
-              //     video.muted = true;  // If you want muted autoplay
-              //     video.play();
-              //   });
-              // ''');
-            },
-            onWebResourceError: (WebResourceError error) {
-//             debugPrint('''
-// Page resource error:
-//   code: ${error.errorCode}
-//   description: ${error.description}
-//   errorType: ${error.errorType}
-//   isForMainFrame: ${error.isForMainFrame}
-//           ''');
-            },
-            onNavigationRequest: (NavigationRequest request) {
-              if (request.url.startsWith('https://drive.google.com/')) {
-                debugPrint('blocking navigation to ${request.url}');
-                return NavigationDecision.prevent;
-              }
-              debugPrint('allowing navigation to ${request.url}');
-              return NavigationDecision.navigate;
-            },
-            onHttpError: (HttpResponseError error) {
-              // debugPrint('Error occurred on page: ${error.response?.statusCode}');
-            },
-            onUrlChange: (UrlChange change) {
-              // debugPrint('url change to ${change.url}');
-            },
-            onHttpAuthRequest: (HttpAuthRequest request) {},
-          ),
-        )
-        ..addJavaScriptChannel(
-          'flutter_invoke',
-          onMessageReceived: (JavaScriptMessage message) {
-            setState(() {
-              _isPlaying = message.message == 'playing';
-            });
-          },
-        )
-        // ..loadHtmlString(htmlContent.replaceAll(
-        //     'FILE_ID', widget.url));
-      ..loadRequest(Uri.parse(
-          // "https://drive.google.com/file/d/${widget.url}/view"
-          "https://drive.google.com/file/d/${widget.url}/preview?controls=0&autoplay=1&fs=0&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"
-          // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-          ));
-
-      if (kIsWeb || !Platform.isMacOS) {
-        _controller.setBackgroundColor(const Color(0x80000000));
-      }
-      print(
-          "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&controls=0&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w");
-      // #docregion platform_features
-      if (_controller.platform is AndroidWebViewController) {
-        AndroidWebViewController.enableDebugging(true);
-        (_controller.platform as AndroidWebViewController)
-            .setMediaPlaybackRequiresUserGesture(false);
-      }
-    }
+    flickManager = FlickManager(
+        autoPlay: true,
+        autoInitialize: true,
+        videoPlayerController: VideoPlayerController.networkUrl(
+          Uri.parse(
+              "https://drive.usercontent.google.com/download?id=${widget.url}&authuser=0&confirm=t&uuid=30a4b2c0-d98e-4fc3-909d-3c7868e03206&at=APvzH3poMdVn07hhKRLmdb7wxZhh%3A1734380470209"),
+        ));
   }
 
-  bool isDownloading = false;
-  // String progress = "";
-  // void handleKeyPress(RawKeyEvent event) {
-  //   if (event.isKeyPressed(LogicalKeyboardKey.arrowRight)) {
-  //     // Seek forward
-  //     _controller.runJavaScript("""
-  //       const video = document.querySelector('video');
-  //       if (video) video.currentTime += 10;
-  //     """);
-  //   } else if (event.isKeyPressed(LogicalKeyboardKey.arrowLeft)) {
-  //     // Seek backward
-  //     _controller.runJavaScript("""
-  //       const video = document.querySelector('video');
-  //       if (video) video.currentTime -= 10;
-  //     """);
-  //   } else if (event.isKeyPressed(LogicalKeyboardKey.space)) {
-  //     // Play/Pause toggle
-  //     _controller.runJavaScript("""
-  //       const video = document.querySelector('video');
-  //       if (video) {
-  //         if (video.paused) video.play();
-  //         else video.pause();
-  //       }
-  //     """);
-  //   }
-  // }
-
-  // double _currentTime = 20.0;
-  String jsPlay = """
-    var video = document.querySelector('video');
-    if (video) {
-      video.play();
-    }
-  """;
-
-  String jsPause = """
-    var video = document.querySelector('video');
-    if (video) {
-      video.pause();
-    }
-  """;
-
-  String jsSeekTo(double time) {
-    return """
-      var video = document.querySelector('video');
-      if (video) {
-        video.currentTime = $time;
-      }
-    """;
-  }
-
-  // void _play() {
-  //   _controller.runJavaScript('document.querySelector("video").play();');
-  // }
-  //
-  // void _pause() {
-  //   _controller.runJavaScript('document.querySelector("video").pause();');
-  // }
-  //
-  // void _seekTo(int seconds) {
-  //   _controller.runJavaScript(
-  //       'document.querySelector("video").currentTime = $seconds;');
-  // }
-
-  var _progress = 0.0;
-
-  bool? isPlaying = true;
   @override
   void dispose() {
+    flickManager.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    // InAppWebView(
-    //   key: webViewKey,
-    //   webViewEnvironment: webViewEnvironment,
-    //   initialUrlRequest:
-    //   URLRequest(url: WebUri("https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")),
-    //   initialSettings: settings,
-    //   pullToRefreshController: pullToRefreshController,
-    //   onWebViewCreated: (controller) async{
-    //     webViewController = controller;print("dddddddddddddddddddddddd===========");
-    //    await webViewController!.resume();
-    //   },
-    //   onLoadStart: (controller, url) {
-    //     setState(() {
-    //       print("dddddddddddddddddddddddd");
-    //       webViewController!.resume();
-    //       this.url = url.toString();
-    //       urlController.text = this.url;
-    //     });
-    //   },
-    //   onPermissionRequest: (controller, request) async {
-    //     return PermissionResponse(
-    //         resources: request.resources,
-    //         action: PermissionResponseAction.GRANT);
-    //   },
-    //   shouldOverrideUrlLoading:
-    //       (controller, navigationAction) async {
-    //     var uri = navigationAction.request.url!;
-    //
-    //     if (![
-    //       "http",
-    //       "https",
-    //       "file",
-    //       "chrome",
-    //       "data",
-    //       "javascript",
-    //       "about"
-    //     ].contains(uri.scheme)) {
-    //       if (await canLaunchUrl(uri)) {
-    //         // Launch the App
-    //         await launchUrl(
-    //           uri,
-    //         );
-    //         // and cancel the request
-    //         return NavigationActionPolicy.CANCEL;
-    //       }
-    //     }
-    //
-    //     return NavigationActionPolicy.ALLOW;
-    //   },
-    //   onLoadStop: (controller, url) async {
-    //     pullToRefreshController?.endRefreshing();
-    //     setState(() {
-    //       this.url = url.toString();
-    //       urlController.text = this.url;
-    //     });
-    //   },
-    //   onReceivedError: (controller, request, error) {
-    //     pullToRefreshController?.endRefreshing();
-    //   },
-    //   onProgressChanged: (controller, progress) {
-    //     if (progress == 100) {
-    //       pullToRefreshController?.endRefreshing();
-    //     }
-    //     setState(() {
-    //       this.progress = progress / 100;
-    //       urlController.text = url;
-    //     });
-    //   },
-    //   onUpdateVisitedHistory: (controller, url, androidIsReload) {
-    //     setState(() {
-    //       this.url = url.toString();
-    //       urlController.text = this.url;
-    //     });
-    //   },
-    //   onConsoleMessage: (controller, consoleMessage) {
-    //     if (kDebugMode) {
-    //       print(consoleMessage);
-    //     }
-    //   },
-    // ),
-    // progress < 1.0
-    //     ? LinearProgressIndicator(value: progress)
-    //     : Container(),
-    return
-        // ActionHandler().handleArrowAndEnterAction3(
-        // child:
-        Scaffold(
-      body: SizedBox(
-        height: double.infinity,
-        width: double.infinity,
-        // child: RawKeyboardListener(
-        // focusNode: FocusNode(),
-        // child: Actions(
-        // actions: <Type, Action<Intent>>{
-        //   CloseButtonIntent: CallbackAction<CloseButtonIntent>(
-        //     onInvoke: (intent) {
-        //       Navigator.pop(context);
-        //       return true;
-        //     },
-        //   ),
-        //   UpButtonIntent: CallbackAction<UpButtonIntent>(
-        //     onInvoke: (intent) {
-        //       // _seekForward(10);
-        //       // return _seekForward;
-        //     },
-        //   ),
-        //   DownButtonIntent: CallbackAction<DownButtonIntent>(
-        //     onInvoke: (intent) {
-        //       // print("sssssssssssssssssssssssssssssssssssssssss");
-        //       // _seekBackward(const Duration(minutes: 10));
-        //       // return _seekBackward;
-        //     },
-        //   ),
-        //   EnterButtonIntent: CallbackAction<EnterButtonIntent>(
-        //     onInvoke: (intent) {
-        //       if (isPlaying == true || isPlaying! == null) {
-        //         webViewController?.pause();
-        //         setState(() {
-        //           isPlaying = false;
-        //           isPlaying == false;
-        //           print("object11112222 $isPlaying");
-        //         });
-        //       } else {
-        //         webViewController?.resume();
-        //         setState(() {
-        //           isPlaying = true;
-        //           isPlaying == true;
-        //           print("object11113333 $isPlaying");
-        //         });
-        //       }
-        //       return {
-        //         if (isPlaying == true || isPlaying! == null)
-        //           {
-        //             webViewController?.pause(),
-        //             setState(() {
-        //               isPlaying = false;
-        //               isPlaying == false;
-        //               print("object11112222 $isPlaying");
-        //             }),
-        //           }
-        //         else
-        //           {
-        //             webViewController?.resume(),
-        //             setState(() {
-        //               isPlaying = true;
-        //               isPlaying == true;
-        //               print("object11113333 $isPlaying");
-        //             }),
-        //           }
-        //       };
-        //     },
-        //   ),
-        //   RightButtonIntent: CallbackAction<RightButtonIntent>(
-        //     onInvoke: (intent) {
-        //       // _controller.runJavaScript(jsSeekTo(30));
-        //       // return _controller.runJavaScript(jsSeekTo(30));
-        //     },
-        //   ),
-        //   LeftButtonIntent: CallbackAction<LeftButtonIntent>(
-        //     onInvoke: (intent) {
-        //       // _controller.runJavaScript(jsSeekTo(30));
-        //       // return _controller.runJavaScript(jsSeekTo(30));
-        //     },
-        //   ),
-        // },
-        child: WebViewWidget(controller: _controller
-            // WebViewController()
-            // ..setJavaScriptMode(JavaScriptMode.unrestricted)
-            //   ..loadRequest(Uri.parse(
-            //       "https://drive.google.com/file/d/${widget.url}/view"
-            //     // "https://drive.google.com/file/d/${widget.url}/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w"
-            //     // "https://drive.google.com/file/d/16arurRggjbrCClwAViQrWjCQNsLoOCw5/preview?autoplay=1&resourcekey=1-wNT6W0_vHfh3wAeS8rrJ6w")
-            //   ))
-            ),
-        // ),
-        // ),
-        // )
-      ),
+    // print("flickManager" );
+    // print(flickManager.flickVideoManager!.videoPlayerValue!.position);
+    return Container(
+      child: FlickVideoPlayer(flickManager: flickManager),
     );
   }
 }
-//PlatformInAppWebViewController.pauseTimers.
