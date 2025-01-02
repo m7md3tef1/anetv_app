@@ -37,25 +37,19 @@ void main() async {
   await CacheHelper.init();
   isLogin = CacheHelper.getBool(SharedKeys.isLogin);
   email = CacheHelper.getString(SharedKeys.email);
-  // print(Email);
-  // print(isLogin);
+  // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
+  //   final availableVersion = await WebViewEnvironment.getAvailableVersion();
+  //   assert(availableVersion != null,
+  //   'Failed to find an installed WebView2 Runtime or non-stable Microsoft Edge installation.');
   //
-  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.windows) {
-    final availableVersion = await WebViewEnvironment.getAvailableVersion();
-    assert(availableVersion != null,
-    'Failed to find an installed WebView2 Runtime or non-stable Microsoft Edge installation.');
-
-    webViewEnvironment = await WebViewEnvironment.create(
-        settings:
-        WebViewEnvironmentSettings(userDataFolder: 'YOUR_CUSTOM_PATH'));
-  }
-
-  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-    await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
-  }
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+  //   webViewEnvironment = await WebViewEnvironment.create(
+  //       settings:
+  //       WebViewEnvironmentSettings(userDataFolder: 'YOUR_CUSTOM_PATH'));
+  // }
+  //
+  // if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+  //   await InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
+  // }
   setup();
   // cloudinary.config.urlConfig.secure = true;
   // MediaKit.ensureInitialized();
