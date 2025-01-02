@@ -529,7 +529,8 @@ class WatchingMovieViewState extends State<WatchingMovieView> {
       isInspectable: kDebugMode,
       javaScriptEnabled: true,
       mediaPlaybackRequiresUserGesture: true,
-      cacheEnabled: true,allowFileAccess: false,
+      cacheEnabled: true,
+      allowFileAccess: false,
       useHybridComposition: true, // For better rendering performance
       allowsInlineMediaPlayback: true, // Enables inline video playback
       disableContextMenu: false,
